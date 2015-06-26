@@ -42,7 +42,7 @@ wait4eth1() {
 wait4eth1
 EOF;
 
-            $exec->run('echo "'.$wait4eth1.'" | sudo tee /var/lib/boot2docker/profile');
+            $exec->run('echo "'.$wait4eth1.'" | sudo tee -a /var/lib/boot2docker/profile');
 
             // Restart dinghy
             $this->consoleHelper->writeTitle('Restarting Dinghy');

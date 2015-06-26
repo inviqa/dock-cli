@@ -30,7 +30,7 @@ class Dns extends IOTask implements DependentChainProcessInterface
         }
 
         if (empty($result)) {
-            $exec->run('echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee /var/lib/boot2docker/profile');
+            $exec->run('echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee -a /var/lib/boot2docker/profile');
         }
 
         try {
