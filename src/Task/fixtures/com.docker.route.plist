@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.docker.route</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>bash</string>
+    <string>-c</string>
+    <!-- You need to adapt the vboxnet0 to the interface that suits your setup, use ifconfig to find it -->
+    <string>/usr/sbin/scutil -w State:/Network/Interface/vboxnet0/IPv4 -t 0;sudo /sbin/route -n add -net 172.17.0.0 -netmask 255.255.0.0 -gateway 192.168.59.103</string>
+  </array>
+  <key>KeepAlive</key>
+  <false/>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>LaunchOnlyOnce</key>
+  <true/>
+</dict>
+</plist>
