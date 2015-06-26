@@ -79,4 +79,12 @@ class ConsoleHelper
         $formattedBlock = $formatter->formatBlock([$name], 'info');
         $this->output->writeln($formattedBlock);
     }
+
+    /**
+     * @param string $string
+     */
+    public function write($string)
+    {
+        $this->output->writeln($string);
+    }
 }

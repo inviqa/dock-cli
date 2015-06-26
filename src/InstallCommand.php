@@ -9,6 +9,7 @@ use DockerInstaller\Task\Dns;
 use DockerInstaller\Task\DockerCompose;
 use DockerInstaller\Task\DockerRouting;
 use DockerInstaller\Task\Homebrew;
+use DockerInstaller\Task\PhpSsh;
 use DockerInstaller\Task\Vagrant;
 use DockerInstaller\Task\VirtualBox;
 use SRIO\ChainOfResponsibility\ChainBuilder;
@@ -31,6 +32,7 @@ class InstallCommand extends Command
         $builder = new ChainBuilder([
             new Homebrew(),
             new BrewCask(),
+            new PhpSsh(),
             new Dinghy(),
             new Boot2DockerCertificateWorkaround(),
             new DockerRouting(),
