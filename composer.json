@@ -7,11 +7,11 @@
   },
   "autoload": {
     "psr-4": {
-      "DockerInstaller\\": "src/"
+      "Dock\\": "src/"
     }
   },
   "bin": [
-    "installer.php"
+    "app.php"
   ],
   "require-dev": {
     "clue/phar-composer": "dev-master"

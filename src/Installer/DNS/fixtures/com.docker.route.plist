@@ -9,7 +9,7 @@
     <string>bash</string>
     <string>-c</string>
     <!-- You need to adapt the vboxnet0 to the interface that suits your setup, use ifconfig to find it -->
-    <string>/usr/sbin/scutil -w State:/Network/Interface/vboxnet0/IPv4 -t 0;sudo /sbin/route -n add -net 172.17.0.0 -netmask 255.255.0.0 -gateway 192.168.59.103</string>
+    <string>/usr/sbin/scutil -w State:/Network/Interface/vboxnet0/IPv4 -t 0;sudo /sbin/route -n add -net 172.17.0.0 -netmask 255.255.0.0 -gateway __DINGLY_IP__</string>
   </array>
   <key>KeepAlive</key>
   <false/>

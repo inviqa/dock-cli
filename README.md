@@ -1,4 +1,4 @@
-# Docker installer
+# Dock CLI
 
 ## Release
 
