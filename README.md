@@ -2,13 +2,13 @@
 
 This CLI application provides an abstraction layer for Docker-based projects.
 
-*Note:* right know, it's focused exclusively on OSX.
+**Note:** right know, it's focused exclusively on OSX.
 
 ## Getting started
 
 ### Run from a release
 
-You can download the PHAR archive from GitHub releases.
+You can download the PHAR archive from [GitHub releases](https://github.com/sroze/dock-cli/releases).
 
 ### Run from development
 
