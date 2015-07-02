@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;

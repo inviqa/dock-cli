@@ -1,21 +1,19 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
 
-class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInterface
+class DockerCompose extends SoftwareInstallTask implements DependentChainProcessInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'virtualbox';
+        return 'dockerCompose';
     }
 
     /**
@@ -23,7 +21,7 @@ class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInt
      */
     public function dependsOn()
     {
-        return ['brewCask'];
+        return ['homebrew'];
     }
 
     /**
@@ -31,7 +29,7 @@ class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInt
      */
     protected function getVersionCommand()
     {
-        return 'VBoxManage --version';
+        return 'docker-compose --version';
     }
 
     /**
@@ -39,6 +37,6 @@ class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInt
      */
     protected function getInstallCommand()
     {
-        return 'brew cask install virtualbox';
+        return 'brew install --ignore-dependencies docker-compose';
     }
 }

@@ -1,19 +1,21 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
 
-class BrewCask extends SoftwareInstallTask implements DependentChainProcessInterface
+class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'brewCask';
+        return 'virtualbox';
     }
 
     /**
@@ -21,7 +23,7 @@ class BrewCask extends SoftwareInstallTask implements DependentChainProcessInter
      */
     public function dependsOn()
     {
-        return ['homebrew'];
+        return ['brewCask'];
     }
 
     /**
@@ -29,7 +31,7 @@ class BrewCask extends SoftwareInstallTask implements DependentChainProcessInter
      */
     protected function getVersionCommand()
     {
-        return 'brew cask --version';
+        return 'VBoxManage --version';
     }
 
     /**
@@ -37,6 +39,6 @@ class BrewCask extends SoftwareInstallTask implements DependentChainProcessInter
      */
     protected function getInstallCommand()
     {
-        return 'brew install caskroom/cask/brew-cask';
+        return 'brew cask install virtualbox';
     }
 }

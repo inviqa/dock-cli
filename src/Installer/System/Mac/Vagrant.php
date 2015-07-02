@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;

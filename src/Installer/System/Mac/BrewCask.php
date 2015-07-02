@@ -1,19 +1,19 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Process\Process;
 
-class DockerCompose extends SoftwareInstallTask implements DependentChainProcessInterface
+class BrewCask extends SoftwareInstallTask implements DependentChainProcessInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'dockerCompose';
+        return 'brewCask';
     }
 
     /**
@@ -29,7 +29,7 @@ class DockerCompose extends SoftwareInstallTask implements DependentChainProcess
      */
     protected function getVersionCommand()
     {
-        return 'docker-compose --version';
+        return 'brew cask --version';
     }
 
     /**
@@ -37,6 +37,6 @@ class DockerCompose extends SoftwareInstallTask implements DependentChainProcess
      */
     protected function getInstallCommand()
     {
-        return 'brew install --ignore-dependencies docker-compose';
+        return 'brew install caskroom/cask/brew-cask';
     }
 }

@@ -3,7 +3,8 @@
 namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Installer\DockerInstaller;
+use Dock\Installer\Installer\Factory;
+use Dock\System\OS;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +18,7 @@ class InstallCommand extends Command
     {
         $this
             ->setName('install')
-            ->setDescription('Install Docker on OSX')
+            ->setDescription('Install Docker')
         ;
     }
 
@@ -28,7 +29,7 @@ class InstallCommand extends Command
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
 
-        $installer = new DockerInstaller();
+        $installer = (new Factory)->getInstaller(new OS);
         $installer->install($userInteraction);
     }
 }
