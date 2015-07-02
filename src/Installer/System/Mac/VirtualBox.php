@@ -4,9 +4,6 @@ namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Process\Process;
 
 class VirtualBox extends SoftwareInstallTask implements DependentChainProcessInterface
 {

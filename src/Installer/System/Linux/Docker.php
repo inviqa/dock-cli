@@ -3,7 +3,6 @@
 namespace Dock\Installer\System\Linux;
 
 use Dock\Installer\SoftwareInstallTask;
-use Symfony\Component\Process\Process;
 
 class Docker extends SoftwareInstallTask
 {

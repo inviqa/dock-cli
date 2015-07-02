@@ -5,7 +5,6 @@ namespace Dock\Cli;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Installer\DockerInstaller;
 use Dock\Installer\TaskProvider;
-use Dock\System\OS;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
