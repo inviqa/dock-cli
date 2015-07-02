@@ -1,18 +1,17 @@
 <?php
 
-namespace Dock\Installer\Installer;
+namespace Dock\Installer;
 
 use Dock\Installer\InstallContext;
 use Dock\Installer\InteractiveProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\ChainBuilder;
 
-abstract class Base
+class DockerInstaller
 {
-    public function install(UserInteraction $userInteraction)
+    public function install(UserInteraction $userInteraction, TaskProvider $taskProvider)
     {
-        $tasks = $this->getTasks();
-        $builder = new ChainBuilder($tasks);
+        $builder = new ChainBuilder($taskProvider->getTasks());
 
         $processRunner = new InteractiveProcessRunner($userInteraction);
         $context = new InstallContext($processRunner, $userInteraction);
@@ -20,6 +19,4 @@ abstract class Base
         $runner = $builder->getRunner();
         $runner->run($context);
     }
-
-    abstract protected function getTasks();
 }

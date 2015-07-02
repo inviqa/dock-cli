@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\Installer;
+namespace Dock\Installer\TaskProvider;
 
 use Dock\Installer\DNS\DnsDock;
 use Dock\Installer\DNS\DockerRouting;
@@ -11,10 +11,11 @@ use Dock\Installer\System\Mac\Homebrew;
 use Dock\Installer\System\Mac\PhpSsh;
 use Dock\Installer\System\Mac\Vagrant;
 use Dock\Installer\System\Mac\VirtualBox;
+use Dock\Installer\TaskProvider as TaskProviderInterface;
 
-class Mac extends Base
+class Mac implements TaskProviderInterface
 {
-    private function getTasks()
+    public function getTasks()
     {
         return [
             new Homebrew(),

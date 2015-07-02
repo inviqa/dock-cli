@@ -1,14 +1,14 @@
 <?php
 
-namespace Dock\Installer\Installer;
+namespace Dock\Installer\TaskProvider;
 
 use Dock\System\OS;
 
 class Factory
 {
-    public function getInstaller(OS $os)
+    public static function getProvider()
     {
-        $operatingSystem = $os->get();
+        $operatingSystem = OS::get();
 
         switch ($operatingSystem) {
             case OS::MAC:

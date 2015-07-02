@@ -3,7 +3,8 @@
 namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Installer\Installer\Factory;
+use Dock\Installer\DockerInstaller;
+use Dock\Installer\TaskProvider;
 use Dock\System\OS;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,7 +30,8 @@ class InstallCommand extends Command
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
 
-        $installer = (new Factory)->getInstaller(new OS);
-        $installer->install($userInteraction);
+        $taskProvider = TaskProvider\Factory::getProvider();
+        $installer = new DockerInstaller;
+        $installer->install($userInteraction, $taskProvider);
     }
 }
