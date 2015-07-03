@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\DNS;
+namespace Dock\Installer\DNS\Mac;
 
 use Dock\Dinghy\DinghyCli;
 use Dock\Installer\InstallContext;

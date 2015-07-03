@@ -2,8 +2,8 @@
 
 namespace Dock\Installer\TaskProvider;
 
-use Dock\Installer\DNS\DnsDock;
-use Dock\Installer\DNS\DockerRouting;
+use Dock\Installer\DNS\Mac\DnsDock;
+use Dock\Installer\DNS\Mac\DockerRouting;
 use Dock\Installer\Docker\Dinghy;
 use Dock\Installer\System\Mac\BrewCask;
 use Dock\Installer\System\Mac\DockerCompose;
