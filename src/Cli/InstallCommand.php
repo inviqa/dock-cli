@@ -17,7 +17,7 @@ class InstallCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('install')
+            ->setName('docker:install')
             ->setDescription('Install Docker')
         ;
     }

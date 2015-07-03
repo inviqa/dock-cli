@@ -4,7 +4,8 @@
     "symfony/console": "~2.7",
     "symfony/process": "~2.7",
     "sroze/chain-of-responsibility": "~1.2.0",
-    "herzult/php-ssh": "~1.1"
+    "herzult/php-ssh": "~1.1",
+    "herrera-io/phar-update": "~2.0"
   },
   "autoload": {
     "psr-4": {
@@ -15,6 +16,6 @@
     "app.php"
   ],
   "require-dev": {
-    "clue/phar-composer": "dev-master"
+    "kherge/box": "~2.5"
   }
 }

@@ -16,8 +16,14 @@ class Application extends ConsoleApplication
         return [
             new HelpCommand(),
             new ListCommand(),
+            new SelfUpdateCommand(),
+
+            // Docker commands
             new InstallCommand(),
-            new RestartCommand()
+            new RestartCommand(),
+
+            // Project commands
+            new UpCommand(),
         ];
     }
 }

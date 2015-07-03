@@ -17,8 +17,8 @@ class RestartCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('restart')
-            ->setDescription('Restart')
+            ->setName('docker:restart')
+            ->setDescription('Restart Docker')
         ;
     }
 
