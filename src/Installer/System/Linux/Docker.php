@@ -27,6 +27,6 @@ class Docker extends SoftwareInstallTask
      */
     protected function getInstallCommand()
     {
-        return 'wget -qO- https://get.docker.com/ | sh';
+        return 'wget -qO- https://get.docker.com/ | sh && sudo service docker start';
     }
 }
