@@ -17,7 +17,8 @@ class Application extends ConsoleApplication
             new HelpCommand(),
             new ListCommand(),
             new InstallCommand(),
-            new RestartCommand()
+            new RestartCommand(),
+            new UpdateCommand(),
         ];
     }
 }
