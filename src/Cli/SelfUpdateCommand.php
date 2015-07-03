@@ -10,14 +10,14 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateCommand extends Command
+class SelfUpdateCommand extends Command
 {
     const MANIFEST_FILE = 'http://sroze.github.io/dock-cli/manifest.json';
 
     protected function configure()
     {
         $this
-            ->setName('update')
+            ->setName('self-update')
             ->setDescription('Updates Dock CLI to the latest version')
             ->addOption('major', null, InputOption::VALUE_NONE, 'Allow major version update')
         ;

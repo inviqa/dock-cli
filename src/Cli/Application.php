@@ -18,7 +18,7 @@ class Application extends ConsoleApplication
             new ListCommand(),
             new InstallCommand(),
             new RestartCommand(),
-            new UpdateCommand(),
+            new SelfUpdateCommand(),
         ];
     }
 }

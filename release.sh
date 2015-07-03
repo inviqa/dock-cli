@@ -16,7 +16,7 @@ TAG=$1
 #
 git checkout master
 git tag ${TAG}
-box build
+vendor/kherge/box/bin/box build
 
 #
 # Copy executable file into GH pages
