@@ -5,7 +5,7 @@ This command's goal is to help you setup the most efficient Docker setup on OSX.
 ## Usage
 
 ```
-dock-cli.phar install
+dock-cli docker:install
 ```
 
 ## What is it doing ?
