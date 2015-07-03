@@ -38,13 +38,22 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
         if (!$this->sshExtensionInstalled()) {
             $userInteraction->write('PHP SSH2 extension is required.');
 
-            $question = new Question('Which homebrew package do you want to install ? ("n" for nothing)', 'php55-ssh2');
+            $defaultPhpVersion = 'php55-ssh2';
+            $question = new Question(
+                sprintf('Which homebrew package do you want to install (default "%s") ? ("n" for nothing)', $defaultPhpVersion),
+                $defaultPhpVersion
+            );
             $answer = $userInteraction->ask($question);
 
             if ($answer == 'n') {
                 $userInteraction->write('Skipping PHP SSH2 extension installation, do it yourself.');
             } else {
                 $processRunner = $context->getProcessRunner();
+
+                // Be sure of brew taps
+                $processRunner->run(new Process('brew tap homebrew/dupes'));
+                $processRunner->run(new Process('brew tap homebrew/versions'));
+                $processRunner->run(new Process('brew tap homebrew/homebrew-php'));
                 $processRunner->run(new Process('brew install '.$answer));
             }
 
