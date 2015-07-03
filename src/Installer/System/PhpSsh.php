@@ -39,7 +39,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
         if (!$this->sshExtensionInstalled()) {
             $userInteraction->write('PHP SSH2 extension is required.');
 
-            $defaultPhpVersion = 'php55-ssh2';
+            $defaultPhpVersion = $this->guessSsh2PhpPackage();
             $question = new Question(
                 sprintf('Which homebrew package do you want to install (default "%s") ? ("n" for nothing)', $defaultPhpVersion),
                 $defaultPhpVersion
@@ -67,6 +67,19 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
 
             exit(1);
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function guessSsh2PhpPackage()
+    {
+        $package = 'php55-ssh2';
+        if (PHP_VERSION_ID > 50600) {
+            $package = 'php56-ssh2';
+        }
+
+        return $package;
     }
 
     /**
