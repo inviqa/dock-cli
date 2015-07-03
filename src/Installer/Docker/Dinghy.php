@@ -7,6 +7,8 @@ use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
+use Dock\System\Environ\EnvironManipulatorFactory;
+use Dock\System\Environ\EnvironmentVariable;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Process\Process;
 
@@ -67,35 +69,20 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     private function setupDinghyEnvironmentVariables()
     {
         $userHome = getenv('HOME');
-        $exports = <<<EOF
-export DOCKER_HOST=tcp://127.0.0.1:2376
-export DOCKER_CERT_PATH={$userHome}/.dinghy/certs
-export DOCKER_TLS_VERIFY=1
-EOF;
+        $environmentVariables = [
+            new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
+            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.dinghy/certs'),
+            new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
+        ];
 
-        if ($this->isUsingZsh()) {
-            $environmentFile = $userHome . '/.zshenv';
-        } else {
-            $environmentFile = $userHome . '/.bash_profile';
+        $environManipulatorFactory = new EnvironManipulatorFactory();
+        $environManipulator = $environManipulatorFactory->getSystemManipulator($this->processRunner);
+
+        foreach ($environmentVariables as $environmentVariable) {
+            if (!$environManipulator->has($environmentVariable)) {
+                $environManipulator->save($environmentVariable);
+            }
         }
-
-        $process = new Process('grep DOCKER_HOST '.$environmentFile);
-        $this->processRunner->run($process, false);
-        $result = $process->getOutput();
-
-        if (empty($result)) {
-            $process = new Process('echo "'.$exports.'" >> '.$environmentFile);
-            $this->processRunner->run($process);
-
-            exec('source '.$environmentFile);
-        }
-    }
-
-    private function isUsingZsh()
-    {
-        $shell = getenv('SHELL');
-
-        return strpos($shell, 'zsh') !== false;
     }
 
     private function changeDinghyDnsResolverNamespace()
