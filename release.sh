@@ -1,8 +1,9 @@
 #!/bin/bash
 
 PHAR_NAME=dock-cli
-MANIFEST_BASE_URL=http://mattketmo.github.io/dock-cli
+MANIFEST_BASE_URL=http://sroze.github.io/dock-cli
 set -e
+
 
 if [ $# -ne 1 ]; then
   echo "Usage: `basename $0` <tag>"
@@ -26,7 +27,7 @@ git checkout gh-pages
 cp $PHAR_NAME.phar downloads/$PHAR_NAME-${TAG}.phar
 git add downloads/$PHAR_NAME-${TAG}.phar
 
-SHA1=$(openssl sha1 $PHAR_NAME.phar)
+SHA1=$(openssl sha1 $PHAR_NAME.phar | awk '{print $2}')
 
 JSON='name:"'$PHAR_NAME'.phar"'
 JSON="${JSON},sha1:\"${SHA1}\""
