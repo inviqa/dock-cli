@@ -6,20 +6,18 @@ This CLI application provides an abstraction layer for Docker-based projects.
 
 ## Getting started
 
-### Run from a release
-
-You can download the PHAR archive from [GitHub releases](https://github.com/sroze/dock-cli/releases).
-
-### Run from development
-
-Clone this repository and install its dependencies:
+Download the last PHAR release:
 ```
-composer install
+wget http://sroze.github.io/dock-cli/downloads/dock-cli-0.2.1.phar -O dock-cli
+chmod +x ./dock-cli
+sudo mv dock-cli /usr/bin/dock-cli
 ```
 
-Them, simply run the `app.php` file:
+## Update
+
+Simply run the `self-update` command:
 ```
-php app.php
+dock-cli self-update
 ```
 
 ## Commands
