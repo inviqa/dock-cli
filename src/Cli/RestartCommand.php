@@ -4,13 +4,16 @@ namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Dinghy\DinghyCli;
-use Dock\Installer\InteractiveProcessRunner;
+use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RestartCommand extends Command
 {
+    /** @var  ProcessRunner */
+    private $processRunner;
+
     /**
      * {@inheritdoc}
      */
@@ -18,8 +21,12 @@ class RestartCommand extends Command
     {
         $this
             ->setName('docker:restart')
-            ->setDescription('Restart Docker')
-        ;
+            ->setDescription('Restart Docker');
+    }
+
+    public function setProcessRunner(ProcessRunner $processRunner)
+    {
+        $this->processRunner = $processRunner;
     }
 
     /**
@@ -28,8 +35,10 @@ class RestartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new InteractiveProcessRunner($userInteraction);
-        $dinghy = new DinghyCli($processRunner);
+
+        $this->processRunner->setUserInteraction($userInteraction);
+
+        $dinghy = new DinghyCli($this->processRunner);
 
         if ($dinghy->isRunning()) {
             $dinghy->stop();

@@ -3,7 +3,6 @@
 namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Installer\InteractiveProcessRunner;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +12,9 @@ use Symfony\Component\Process\Process;
 
 class UpCommand extends Command
 {
+    /** @var  ProcessRunner */
+    private $processRunner;
+
     /**
      * {@inheritdoc}
      */
@@ -24,13 +26,18 @@ class UpCommand extends Command
         ;
     }
 
+    public function setProcessRunner(ProcessRunner $processRunner)
+    {
+        $this->processRunner = $processRunner;
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new InteractiveProcessRunner($userInteraction);
+        $this->processRunner->setUserInteraction($userInteraction);
 
         if (!$this->inHomeDirectory()) {
             $output->writeln(
@@ -40,7 +47,7 @@ class UpCommand extends Command
             return 1;
         }
         try {
-            $dockerComposePath = $this->getDockerComposePath($processRunner);
+            $dockerComposePath = $this->getDockerComposePath($this->processRunner);
             pcntl_exec($dockerComposePath, ['up']);
 
             return 0;

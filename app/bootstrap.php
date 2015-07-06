@@ -34,19 +34,24 @@ $container['runner.process.mock'] = function ($c) {
     return new \Dock\Installer\MockProcessRunner();
 };
 
-$container['installer.docker'] = function ($c) {
-    $runner = $c['use_mock_installer'] ? $c['runner.process.mock'] : $c['runner.process.interactive'];
-    $installer = new \Dock\Installer\DockerInstaller($runner);
+$container['runner.process'] = $container['use_mock_installer'] ? $container['runner.process.mock'] : $container['runner.process.interactive'];
 
-    return $installer;
+$container['installer.docker'] = function ($c) {
+    return new \Dock\Installer\DockerInstaller($c['runner.process']);
 };
 
 $container['command.restart'] = function ($c) {
-    return new \Dock\Cli\RestartCommand();
+    $command = new \Dock\Cli\RestartCommand();
+    $command->setProcessRunner($c['runner.process']);
+
+    return $command;
 };
 
 $container['command.up'] = function ($c) {
-    return new \Dock\Cli\UpCommand();
+    $command = new \Dock\Cli\UpCommand();
+    $command->setProcessRunner($c['runner.process']);
+
+    return $command;
 };
 
 $container['application'] = function ($c) {
