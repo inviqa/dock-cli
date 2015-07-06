@@ -24,9 +24,9 @@ dock-cli self-update
 
 ### System commands
 
-- [`docker:install` command](docs/cmd-docker-install.md), which setup your Docker development environment.
-- [`docker:restart` command](docs/cmd-docker-restart.md), which restarts your Docker VM.
+- [`docker:install` command](docs/cmd-docker-install.md) sets up your Docker development environment.
+- [`docker:restart` command](docs/cmd-docker-restart.md) restarts your Docker VM.
 
 ### Project commands
 
-- [`up` command](docs/cmd-up.md), which startup the project
+- [`up` command](docs/cmd-up.md) starts the Docker environment for the project.

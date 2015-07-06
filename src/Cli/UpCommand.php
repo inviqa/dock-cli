@@ -3,8 +3,6 @@
 namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Dinghy\DinghyCli;
-use Dock\Installer\DockerInstaller;
 use Dock\Installer\InteractiveProcessRunner;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;

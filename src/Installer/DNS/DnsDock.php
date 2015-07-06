@@ -6,7 +6,6 @@ use Dock\Dinghy\SshClient;
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class DnsDock extends InstallerTask implements DependentChainProcessInterface
@@ -33,10 +32,10 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         }
 
         if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5' . PHP_EOL .
-                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock' . PHP_EOL;
+            $bootScript = 'sleep 5'.PHP_EOL.
+                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
 
-            $this->sshExec->run('echo "' . $bootScript . '" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
+            $this->sshExec->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
         }
 
         // Configure host machine resolution
@@ -59,7 +58,6 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         } catch (\RuntimeException $e) {
             $result = null;
         }
-
 
         return !empty($result);
     }

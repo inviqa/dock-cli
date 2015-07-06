@@ -6,7 +6,6 @@ use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\Process;
 
@@ -84,7 +83,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * @param ProcessRunner $processRunner
-     * @param string $package
+     * @param string        $package
      *
      * @return bool
      */

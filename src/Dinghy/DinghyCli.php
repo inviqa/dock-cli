@@ -22,7 +22,7 @@ class DinghyCli
     }
 
     /**
-     * Start dingly.
+     * Start dinghy.
      *
      * @throws ProcessFailedException
      */
@@ -32,7 +32,7 @@ class DinghyCli
     }
 
     /**
-     * Stop dingly.
+     * Stop dinghy.
      *
      * @throws ProcessFailedException
      */

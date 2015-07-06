@@ -4,7 +4,6 @@ namespace Dock\Cli;
 
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Dinghy\DinghyCli;
-use Dock\Installer\DockerInstaller;
 use Dock\Installer\InteractiveProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,12 +29,12 @@ class RestartCommand extends Command
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
         $processRunner = new InteractiveProcessRunner($userInteraction);
-        $dingly = new DinghyCli($processRunner);
+        $dinghy = new DinghyCli($processRunner);
 
-        if ($dingly->isRunning()) {
-            $dingly->stop();
+        if ($dinghy->isRunning()) {
+            $dinghy->stop();
         }
 
-        $dingly->start();
+        $dinghy->start();
     }
 }

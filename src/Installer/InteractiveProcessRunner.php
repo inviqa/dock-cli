@@ -4,7 +4,6 @@ namespace Dock\Installer;
 
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
 class InteractiveProcessRunner implements ProcessRunner
@@ -36,11 +35,13 @@ class InteractiveProcessRunner implements ProcessRunner
         }
 
         $process->run($this->getRunningProcessCallback($mustSucceed));
+
         return $process;
     }
 
     /**
      * @param bool $highlightErrors
+     *
      * @return callable
      */
     private function getRunningProcessCallback($highlightErrors = true)

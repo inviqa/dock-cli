@@ -4,9 +4,6 @@ namespace Dock\Installer\System;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Process\Process;
 
 class Vagrant extends SoftwareInstallTask implements DependentChainProcessInterface
 {
