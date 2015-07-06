@@ -2,6 +2,7 @@
 
 namespace Dock\Installer\Docker;
 
+use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
@@ -30,6 +31,17 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     {
         $this->userInteraction = $context->getUserInteraction();
         $this->processRunner = $context->getProcessRunner();
+
+        $boot2docker = new Boot2DockerCli($this->processRunner);
+        if ($boot2docker->isInstalled()) {
+            $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
+
+            if (!$boot2docker->uninstall()) {
+                $this->userInteraction->writeTitle('Something went wrong while uninstalling Boot2Docker, continuing anyway.');
+            } else {
+                $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
+            }
+        }
 
         $dinghy = new DinghyCli($context->getProcessRunner());
         if (!$dinghy->isInstalled()) {
