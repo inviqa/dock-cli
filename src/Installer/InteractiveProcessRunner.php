@@ -13,10 +13,7 @@ class InteractiveProcessRunner implements ProcessRunner
      */
     private $userInteraction;
 
-    /**
-     * @param UserInteraction $userInteraction
-     */
-    public function __construct(UserInteraction $userInteraction)
+    public function setUserInteraction(UserInteraction $userInteraction)
     {
         $this->userInteraction = $userInteraction;
     }

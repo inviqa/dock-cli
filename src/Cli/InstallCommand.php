@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class InstallCommand extends Command
 {
+    private $dockerInstaller;
+
     /**
      * {@inheritdoc}
      */
@@ -21,6 +23,11 @@ class InstallCommand extends Command
         ;
     }
 
+    public function setDockerInstaller(DockerInstaller $dockerInstaller)
+    {
+        $this->dockerInstaller = $dockerInstaller;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -28,7 +35,6 @@ class InstallCommand extends Command
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
 
-        $installer = new DockerInstaller();
-        $installer->install($userInteraction);
+        $this->dockerInstaller->install($userInteraction);
     }
 }

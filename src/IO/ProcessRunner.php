@@ -13,4 +13,6 @@ interface ProcessRunner
      * @return Process
      */
     public function run(Process $process, $mustSucceed = true);
+
+    public function setUserInteraction(UserInteraction $userInteraction);
 }

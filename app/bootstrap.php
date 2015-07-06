@@ -18,7 +18,22 @@ $container['command.selfupdate'] = function ($c) {
 };
 
 $container['command.install'] = function ($c) {
-    return new \Dock\Cli\InstallCommand();
+    $command =  new \Dock\Cli\InstallCommand();
+    $command->setDockerInstaller($c['installer.docker']);
+
+    return $command;
+};
+
+$container['runner.process.interactive'] = function ($c) {
+    $runner = new \Dock\Installer\InteractiveProcessRunner();
+
+    return $runner;
+};
+
+$container['installer.docker'] = function ($c) {
+    $installer = new \Dock\Installer\DockerInstaller($c['runner.process.interactive']);
+
+    return $installer;
 };
 
 $container['command.restart'] = function ($c) {
@@ -29,7 +44,6 @@ $container['command.up'] = function ($c) {
     return new \Dock\Cli\UpCommand();
 };
 
-
 $container['application'] = function ($c) {
     $application = new Application('Dock CLI', '@package_version@');
     $application->addCommands(
@@ -39,7 +53,7 @@ $container['application'] = function ($c) {
             $c['command.selfupdate'],
             $c['command.install'],
             $c['command.restart'],
-            $c['command.up']
+            $c['command.up'],
         )
     );
 

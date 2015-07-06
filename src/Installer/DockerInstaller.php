@@ -11,13 +11,20 @@ use Dock\Installer\System\Homebrew;
 use Dock\Installer\System\PhpSsh;
 use Dock\Installer\System\Vagrant;
 use Dock\Installer\System\VirtualBox;
+use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\ChainBuilder;
 
 class DockerInstaller
 {
-    public function __construct()
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+
+    public function __construct(ProcessRunner $processRunner)
     {
+        $this->processRunner = $processRunner;
     }
 
     public function install(UserInteraction $userInteraction)
@@ -25,8 +32,8 @@ class DockerInstaller
         $tasks = $this->getTasks();
         $builder = new ChainBuilder($tasks);
 
-        $processRunner = new InteractiveProcessRunner($userInteraction);
-        $context = new InstallContext($processRunner, $userInteraction);
+        $this->processRunner->setUserInteraction($userInteraction);
+        $context = new InstallContext($this->processRunner, $userInteraction);
 
         $runner = $builder->getRunner();
         $runner->run($context);
