@@ -41,6 +41,7 @@ The following commands are available:
 ### Project commands
 
 - [`up` command](docs/cmd-up.md) starts the Docker environment for the project.
+- [`ps` command](docs/cmd-ps.md) list all the project containers if any.
 
 ## Update
 
