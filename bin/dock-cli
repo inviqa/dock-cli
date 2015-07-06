@@ -2,9 +2,12 @@
 <?php
 // application.php
 
-require __DIR__.'/../vendor/autoload.php';
-
 use Dock\Cli\Application;
 
-$application = new Application('Dock CLI', '@package_version@');
+require __DIR__.'/../vendor/autoload.php';
+
+$container=require __DIR__.'/../app/bootstrap.php';
+
+/** @var Application $application */
+$application = $container['application'];
 $application->run();
