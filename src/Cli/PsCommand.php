@@ -7,6 +7,7 @@ use Dock\Compose\Container;
 use Dock\Compose\Inspector;
 use Dock\Installer\InteractiveProcessRunner;
 use Dock\IO\ProcessRunner;
+use Dock\IO\SilentProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -34,7 +35,7 @@ class PsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new InteractiveProcessRunner($userInteraction);
+        $processRunner = new SilentProcessRunner($userInteraction);
 
         $inspector = new Inspector($processRunner);
         $containers = $inspector->getRunningContainers();
