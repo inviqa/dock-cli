@@ -78,12 +78,6 @@ class DinghyCli
      */
     public function isInstalled()
     {
-        try {
-            $this->getVersion();
-        } catch (ProcessFailedException $e) {
-            return false;
-        }
-
-        return true;
+        return $this->processRunner->run(new Process('dinghy version'), false)->isSuccessful();
     }
 }

@@ -47,12 +47,7 @@ class Boot2DockerCli
      */
     public function isInstalled()
     {
-        try {
-            $this->getVersion();
-            return true;
-        } catch (ProcessFailedException $e) {
-            return false;
-        }
+        return $this->processRunner->run(new Process('boot2docker version'), false)->isSuccessful();
     }
 
     /**
