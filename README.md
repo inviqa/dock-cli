@@ -1,5 +1,7 @@
 # Dock CLI
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sroze/dock-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sroze/dock-cli/?branch=master)
+
 This CLI application provides an abstraction layer for Docker-based projects.
 
 **Note:** right now, it's focused exclusively on OSX.
