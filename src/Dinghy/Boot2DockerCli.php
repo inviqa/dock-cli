@@ -54,6 +54,7 @@ class Boot2DockerCli
      * Get boot2docker version.
      *
      * @throws ProcessFailedException
+     *
      * @return string
      */
     public function getVersion()

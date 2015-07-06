@@ -19,11 +19,11 @@ class EnvironManipulatorFactory
         $userHome = getenv('HOME');
 
         if (strpos($shell, 'zsh') !== false) {
-            return new BashEnvironManipulator($processRunner, $userHome . '/.zshenv');
-        } else if (strpos($shell, 'fish') !== false) {
+            return new BashEnvironManipulator($processRunner, $userHome.'/.zshenv');
+        } elseif (strpos($shell, 'fish') !== false) {
             return new FishEnvironManipulator();
         }
 
-        return new BashEnvironManipulator($processRunner, $userHome . '/.bash_profile');
+        return new BashEnvironManipulator($processRunner, $userHome.'/.bash_profile');
     }
 }

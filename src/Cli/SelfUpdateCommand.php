@@ -31,6 +31,7 @@ class SelfUpdateCommand extends Command
             $manager = new Manager(Manifest::loadFile(self::MANIFEST_FILE));
         } catch (FileException $e) {
             $output->writeln('<error>Unable to search for updates</error>');
+
             return 1;
         }
 

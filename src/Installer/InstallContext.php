@@ -19,7 +19,7 @@ class InstallContext implements ChainContext
     private $userInteraction;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      * @param UserInteraction $userInteraction
      */
     public function __construct(ProcessRunner $processRunner, UserInteraction $userInteraction)

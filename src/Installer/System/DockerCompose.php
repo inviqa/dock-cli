@@ -4,7 +4,6 @@ namespace Dock\Installer\System;
 
 use Dock\Installer\SoftwareInstallTask;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class DockerCompose extends SoftwareInstallTask implements DependentChainProcessInterface
 {

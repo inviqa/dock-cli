@@ -8,7 +8,7 @@ interface ProcessRunner
 {
     /**
      * @param Process $process
-     * @param bool $mustSucceed
+     * @param bool    $mustSucceed
      *
      * @return Process
      */

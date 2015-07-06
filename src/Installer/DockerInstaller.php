@@ -18,7 +18,6 @@ class DockerInstaller
 {
     public function __construct()
     {
-
     }
 
     public function install(UserInteraction $userInteraction)
@@ -44,7 +43,7 @@ class DockerInstaller
             new DnsDock(),
             new Vagrant(),
             new VirtualBox(),
-            new DockerCompose()
+            new DockerCompose(),
         ];
     }
 }
