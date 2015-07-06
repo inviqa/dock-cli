@@ -42,7 +42,7 @@ class BashEnvironManipulator implements EnvironManipulator
     public function has(EnvironmentVariable $environmentVariable)
     {
         $process = $this->processRunner->run(
-            new Process('grep DOCKER_HOST '.$this->file),
+            new Process("grep {$environmentVariable->getName()} $this->file"),
             false
         );
 
