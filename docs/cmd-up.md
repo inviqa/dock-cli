@@ -1,6 +1,6 @@
 # `up` command
 
-This startup a docker-compose project.
+This starts up a docker-compose project.
 
 ## Usage
 
