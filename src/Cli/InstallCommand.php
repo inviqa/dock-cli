@@ -30,5 +30,7 @@ class InstallCommand extends Command
 
         $installer = new DockerInstaller();
         $installer->install($userInteraction);
+
+        pcntl_exec(getenv('SHELL'));
     }
 }
