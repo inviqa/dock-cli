@@ -5,8 +5,8 @@ namespace Dock\Installer\DNS;
 use Dock\Dinghy\SshClient;
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
+use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class DnsDock extends InstallerTask implements DependentChainProcessInterface
 {
@@ -14,11 +14,6 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      * @var \Dock\Dinghy\SshClient
      */
     private $sshClient;
-
-    /**
-     * @var \Ssh\Exec
-     */
-    private $sshExec;
 
     /**
      * @param SshClient $sshClient
@@ -33,37 +28,13 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     public function run(InstallContext $context)
     {
-        $userInteraction = $context->getUserInteraction();
-        $userInteraction->writeTitle('Configure DNS resolution for Docker containers');
+        $context->getUserInteraction()->writeTitle('Configure DNS resolution for Docker containers');
 
-        // Configure virtual machine
-        $this->sshExec = $this->sshClient->getExec();
-        $needDinghyRestart = false;
+        $needDinghyRestart = $this->configureVirtualMachine();
+        $this->configureHostMachineResolution($context);
 
-        if (!$this->hasDockerExtraArgs()) {
-            $this->sshExec->run(
-                'echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee -a /var/lib/boot2docker/profile'
-            );
-            $needDinghyRestart = true;
-        }
-
-        if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5'.PHP_EOL .
-                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
-
-            $this->sshExec->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
-            $needDinghyRestart = true;
-        }
-
-        // Configure host machine resolution
-        $processRunner = $context->getProcessRunner();
-        $processRunner->run('sudo mkdir -p /etc/resolver');
-        $processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
-
-        // Restart dinghy
         if ($needDinghyRestart) {
-            $userInteraction->writeTitle('Restarting Dinghy');
-            $processRunner->run('dinghy restart');
+            $this->restartDinghy($context);
         }
     }
 
@@ -73,7 +44,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     private function dnsDockerIsInStartupConfiguration()
     {
         try {
-            $result = $this->sshExec->run('grep dnsdock /var/lib/boot2docker/bootlocal.sh');
+            $result = $this->sshClient->run('grep dnsdock /var/lib/boot2docker/bootlocal.sh');
         } catch (\RuntimeException $e) {
             $result = null;
         }
@@ -87,7 +58,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     private function hasDockerExtraArgs()
     {
         try {
-            $result = $this->sshExec->run('grep EXTRA_ARGS /var/lib/boot2docker/profile');
+            $result = $this->sshClient->run('grep EXTRA_ARGS /var/lib/boot2docker/profile');
         } catch (\RuntimeException $e) {
             $result = null;
         }
@@ -109,5 +80,51 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     public function getName()
     {
         return 'dns';
+    }
+
+    /**
+     * @return bool
+     */
+    private function configureVirtualMachine()
+    {
+        $needDinghyRestart = false;
+
+        if (!$this->hasDockerExtraArgs()) {
+            $this->sshClient->run(
+                'echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee -a /var/lib/boot2docker/profile'
+            );
+            $needDinghyRestart = true;
+        }
+
+        if (!$this->dnsDockerIsInStartupConfiguration()) {
+            $bootScript = 'sleep 5'.PHP_EOL .
+                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
+
+            $this->sshClient->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
+            $needDinghyRestart = true;
+            return $needDinghyRestart;
+        }
+
+        return $needDinghyRestart;
+    }
+
+    /**
+     * @param InstallContext $context
+     * @return ProcessRunner
+     */
+    private function configureHostMachineResolution(InstallContext $context)
+    {
+        $processRunner = $context->getProcessRunner();
+        $processRunner->run('sudo mkdir -p /etc/resolver');
+        $processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
+    }
+
+    /**
+     * @param InstallContext $context
+     */
+    private function restartDinghy(InstallContext $context)
+    {
+        $context->getUserInteraction()->writeTitle('Restarting Dinghy');
+        $context->getProcessRunner()->run('dinghy restart');
     }
 }
