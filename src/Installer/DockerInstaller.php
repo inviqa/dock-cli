@@ -5,6 +5,7 @@ namespace Dock\Installer;
 use Dock\Installer\DNS\DnsDock;
 use Dock\Installer\DNS\DockerRouting;
 use Dock\Installer\Docker\Dinghy;
+use Dock\Installer\Docker\EnvironmentVariables;
 use Dock\Installer\System\BrewCask;
 use Dock\Installer\System\DockerCompose;
 use Dock\Installer\System\Homebrew;
@@ -44,6 +45,7 @@ class DockerInstaller
             new Vagrant(),
             new VirtualBox(),
             new DockerCompose(),
+            new EnvironmentVariables(),
         ];
     }
 }

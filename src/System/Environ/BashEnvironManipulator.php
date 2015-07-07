@@ -30,11 +30,14 @@ class BashEnvironManipulator implements EnvironManipulator
      */
     public function save(EnvironmentVariable $environmentVariable)
     {
-        $command = 'echo "' . $environmentVariable->getName() . '=' . $environmentVariable->getValue(
-            ) . '" >> ' . $this->file;
-        $process = new Process($command);
+        $command = sprintf(
+            'echo "export %s=%s" >> %s',
+            $environmentVariable->getName(),
+            $environmentVariable->getValue(),
+            $this->file
+        );
 
-        $this->processRunner->run($process);
+        $this->processRunner->run(new Process($command));
     }
 
     /**
