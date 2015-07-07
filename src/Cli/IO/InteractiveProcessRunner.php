@@ -1,9 +1,10 @@
 <?php
 
-namespace Dock\Installer;
+namespace Dock\Cli\IO;
 
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Process\Process;
 
 class InteractiveProcessRunner implements ProcessRunner
@@ -13,7 +14,10 @@ class InteractiveProcessRunner implements ProcessRunner
      */
     private $userInteraction;
 
-    public function setUserInteraction(UserInteraction $userInteraction)
+    /**
+     * @param UserInteraction $userInteraction
+     */
+    public function __construct(UserInteraction $userInteraction)
     {
         $this->userInteraction = $userInteraction;
     }
