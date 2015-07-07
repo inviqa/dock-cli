@@ -7,7 +7,8 @@
     "herzult/php-ssh": "~1.1",
     "herrera-io/phar-update": "~2.0",
     "pimple/pimple": "^3.0",
-    "symfony/event-dispatcher": "~2.7"
+    "symfony/event-dispatcher": "~2.7",
+    "behat/behat": "^3.0"
   },
   "autoload": {
     "psr-4": {
