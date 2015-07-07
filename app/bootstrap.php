@@ -9,6 +9,7 @@ use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\UpCommand;
 use Dock\Compose\Inspector;
+use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Dinghy\SshClient;
 use Dock\Installer\DNS\DnsDock;
@@ -69,8 +70,8 @@ $container['installer.docker'] = function ($c) {
             new Homebrew(),
             new BrewCask(),
             new PhpSsh(),
-            new Dinghy(),
-            new DockerRouting(),
+            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
+            new DockerRouting($c['cli.dinghy']),
             new DnsDock(new SshClient()),
             new Vagrant(),
             new VirtualBox(),
@@ -95,6 +96,10 @@ $container['command.logs'] = function ($c) {
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
+};
+
+$container['cli.dinghy'] = function ($c) {
+    return new DinghyCli($c['process.interactive_runner']);
 };
 
 $container['application'] = function ($c) {
