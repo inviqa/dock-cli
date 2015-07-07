@@ -3,6 +3,7 @@
 namespace Dock\Cli\IO;
 
 use Dock\IO\UserInteraction;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,19 +16,21 @@ class ConsoleUserInteraction implements UserInteraction
      * @var OutputInterface
      */
     private $output;
+
     /**
      * @var InputInterface
      */
     private $input;
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
+     * This method is called when a console command event is fired.
+     *
+     * @param ConsoleCommandEvent $event
      */
-    public function __construct(InputInterface $input, OutputInterface $output)
+    public function onCommand(ConsoleCommandEvent $event)
     {
-        $this->output = $output;
-        $this->input = $input;
+        $this->input = $event->getInput();
+        $this->output = $event->getOutput();
     }
 
     /**
@@ -37,7 +40,7 @@ class ConsoleUserInteraction implements UserInteraction
     {
         $formatter = new FormatterHelper();
         $formattedBlock = $formatter->formatBlock([$name], 'info');
-        $this->output->writeln($formattedBlock);
+        $this->getOutput()->writeln($formattedBlock);
     }
 
     /**
@@ -45,7 +48,7 @@ class ConsoleUserInteraction implements UserInteraction
      */
     public function write($string)
     {
-        $this->output->writeln($string);
+        $this->getOutput()->writeln($string);
     }
 
     /**
@@ -55,6 +58,34 @@ class ConsoleUserInteraction implements UserInteraction
     {
         $questionHelper = new QuestionHelper();
 
-        return $questionHelper->ask($this->input, $this->output, $question);
+        return $questionHelper->ask($this->getInput(), $this->getOutput(), $question);
+    }
+
+    /**
+     * @throws \RuntimeException
+     *
+     * @return InputInterface
+     */
+    private function getInput()
+    {
+        if (null === $this->input) {
+            throw new \RuntimeException('No user interaction context available.');
+        }
+
+        return $this->input;
+    }
+
+    /**
+     * @throws \RuntimeException
+     *
+     * @return OutputInterface
+     */
+    private function getOutput()
+    {
+        if (null === $this->output) {
+            throw new \RuntimeException('No user interaction context available.');
+        }
+
+        return $this->output;
     }
 }

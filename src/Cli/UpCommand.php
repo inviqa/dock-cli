@@ -2,8 +2,8 @@
 
 namespace Dock\Cli;
 
-use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\IO\SilentProcessRunner;
+use Dock\IO\ProcessRunner;
+use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +13,28 @@ use Symfony\Component\Process\Process;
 
 class UpCommand extends Command
 {
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+
+    /**
+     * @var UserInteraction
+     */
+    private $userInteraction;
+
+    /**
+     * @param ProcessRunner   $processRunner
+     * @param UserInteraction $userInteraction
+     */
+    public function __construct(ProcessRunner $processRunner, UserInteraction $userInteraction)
+    {
+        parent::__construct();
+
+        $this->processRunner = $processRunner;
+        $this->userInteraction = $userInteraction;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,9 +51,6 @@ class UpCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new SilentProcessRunner($userInteraction);
-
         if (!$this->inHomeDirectory()) {
             $output->writeln(
                 '<error>The project have to be in your home directly to be able to share it with the Docker VM</error>'
@@ -40,11 +59,11 @@ class UpCommand extends Command
             return 1;
         }
 
-        $userInteraction->writeTitle('Starting application containers');
+        $this->userInteraction->writeTitle('Starting application containers');
 
         try {
-            $processRunner->run(new Process('docker-compose up -d'));
-            $userInteraction->writeTitle('Application containers successfully started');
+            $this->processRunner->run(new Process('docker-compose up -d'));
+            $this->userInteraction->writeTitle('Application containers successfully started');
         } catch (ProcessFailedException $e) {
             echo $e->getProcess()->getOutput();
 

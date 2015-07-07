@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer;
+namespace Dock\Cli\IO;
 
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;

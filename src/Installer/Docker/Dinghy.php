@@ -68,8 +68,7 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
     private function changeDinghyDnsResolverNamespace()
     {
-        $process = new Process('dinghy version');
-        $this->processRunner->run($process);
+        $process = $this->processRunner->run(new Process('dinghy version'));
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
         $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';
