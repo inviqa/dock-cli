@@ -28,16 +28,13 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      */
     public function run(InstallContext $context)
     {
-        $userInteraction = $context->getUserInteraction();
         if ($this->isEnvironmentConfigured()) {
-            $userInteraction->write('Environment variables are already configured');
+            $context->write('Environment variables are already configured');
 
             return;
         }
 
-        $userInteraction->writeTitle('Setting up dinghy environment variables');
-        $processRunner = $context->getProcessRunner();
-
+        $context->writeTitle('Setting up dinghy environment variables');
         $userHome = getenv('HOME');
         $environmentVariables = [
             new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
@@ -45,7 +42,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
             new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
         ];
 
-        $environManipulator = $this->environManipulatorFactory->getSystemManipulator($processRunner);
+        $environManipulator = $this->environManipulatorFactory->getSystemManipulator($context->getProcessRunner());
 
         foreach ($environmentVariables as $environmentVariable) {
             if (!$environManipulator->has($environmentVariable)) {

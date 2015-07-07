@@ -11,15 +11,12 @@ abstract class SoftwareInstallTask extends InstallerTask implements NamedChainPr
      */
     public function run(InstallContext $context)
     {
-        $processRunner = $context->getProcessRunner();
-        $userInteraction = $context->getUserInteraction();
-
-        if ($processRunner->run($this->getVersionCommand(), false)->isSuccessful()) {
-            $userInteraction->write(sprintf('"%s" is already installed', $this->getName()));
+        if ($context->run($this->getVersionCommand(), false)->isSuccessful()) {
+            $context->write(sprintf('"%s" is already installed', $this->getName()));
         } else {
-            $userInteraction->write(sprintf('Installing "%s"', $this->getName()));
-            $processRunner->run($this->getInstallCommand());
-            $userInteraction->write(sprintf('"%s" successfully installed', $this->getName()));
+            $context->write(sprintf('Installing "%s"', $this->getName()));
+            $context->run($this->getInstallCommand());
+            $context->write(sprintf('"%s" successfully installed', $this->getName()));
         }
     }
 

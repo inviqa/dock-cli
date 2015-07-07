@@ -6,22 +6,10 @@ use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
-use Dock\IO\ProcessRunner;
-use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class Dinghy extends InstallerTask implements DependentChainProcessInterface
 {
-    /**
-     * @var UserInteraction
-     */
-    private $userInteraction;
-    /**
-     * @var ProcessRunner
-     */
-    private $processRunner;
-
     /**
      * @var Boot2DockerCli
      */
@@ -47,24 +35,20 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
      */
     public function run(InstallContext $context)
     {
-        $this->userInteraction = $context->getUserInteraction();
-        $this->processRunner = $context->getProcessRunner();
-
-        $this->uninstallBoot2Docker();
-        $this->installDinghy();
-        $this->changeDinghyDnsResolverNamespace();
-        $this->startDinghy();
+        $this->uninstallBoot2Docker($context);
+        $this->installDinghy($context);
+        $this->changeDinghyDnsResolverNamespace($context);
+        $this->startDinghy($context);
     }
 
-    private function changeDinghyDnsResolverNamespace()
+    private function changeDinghyDnsResolverNamespace(InstallContext $context)
     {
-        $process = $this->processRunner->run('dinghy version');
-        $dinghyVersionOutput = $process->getOutput();
+        $dinghyVersionOutput = $context->run('dinghy version')->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
         $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';
 
         $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' '.$dnsMasqConfiguration;
-        $this->processRunner->run($process);
+        $context->run($process);
     }
 
     /**
@@ -83,47 +67,47 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         return 'dinghy';
     }
 
-    private function uninstallBoot2Docker()
+    private function uninstallBoot2Docker(InstallContext $context)
     {
         if ($this->boot2docker->isInstalled()) {
-            $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
+            $context->writeTitle('Boot2Docker seems to be installed, removing it.');
 
             if (!$this->boot2docker->uninstall()) {
-                $this->userInteraction->writeTitle(
+                $context->writeTitle(
                     'Something went wrong while uninstalling Boot2Docker, continuing anyway.'
                 );
             } else {
-                $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
+                $context->writeTitle('Successfully uninstalled boot2docker');
             }
         }
     }
 
-    private function installDinghy()
+    private function installDinghy(InstallContext $context)
     {
         if ($this->dinghy->isInstalled()) {
-            $this->userInteraction->writeTitle('Dinghy already installed, skipping.');
+            $context->writeTitle('Dinghy already installed, skipping.');
 
             return;
         }
 
-        $this->userInteraction->writeTitle('Installing Dinghy');
-        $this->processRunner->run(
+        $context->writeTitle('Installing Dinghy');
+        $context->run(
             'brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'
         );
-        $this->userInteraction->writeTitle('Successfully installed Dinghy');
+        $context->writeTitle('Successfully installed Dinghy');
     }
 
-    private function startDinghy()
+    private function startDinghy(InstallContext $context)
     {
-        $this->userInteraction->writeTitle('Starting up Dinghy');
+        $context->writeTitle('Starting up Dinghy');
 
         if ($this->dinghy->isRunning()) {
-            $this->userInteraction->writeTitle('Dinghy already started');
+            $context->writeTitle('Dinghy already started');
 
             return;
         }
 
         $this->dinghy->start();
-        $this->userInteraction->writeTitle('Started Dinghy');
+        $context->writeTitle('Started Dinghy');
     }
 }

@@ -28,7 +28,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     public function run(InstallContext $context)
     {
-        $context->getUserInteraction()->writeTitle('Configure DNS resolution for Docker containers');
+        $context->writeTitle('Configure DNS resolution for Docker containers');
 
         $needDinghyRestart = $this->configureVirtualMachine();
         $this->configureHostMachineResolution($context);
@@ -114,9 +114,8 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     private function configureHostMachineResolution(InstallContext $context)
     {
-        $processRunner = $context->getProcessRunner();
-        $processRunner->run('sudo mkdir -p /etc/resolver');
-        $processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
+        $context->run('sudo mkdir -p /etc/resolver');
+        $context->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
     }
 
     /**
@@ -124,7 +123,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     private function restartDinghy(InstallContext $context)
     {
-        $context->getUserInteraction()->writeTitle('Restarting Dinghy');
-        $context->getProcessRunner()->run('dinghy restart');
+        $context->writeTitle('Restarting Dinghy');
+        $context->run('dinghy restart');
     }
 }
