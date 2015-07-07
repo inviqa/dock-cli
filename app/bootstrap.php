@@ -9,6 +9,7 @@ use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\UpCommand;
 use Dock\Compose\Inspector;
+use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Dinghy\SshClient;
 use Dock\Installer\DNS\DnsDock;
@@ -63,14 +64,15 @@ $container['process.silent_runner'] = function () {
 };
 
 $container['installer.docker'] = function ($c) {
+    $dinghyCli = new DinghyCli($c['process.interactive_runner']);
     return new DockerInstaller(
         new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
         new \SRIO\ChainOfResponsibility\ChainBuilder([
             new Homebrew(),
             new BrewCask(),
             new PhpSsh(),
-            new Dinghy(),
-            new DockerRouting(),
+            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $dinghyCli),
+            new DockerRouting($dinghyCli),
             new DnsDock(new SshClient()),
             new Vagrant(),
             new VirtualBox(),
