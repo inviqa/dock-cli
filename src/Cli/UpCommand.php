@@ -2,11 +2,10 @@
 
 namespace Dock\Cli;
 
-use Dock\Cli\Helper\ContainerList;
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Compose\Inspector;
 use Dock\IO\SilentProcessRunner;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -52,14 +51,10 @@ class UpCommand extends Command
             return 1;
         }
 
-        // Display running containers
-        $inspector = new Inspector($processRunner);
-        $containers = $inspector->getRunningContainers();
-
-        $list = new ContainerList($output);
-        $list->render($containers);
-
-        return 0;
+        return $this->getApplication()->run(
+            new ArrayInput(['command' => 'ps']),
+            $output
+        );
     }
 
     /**
