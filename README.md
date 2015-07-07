@@ -1,8 +1,10 @@
 # Dock CLI
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sroze/dock-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sroze/dock-cli/?branch=master)
+
 This CLI application provides an abstraction layer for Docker-based projects.
 
-**Note:** right know, it's focused exclusively on OSX.
+**Note:** right now, it's focused exclusively on OSX.
 
 ## Getting started
 
@@ -13,14 +15,23 @@ chmod +x ./dock-cli
 sudo mv dock-cli /usr/bin/dock-cli
 ```
 
-## Update
+To install the Docker development environment run:
 
-Simply run the `self-update` command:
 ```
-dock-cli self-update
+dock-cli docker-install
+```
+
+**Note:** You will need to restart the terminal after this before using it to start a project.
+
+You can now start up a specific project by running the `up` command in the project directory:
+
+```
+dock-cli up
 ```
 
 ## Commands
+
+The following commands are available:
 
 ### System commands
 
@@ -30,3 +41,12 @@ dock-cli self-update
 ### Project commands
 
 - [`up` command](docs/cmd-up.md) starts the Docker environment for the project.
+- [`ps` command](docs/cmd-ps.md) list all the project containers if any.
+
+## Update
+
+To update this tool, simply run the `self-update` command:
+
+```
+dock-cli self-update
+```

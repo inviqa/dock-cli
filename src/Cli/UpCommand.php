@@ -5,6 +5,7 @@ namespace Dock\Cli;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -12,8 +13,20 @@ use Symfony\Component\Process\Process;
 
 class UpCommand extends Command
 {
-    /** @var  ProcessRunner */
+    /**
+     * @var ProcessRunner
+     */
     private $processRunner;
+
+    /**
+     * @param ProcessRunner $processRunner
+     */
+    public function __construct(ProcessRunner $processRunner)
+    {
+        parent::__construct();
+
+        $this->processRunner = $processRunner;
+    }
 
     /**
      * {@inheritdoc}
@@ -24,12 +37,6 @@ class UpCommand extends Command
             ->setName('up')
             ->setDescription('Start the project')
         ;
-    }
-
-    public function __construct(ProcessRunner $processRunner)
-    {
-        $this->processRunner = $processRunner;
-        parent::__construct();
     }
 
     /**
@@ -47,28 +54,32 @@ class UpCommand extends Command
 
             return 1;
         }
-        try {
-            $dockerComposePath = $this->getDockerComposePath($this->processRunner);
-            pcntl_exec($dockerComposePath, ['up']);
 
-            return 0;
+        $userInteraction->writeTitle('Starting application containers');
+
+        try {
+            $this->processRunner->run(new Process('docker-compose up -d'));
+            $userInteraction->writeTitle('Application containers successfully started');
         } catch (ProcessFailedException $e) {
+            echo $e->getProcess()->getOutput();
+
             return 1;
         }
+
+        return $this->getApplication()->run(
+            new ArrayInput(['command' => 'ps']),
+            $output
+        );
     }
 
+    /**
+     * @return bool
+     */
     private function inHomeDirectory()
     {
         $home = getenv('HOME');
         $pwd = getcwd();
 
         return substr($pwd, 0, strlen($home)) === $home;
-    }
-
-    private function getDockerComposePath(ProcessRunner $processRunner)
-    {
-        $output = $processRunner->run(new Process('which docker-compose'))->getOutput();
-
-        return trim($output);
     }
 }

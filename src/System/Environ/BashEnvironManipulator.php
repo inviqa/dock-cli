@@ -30,10 +30,14 @@ class BashEnvironManipulator implements EnvironManipulator
      */
     public function save(EnvironmentVariable $environmentVariable)
     {
-        $command = 'echo "'.$environmentVariable->getName().'='.$environmentVariable->getValue().'" >> '.$this->file;
-        $process = new Process($command);
+        $command = sprintf(
+            'echo "export %s=%s" >> %s',
+            $environmentVariable->getName(),
+            $environmentVariable->getValue(),
+            $this->file
+        );
 
-        $this->processRunner->run($process);
+        $this->processRunner->run(new Process($command));
     }
 
     /**
@@ -42,7 +46,7 @@ class BashEnvironManipulator implements EnvironManipulator
     public function has(EnvironmentVariable $environmentVariable)
     {
         $process = $this->processRunner->run(
-            new Process('grep DOCKER_HOST '.$this->file),
+            new Process(sprintf('grep %s %s', $environmentVariable->getName(), $this->file)),
             false
         );
 

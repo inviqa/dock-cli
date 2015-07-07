@@ -8,8 +8,6 @@ use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
-use Dock\System\Environ\EnvironManipulatorFactory;
-use Dock\System\Environ\EnvironmentVariable;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Process\Process;
 
@@ -61,40 +59,11 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         } else {
             $this->userInteraction->writeTitle('Dinghy already started');
         }
-
-        if (!$this->haveDinghyEnvironmentVariables()) {
-            $this->userInteraction->writeTitle('Setting up dinghy environment variables');
-            $this->setupDinghyEnvironmentVariables();
-        }
     }
 
     private function installDinghy()
     {
         $this->processRunner->run(new Process('brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'));
-    }
-
-    private function haveDinghyEnvironmentVariables()
-    {
-        return getenv('DOCKER_HOST') !== false;
-    }
-
-    private function setupDinghyEnvironmentVariables()
-    {
-        $userHome = getenv('HOME');
-        $environmentVariables = [
-            new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
-            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.dinghy/certs'),
-            new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
-        ];
-
-        $environManipulatorFactory = new EnvironManipulatorFactory();
-        $environManipulator = $environManipulatorFactory->getSystemManipulator($this->processRunner);
-
-        foreach ($environmentVariables as $environmentVariable) {
-            if (!$environManipulator->has($environmentVariable)) {
-                $environManipulator->save($environmentVariable);
-            }
-        }
     }
 
     private function changeDinghyDnsResolverNamespace()
