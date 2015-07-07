@@ -2,6 +2,7 @@
 
 namespace Dock\Cli;
 
+use Dock\Cli\Helper\ContainerList;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Compose\Container;
 use Dock\Compose\Inspector;
@@ -40,35 +41,7 @@ class PsCommand extends Command
         $inspector = new Inspector($processRunner);
         $containers = $inspector->getRunningContainers();
 
-        $table = new Table($output);
-        $table->setHeaders(['Name', 'DNS addresses', 'Port(s)', 'Status']);
-
-        foreach ($containers as $index => $container) {
-            if ($index > 0) {
-                $table->addRow(new TableSeparator());
-            }
-
-            $table->addRow([
-                $container->getName(),
-                implode("\n", $container->getHosts()),
-                implode("\n", $container->getPorts()),
-                $this->getDecoratedState($container)
-            ]);
-        }
-
-        $table->render();
-    }
-
-    /**
-     * @param Container $container
-     * @return string
-     */
-    private function getDecoratedState(Container $container)
-    {
-        if ($container->getState() === Container::STATE_EXITED) {
-            return '<error>'.$container->getState().'</error>';
-        }
-
-        return $container->getState();
+        $list = new ContainerList($output);
+        $list->render($containers);
     }
 }
