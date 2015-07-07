@@ -11,6 +11,19 @@ use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 class EnvironmentVariables extends InstallerTask implements DependentChainProcessInterface
 {
     /**
+     * @var EnvironManipulatorFactory
+     */
+    private $environManipulatorFactory;
+
+    /**
+     * @param EnvironManipulatorFactory $environManipulatorFactory
+     */
+    public function  __construct(EnvironManipulatorFactory $environManipulatorFactory)
+    {
+        $this->environManipulatorFactory = $environManipulatorFactory;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function run(InstallContext $context)
@@ -28,12 +41,11 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
         $userHome = getenv('HOME');
         $environmentVariables = [
             new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
-            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.dinghy/certs'),
+            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome . '/.dinghy/certs'),
             new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
         ];
 
-        $environManipulatorFactory = new EnvironManipulatorFactory();
-        $environManipulator = $environManipulatorFactory->getSystemManipulator($processRunner);
+        $environManipulator = $this->environManipulatorFactory->getSystemManipulator($processRunner);
 
         foreach ($environmentVariables as $environmentVariable) {
             if (!$environManipulator->has($environmentVariable)) {

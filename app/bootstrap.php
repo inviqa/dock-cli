@@ -10,6 +10,7 @@ use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\UpCommand;
 use Dock\Compose\Inspector;
 use Dock\Dinghy\DinghyCli;
+use Dock\Dinghy\SshClient;
 use Dock\Installer\DNS\DnsDock;
 use Dock\Installer\DNS\DockerRouting;
 use Dock\Installer\Docker\Dinghy;
@@ -23,6 +24,7 @@ use Dock\Installer\System\PhpSsh;
 use Dock\Installer\System\Vagrant;
 use Dock\Installer\System\VirtualBox;
 use Dock\IO\SilentProcessRunner;
+use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\ConsoleEvents;
@@ -42,9 +44,12 @@ $container['command.install'] = function ($c) {
 $container['console.user_interaction'] = function ($c) {
     $userInteraction = new ConsoleUserInteraction();
 
-    $c['event_dispatcher']->addListener(ConsoleEvents::COMMAND, function (ConsoleCommandEvent $event) use ($userInteraction) {
-        $userInteraction->onCommand($event);
-    });
+    $c['event_dispatcher']->addListener(
+        ConsoleEvents::COMMAND,
+        function (ConsoleCommandEvent $event) use ($userInteraction) {
+            $userInteraction->onCommand($event);
+        }
+    );
 
     return $userInteraction;
 };
@@ -66,11 +71,11 @@ $container['installer.docker'] = function ($c) {
             new PhpSsh(),
             new Dinghy(),
             new DockerRouting(),
-            new DnsDock(),
+            new DnsDock(new SshClient()),
             new Vagrant(),
             new VirtualBox(),
             new DockerCompose(),
-            new EnvironmentVariables(),
+            new EnvironmentVariables(new EnvironManipulatorFactory()),
         ])
     );
 };
