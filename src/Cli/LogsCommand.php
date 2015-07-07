@@ -33,7 +33,8 @@ class LogsCommand extends Command
         $this
             ->setName('logs')
             ->setDescription('Follow logs of application containers')
-            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow');
+            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow')
+        ;
     }
 
     /**

@@ -70,8 +70,8 @@ class Inspector
     private function getDnsByContainerNameAndImage($containerName, $containerImage)
     {
         return [
-            $containerImage . '.docker',
-            $containerName . '.' . $containerImage . '.docker',
+            $containerImage.'.docker',
+            $containerName.'.'.$containerImage.'.docker',
         ];
     }
 

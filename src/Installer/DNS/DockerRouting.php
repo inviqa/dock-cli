@@ -87,7 +87,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
             return;
         }
 
-        $source = __DIR__ . '/fixtures/com.docker.route.plist';
+        $source = __DIR__.'/fixtures/com.docker.route.plist';
         $dockerRouteFileContents = file_get_contents($source);
         $dockerRouteFileContents = str_replace('__DINGHY_IP__', $dinghyIp, $dockerRouteFileContents);
 

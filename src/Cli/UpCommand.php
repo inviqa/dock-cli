@@ -41,7 +41,8 @@ class UpCommand extends Command
     {
         $this
             ->setName('up')
-            ->setDescription('Start the project');
+            ->setDescription('Start the project')
+        ;
     }
 
     /**

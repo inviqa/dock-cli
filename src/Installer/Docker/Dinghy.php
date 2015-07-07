@@ -61,9 +61,9 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $process = $this->processRunner->run('dinghy version');
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
-        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
+        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';
 
-        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration;
+        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' '.$dnsMasqConfiguration;
         $this->processRunner->run($process);
     }
 

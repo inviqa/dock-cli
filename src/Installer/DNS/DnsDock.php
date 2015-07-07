@@ -48,10 +48,10 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         }
 
         if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5' . PHP_EOL .
-                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock' . PHP_EOL;
+            $bootScript = 'sleep 5'.PHP_EOL .
+                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
 
-            $this->sshExec->run('echo "' . $bootScript . '" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
+            $this->sshExec->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
             $needDinghyRestart = true;
         }
 
