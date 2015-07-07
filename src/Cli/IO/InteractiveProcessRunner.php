@@ -24,9 +24,11 @@ class InteractiveProcessRunner implements ProcessRunner
     /**
      * {@inheritdoc}
      */
-    public function run(Process $process, $mustSucceed = true)
+    public function run($command, $mustSucceed = true)
     {
-        $this->userInteraction->write('<info>RUN</info> '.$process->getCommandLine());
+        $process = new Process($command);
+
+        $this->userInteraction->write('<info>RUN</info> ' . $process->getCommandLine());
 
         if ($mustSucceed) {
             $process->setTimeout(null);
@@ -55,7 +57,7 @@ class InteractiveProcessRunner implements ProcessRunner
             foreach ($lines as $line) {
                 $line = trim($line);
                 if (!empty($line)) {
-                    $this->userInteraction->write($prefix.' '.$line);
+                    $this->userInteraction->write($prefix . ' ' . $line);
                 }
             }
         };

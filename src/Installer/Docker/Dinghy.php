@@ -58,12 +58,12 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
     private function changeDinghyDnsResolverNamespace()
     {
-        $process = $this->processRunner->run(new Process('dinghy version'));
+        $process = $this->processRunner->run('dinghy version');
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
         $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
 
-        $process = new Process('sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration);
+        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration;
         $this->processRunner->run($process);
     }
 
@@ -108,7 +108,7 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
         $this->userInteraction->writeTitle('Installing Dinghy');
         $this->processRunner->run(
-            new Process('brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb')
+            'brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'
         );
         $this->userInteraction->writeTitle('Successfully installed Dinghy');
     }

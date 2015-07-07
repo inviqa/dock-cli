@@ -57,13 +57,13 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
 
         // Configure host machine resolution
         $processRunner = $context->getProcessRunner();
-        $processRunner->run(new Process('sudo mkdir -p /etc/resolver'));
-        $processRunner->run(new Process('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker'));
+        $processRunner->run('sudo mkdir -p /etc/resolver');
+        $processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
 
         // Restart dinghy
         if ($needDinghyRestart) {
             $userInteraction->writeTitle('Restarting Dinghy');
-            $processRunner->run(new Process('dinghy restart'));
+            $processRunner->run('dinghy restart');
         }
     }
 

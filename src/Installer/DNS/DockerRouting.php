@@ -9,7 +9,6 @@ use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 class DockerRouting extends InstallerTask implements DependentChainProcessInterface
 {
@@ -66,8 +65,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     private function configureRouting($dinghyIp, ProcessRunner $processRunner, UserInteraction $userInteraction)
     {
         try {
-            $process = new Process(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
-            $processRunner->run($process);
+            $processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
         } catch (ProcessFailedException $e) {
             if (strpos($e->getProcess()->getErrorOutput(), 'File exists') !== false) {
                 $userInteraction->writeTitle('Routing already configured');
@@ -96,17 +94,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
         $temporaryFile = tempnam(sys_get_temp_dir(), 'DockerInstaller');
         file_put_contents($temporaryFile, $dockerRouteFileContents);
 
-        $processRunner->run(
-            new Process(sprintf(
-                'sudo cp %s /Library/LaunchDaemons/com.docker.route.plist',
-                $temporaryFile
-            ))
-        );
-
-        $processRunner->run(
-            new Process(
-                'sudo launchctl load /Library/LaunchDaemons/com.docker.route.plist'
-            )
-        );
+        $processRunner->run(sprintf('sudo cp %s /Library/LaunchDaemons/com.docker.route.plist', $temporaryFile));
+        $processRunner->run('sudo launchctl load /Library/LaunchDaemons/com.docker.route.plist');
     }
 }

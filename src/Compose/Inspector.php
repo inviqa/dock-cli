@@ -3,7 +3,6 @@
 namespace Dock\Compose;
 
 use Dock\IO\ProcessRunner;
-use Symfony\Component\Process\Process;
 
 class Inspector
 {
@@ -47,7 +46,9 @@ class Inspector
         $containerName = substr($inspection['Name'], 1);
         $containerConfiguration = $inspection['Config'];
         $imageName = $containerConfiguration['Image'];
-        $exposedPorts = isset($containerConfiguration['ExposedPorts']) ? array_keys($containerConfiguration['ExposedPorts']) : [];
+        $exposedPorts = isset($containerConfiguration['ExposedPorts']) ? array_keys(
+            $containerConfiguration['ExposedPorts']
+        ) : [];
         $componentName = isset($containerConfiguration['Labels']['com.docker.compose.service']) ? $containerConfiguration['Labels']['com.docker.compose.service'] : null;
 
         return new Container(
@@ -69,8 +70,8 @@ class Inspector
     private function getDnsByContainerNameAndImage($containerName, $containerImage)
     {
         return [
-            $containerImage.'.docker',
-            $containerName.'.'.$containerImage.'.docker',
+            $containerImage . '.docker',
+            $containerName . '.' . $containerImage . '.docker',
         ];
     }
 
@@ -82,7 +83,7 @@ class Inspector
     private function inspectContainer($containerId)
     {
         $command = sprintf('docker inspect %s', $containerId);
-        $rawOutput = $this->processRunner->run(new Process($command))->getOutput();
+        $rawOutput = $this->processRunner->run($command)->getOutput();
         $rawOutput = trim($rawOutput);
 
         if (null === ($inspection = json_decode($rawOutput, true))) {
@@ -97,7 +98,7 @@ class Inspector
      */
     private function getRunningContainerIds()
     {
-        $rawOutput = $this->processRunner->run(new Process('docker-compose ps -q'))->getOutput();
+        $rawOutput = $this->processRunner->run('docker-compose ps -q')->getOutput();
         $lines = explode("\n", $rawOutput);
         $containerIds = [];
 

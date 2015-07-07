@@ -7,7 +7,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 class LogsCommand extends Command
 {
@@ -34,8 +33,7 @@ class LogsCommand extends Command
         $this
             ->setName('logs')
             ->setDescription('Follow logs of application containers')
-            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow')
-        ;
+            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow');
     }
 
     /**
@@ -56,7 +54,7 @@ class LogsCommand extends Command
      */
     private function getDockerComposePath()
     {
-        $output = $this->processRunner->run(new Process('which docker-compose'))->getOutput();
+        $output = $this->processRunner->run('which docker-compose')->getOutput();
 
         return trim($output);
     }

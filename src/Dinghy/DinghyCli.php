@@ -4,7 +4,6 @@ namespace Dock\Dinghy;
 
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 class DinghyCli
 {
@@ -28,7 +27,7 @@ class DinghyCli
      */
     public function start()
     {
-        $this->processRunner->run(new Process('dinghy up --no-proxy'));
+        $this->processRunner->run('dinghy up --no-proxy');
     }
 
     /**
@@ -38,7 +37,7 @@ class DinghyCli
      */
     public function stop()
     {
-        $this->processRunner->run(new Process('dinghy halt'));
+        $this->processRunner->run('dinghy halt');
     }
 
     /**
@@ -46,7 +45,7 @@ class DinghyCli
      */
     public function getVersion()
     {
-        $process = $this->processRunner->run(new Process('dinghy version'));
+        $process = $this->processRunner->run('dinghy version');
 
         return $process->getOutput();
     }
@@ -56,7 +55,7 @@ class DinghyCli
      */
     public function getIp()
     {
-        $process = $this->processRunner->run(new Process('dinghy ip'));
+        $process = $this->processRunner->run('dinghy ip');
         $dinghyIp = $process->getOutput();
 
         return trim($dinghyIp);
@@ -67,7 +66,7 @@ class DinghyCli
      */
     public function isRunning()
     {
-        $process = $this->processRunner->run(new Process('dinghy status'));
+        $process = $this->processRunner->run('dinghy status');
         $output = $process->getOutput();
 
         return strpos($output, 'VM: running') !== false;
@@ -78,6 +77,6 @@ class DinghyCli
      */
     public function isInstalled()
     {
-        return $this->processRunner->run(new Process('dinghy version'), false)->isSuccessful();
+        return $this->processRunner->run('dinghy version', false)->isSuccessful();
     }
 }
