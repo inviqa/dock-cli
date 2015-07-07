@@ -48,22 +48,22 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         }
 
         if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5' . PHP_EOL .
-                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock' . PHP_EOL;
+            $bootScript = 'sleep 5'.PHP_EOL .
+                'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
 
-            $this->sshExec->run('echo "' . $bootScript . '" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
+            $this->sshExec->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
             $needDinghyRestart = true;
         }
 
         // Configure host machine resolution
         $processRunner = $context->getProcessRunner();
-        $processRunner->run(new Process('sudo mkdir -p /etc/resolver'));
-        $processRunner->run(new Process('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker'));
+        $processRunner->run('sudo mkdir -p /etc/resolver');
+        $processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
 
         // Restart dinghy
         if ($needDinghyRestart) {
             $userInteraction->writeTitle('Restarting Dinghy');
-            $processRunner->run(new Process('dinghy restart'));
+            $processRunner->run('dinghy restart');
         }
     }
 

@@ -32,7 +32,7 @@ class Boot2DockerCli
         chmod($scriptPath, 0777);
 
         try {
-            $this->processRunner->run(new Process('sudo '.$scriptPath));
+            $this->processRunner->run('sudo '.$scriptPath);
         } catch (ProcessFailedException $e) {
             return false;
         }
@@ -47,7 +47,7 @@ class Boot2DockerCli
      */
     public function isInstalled()
     {
-        return $this->processRunner->run(new Process('boot2docker version'), false)->isSuccessful();
+        return $this->processRunner->run('boot2docker version', false)->isSuccessful();
     }
 
     /**
@@ -59,7 +59,7 @@ class Boot2DockerCli
      */
     public function getVersion()
     {
-        $process = $this->processRunner->run(new Process('boot2docker version'));
+        $process = $this->processRunner->run('boot2docker version');
 
         return $process->getOutput();
     }
