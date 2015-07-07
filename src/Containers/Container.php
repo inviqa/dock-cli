@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Compose;
+namespace Dock\Containers;
 
 class Container
 {

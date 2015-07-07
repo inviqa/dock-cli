@@ -3,7 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\Cli\Helper\ContainerList;
-use Dock\Compose\Inspector;
+use Dock\Containers\ConfiguredContainers;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,18 +11,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PsCommand extends Command
 {
     /**
-     * @var Inspector
+     * @var ConfiguredContainers
      */
-    private $inspector;
+    private $configuredContainers;
 
     /**
-     * @param Inspector $inspector
+     * @param ConfiguredContainers $configuredContainers
      */
-    public function __construct(Inspector $inspector)
+    public function __construct(ConfiguredContainers $configuredContainers)
     {
         parent::__construct();
 
-        $this->inspector = $inspector;
+        $this->configuredContainers = $configuredContainers;
     }
 
     /**
@@ -41,7 +41,7 @@ class PsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $containers = $this->inspector->getRunningContainers();
+        $containers = $this->configuredContainers->findAll();
 
         $list = new ContainerList($output);
         $list->render($containers);

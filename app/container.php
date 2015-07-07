@@ -10,10 +10,12 @@ use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
 use Dock\Compose\ComposeExecutableFinder;
-use Dock\Compose\Inspector;
+use Dock\Containers\ConfiguredContainers;
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Dinghy\SshClient;
+use Dock\Docker\ContainerDetails;
+use Dock\DockerCompose\ConfiguredContainerIds;
 use Dock\Installer\DNS\DnsDock;
 use Dock\Installer\DNS\DockerRouting;
 use Dock\Installer\Docker\Dinghy;
@@ -100,8 +102,18 @@ $container['command.stop'] = function ($c) {
     return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
 };
 $container['command.ps'] = function ($c) {
-    return new PsCommand(new Inspector($c['process.silent_runner']));
+    return new PsCommand(new ConfiguredContainers(
+        $c['containers.configured_container_ids'],
+        $c['containers.container_details']
+    ));
 };
+$container['containers.configured_container_ids'] = function ($c) {
+    return new ConfiguredContainerIds($c['process.silent_runner']);
+};
+$container['containers.container_details'] = function ($c) {
+    return new ContainerDetails($c['process.silent_runner']);
+};
+
 $container['command.logs'] = function ($c) {
     return new LogsCommand($c['compose.executable_finder'], $c['process.silent_runner']);
 };
