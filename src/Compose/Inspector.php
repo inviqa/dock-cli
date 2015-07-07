@@ -49,13 +49,14 @@ class Inspector
     /**
      * @param string $containerName
      * @param string $containerImage
+     *
      * @return array
      */
     private function getDnsByContainerNameAndImage($containerName, $containerImage)
     {
         return [
             $containerImage.'.docker',
-            $containerName.'.'.$containerImage.'.docker'
+            $containerName.'.'.$containerImage.'.docker',
         ];
     }
 

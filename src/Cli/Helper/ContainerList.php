@@ -39,7 +39,7 @@ class ContainerList
                 $container->getName(),
                 implode("\n", $container->getHosts()),
                 implode("\n", $container->getPorts()),
-                $this->getDecoratedState($container)
+                $this->getDecoratedState($container),
             ]);
         }
 
@@ -48,6 +48,7 @@ class ContainerList
 
     /**
      * @param Container $container
+     *
      * @return string
      */
     private function getDecoratedState(Container $container)

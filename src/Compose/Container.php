@@ -33,8 +33,8 @@ class Container
      * @param string $name
      * @param string $image
      * @param string $state
-     * @param array $hosts
-     * @param array $ports
+     * @param array  $hosts
+     * @param array  $ports
      */
     public function __construct($name, $image, $state = self::STATE_UNKNOWN, array $hosts = [], array $ports = [])
     {
