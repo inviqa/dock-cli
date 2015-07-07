@@ -27,6 +27,9 @@ use Dock\Installer\System\VirtualBox;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
+use Ssh\Authentication\Password;
+use Ssh\Configuration;
+use Ssh\Session;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -72,7 +75,10 @@ $container['installer.docker'] = function ($c) {
             new PhpSsh(),
             new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
             new DockerRouting($c['cli.dinghy']),
-            new DnsDock(new SshClient()),
+            new DnsDock(new SshClient(new Session(
+                new Configuration(SshClient::DEFAULT_HOSTNAME),
+                new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
+            ))),
             new Vagrant(),
             new VirtualBox(),
             new DockerCompose(),
