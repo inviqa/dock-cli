@@ -113,8 +113,7 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $this->userInteraction->writeTitle('Successfully installed Dinghy');
     }
 
-    private
-    function startDinghy()
+    private function startDinghy()
     {
         $this->userInteraction->writeTitle('Starting up Dinghy');
 

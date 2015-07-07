@@ -58,11 +58,10 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     }
 
     /**
-     * @param $dinghyIp
-     * @param $processRunner
-     * @param $userInteraction
-     * @throws \Exception
-     * @throws \Symfony\Component\Process\Exception\ProcessFailedException
+     * @param string $dinghyIp
+     * @param ProcessRunner $processRunner
+     * @param UserInteraction $userInteraction
+     * @throws ProcessFailedException
      */
     private function configureRouting($dinghyIp, ProcessRunner $processRunner, UserInteraction $userInteraction)
     {
@@ -81,8 +80,8 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     }
 
     /**
-     * @param $dinghyIp
-     * @param $processRunner
+     * @param string $dinghyIp
+     * @param ProcessRunner $processRunner
      */
     private function addPermanentRouting($dinghyIp, ProcessRunner $processRunner)
     {
