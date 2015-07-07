@@ -24,6 +24,7 @@ class Application extends ConsoleApplication
 
             // Project commands
             new UpCommand(),
+            new PsCommand(),
         ];
     }
 }

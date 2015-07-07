@@ -8,8 +8,6 @@ use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
-use Dock\System\Environ\EnvironManipulatorFactory;
-use Dock\System\Environ\EnvironmentVariable;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Process\Process;
 

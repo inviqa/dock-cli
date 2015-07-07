@@ -16,6 +16,7 @@
     "app.php"
   ],
   "require-dev": {
-    "kherge/box": "~2.5"
+    "kherge/box": "~2.5",
+    "fabpot/php-cs-fixer": "~1.9"
   }
 }
