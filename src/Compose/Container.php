@@ -28,6 +28,10 @@ class Container
      * @var array
      */
     private $ports;
+    /**
+     * @var string
+     */
+    private $componentName;
 
     /**
      * @param string $name
@@ -35,14 +39,16 @@ class Container
      * @param string $state
      * @param array  $hosts
      * @param array  $ports
+     * @param string $componentName
      */
-    public function __construct($name, $image, $state = self::STATE_UNKNOWN, array $hosts = [], array $ports = [])
+    public function __construct($name, $image, $state = self::STATE_UNKNOWN, array $hosts = [], array $ports = [], $componentName = null)
     {
         $this->name = $name;
         $this->image = $image;
         $this->hosts = $hosts;
         $this->state = $state;
         $this->ports = $ports;
+        $this->componentName = $componentName;
     }
 
     /**
@@ -83,5 +89,13 @@ class Container
     public function getPorts()
     {
         return $this->ports;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComponentName()
+    {
+        return $this->componentName;
     }
 }

@@ -30,20 +30,34 @@ class Inspector
 
         foreach ($containerIds as $containerId) {
             $inspection = $this->inspectContainer($containerId);
-            $containerName = substr($inspection['Name'], 1);
-            $imageName = $inspection['Config']['Image'];
-            $exposedPorts = isset($inspection['Config']['ExposedPorts']) ? array_keys($inspection['Config']['ExposedPorts']) : [];
 
-            $containers[] = new Container(
-                $containerName,
-                $imageName,
-                $inspection['State']['Running'] ? Container::STATE_RUNNING : Container::STATE_EXITED,
-                $this->getDnsByContainerNameAndImage($containerName, $imageName),
-                $exposedPorts
-            );
+            $containers[] = $this->getContainerFromInspection($inspection);
         }
 
         return $containers;
+    }
+
+    /**
+     * @param array $inspection
+     *
+     * @return Container
+     */
+    private function getContainerFromInspection(array $inspection)
+    {
+        $containerName = substr($inspection['Name'], 1);
+        $containerConfiguration = $inspection['Config'];
+        $imageName = $containerConfiguration['Image'];
+        $exposedPorts = isset($containerConfiguration['ExposedPorts']) ? array_keys($containerConfiguration['ExposedPorts']) : [];
+        $componentName = isset($containerConfiguration['Labels']['com.docker.compose.service']) ? $containerConfiguration['Labels']['com.docker.compose.service'] : null;
+
+        return new Container(
+            $containerName,
+            $imageName,
+            $inspection['State']['Running'] ? Container::STATE_RUNNING : Container::STATE_EXITED,
+            $this->getDnsByContainerNameAndImage($containerName, $imageName),
+            $exposedPorts,
+            $componentName
+        );
     }
 
     /**
