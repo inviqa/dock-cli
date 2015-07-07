@@ -41,6 +41,10 @@ cat manifest.json | jsawk -a "this.push({${JSON}})" | python -mjson.tool > manif
 mv manifest.json.tmp manifest.json
 git add manifest.json
 
+# Symlink latest version
+rm downloads/$PHAR_NAME-latest.phar
+cp downloads/$PHAR_NAME-${TAG}.phar downloads/$PHAR_NAME-latest.phar
+
 git commit -m "Bump version ${TAG}"
 
 #
