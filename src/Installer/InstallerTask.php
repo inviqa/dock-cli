@@ -2,7 +2,10 @@
 
 namespace Dock\Installer;
 
+use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\ChainContext;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 abstract class InstallerTask
 {
@@ -22,4 +25,14 @@ abstract class InstallerTask
      * @param InstallContext $context
      */
     abstract public function run(InstallContext $context);
+
+    protected function isSuccessful($command, ProcessRunner $processRunner)
+    {
+        try {
+            $processRunner->run(new Process($command));
+            return true;
+        } catch (ProcessFailedException $e) {
+            return false;
+        }
+    }
 }
