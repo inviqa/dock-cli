@@ -1,22 +1,35 @@
 <?php
 
 use Dock\Cli\InstallCommand;
+use Dock\Cli\IO\ConsoleUserInteraction;
+use Dock\Cli\IO\InteractiveProcessRunner;
+use Dock\Cli\LogsCommand;
+use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\UpCommand;
+use Dock\Compose\Inspector;
+use Dock\Dinghy\DinghyCli;
+use Dock\Dinghy\SshClient;
+use Dock\Installer\DNS\DnsDock;
+use Dock\Installer\DNS\DockerRouting;
+use Dock\Installer\Docker\Dinghy;
+use Dock\Installer\Docker\EnvironmentVariables;
 use Dock\Installer\DockerInstaller;
-use Dock\Cli\IO\InteractiveProcessRunner;
-use Dock\Cli\IO\ConsoleUserInteraction;
+use Dock\Installer\InstallContext;
+use Dock\Installer\System\BrewCask;
+use Dock\Installer\System\DockerCompose;
+use Dock\Installer\System\Homebrew;
+use Dock\Installer\System\PhpSsh;
+use Dock\Installer\System\Vagrant;
+use Dock\Installer\System\VirtualBox;
 use Dock\IO\SilentProcessRunner;
+use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Dock\Cli\PsCommand;
-use Dock\Compose\Inspector;
-use Dock\Cli\LogsCommand;
-use Dock\Dinghy\DinghyCli;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
 
@@ -31,9 +44,12 @@ $container['command.install'] = function ($c) {
 $container['console.user_interaction'] = function ($c) {
     $userInteraction = new ConsoleUserInteraction();
 
-    $c['event_dispatcher']->addListener(ConsoleEvents::COMMAND, function (ConsoleCommandEvent $event) use ($userInteraction) {
-        $userInteraction->onCommand($event);
-    });
+    $c['event_dispatcher']->addListener(
+        ConsoleEvents::COMMAND,
+        function (ConsoleCommandEvent $event) use ($userInteraction) {
+            $userInteraction->onCommand($event);
+        }
+    );
 
     return $userInteraction;
 };
@@ -47,7 +63,21 @@ $container['process.silent_runner'] = function () {
 };
 
 $container['installer.docker'] = function ($c) {
-    return new DockerInstaller($c['process.interactive_runner'], $c['console.user_interaction']);
+    return new DockerInstaller(
+        new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
+        new \SRIO\ChainOfResponsibility\ChainBuilder([
+            new Homebrew(),
+            new BrewCask(),
+            new PhpSsh(),
+            new Dinghy(),
+            new DockerRouting(),
+            new DnsDock(new SshClient()),
+            new Vagrant(),
+            new VirtualBox(),
+            new DockerCompose(),
+            new EnvironmentVariables(new EnvironManipulatorFactory()),
+        ])
+    );
 };
 
 $container['command.restart'] = function ($c) {
