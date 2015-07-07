@@ -36,7 +36,7 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
      * @param Boot2DockerCli $boot2docker
      * @param DinghyCli $dinghy
      */
-    function __construct(Boot2DockerCli $boot2docker, DinghyCli $dinghy)
+    public function __construct(Boot2DockerCli $boot2docker, DinghyCli $dinghy)
     {
         $this->boot2docker = $boot2docker;
         $this->dinghy = $dinghy;
