@@ -2,7 +2,7 @@
 <?php
 // application.php
 
-use Dock\Cli\Application;
+use Symfony\Component\Console\Application;
 
 require __DIR__.'/../vendor/autoload.php';
 
