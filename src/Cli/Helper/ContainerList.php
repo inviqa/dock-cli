@@ -28,7 +28,7 @@ class ContainerList
     public function render(array $containers)
     {
         $table = new Table($this->output);
-        $table->setHeaders(['Name', 'DNS addresses', 'Port(s)', 'Status']);
+        $table->setHeaders(['Component', 'Container', 'DNS addresses', 'Port(s)', 'Status']);
 
         foreach ($containers as $index => $container) {
             if ($index > 0) {
@@ -36,6 +36,7 @@ class ContainerList
             }
 
             $table->addRow([
+                $container->getComponentName(),
                 $container->getName(),
                 implode("\n", $container->getHosts()),
                 implode("\n", $container->getPorts()),
