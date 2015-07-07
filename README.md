@@ -45,6 +45,7 @@ The following commands are available:
 
 - [`up` command](docs/cmd-up.md) starts the Docker environment for the project.
 - [`ps` command](docs/cmd-ps.md) list all the project containers if any.
+- [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 
 ## Update
 
