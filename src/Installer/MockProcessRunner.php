@@ -14,6 +14,9 @@ use Symfony\Component\Process\Process;
 
 class MockProcessRunner implements ProcessRunner
 {
+    /** @var  UserInteraction */
+    private $userInteraction;
+
     /**
      * @param Process $process
      * @param bool    $mustSucceed
