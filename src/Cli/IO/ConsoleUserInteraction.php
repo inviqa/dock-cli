@@ -63,6 +63,7 @@ class ConsoleUserInteraction implements UserInteraction
 
     /**
      * @throws \RuntimeException
+     *
      * @return InputInterface
      */
     private function getInput()
@@ -76,6 +77,7 @@ class ConsoleUserInteraction implements UserInteraction
 
     /**
      * @throws \RuntimeException
+     *
      * @return OutputInterface
      */
     private function getOutput()

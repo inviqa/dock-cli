@@ -23,23 +23,38 @@ class DockerInstaller
      */
     private $processRunner;
 
-    public function __construct(ProcessRunner $processRunner)
+    /**
+     * @var UserInteraction
+     */
+    private $userInteraction;
+
+    /**
+     * @param ProcessRunner   $processRunner
+     * @param UserInteraction $userInteraction
+     */
+    public function __construct(ProcessRunner $processRunner, UserInteraction $userInteraction)
     {
         $this->processRunner = $processRunner;
+        $this->userInteraction = $userInteraction;
     }
 
-    public function install(UserInteraction $userInteraction)
+    /**
+     * Start the Docker installation process.
+     */
+    public function install()
     {
         $tasks = $this->getTasks();
         $builder = new ChainBuilder($tasks);
 
-        $this->processRunner->setUserInteraction($userInteraction);
-        $context = new InstallContext($this->processRunner, $userInteraction);
+        $context = new InstallContext($this->processRunner, $this->userInteraction);
 
         $runner = $builder->getRunner();
         $runner->run($context);
     }
 
+    /**
+     * @return InstallerTask[]
+     */
     private function getTasks()
     {
         return [

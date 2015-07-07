@@ -13,10 +13,14 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Dock\Cli\PsCommand;
+use Dock\Compose\Inspector;
+use Dock\Cli\LogsCommand;
+use Dock\Dinghy\DinghyCli;
 
 $container = new Container();
 
-$container['command.selfupdate'] = function ($c) {
+$container['command.selfupdate'] = function () {
     return new SelfUpdateCommand();
 };
 
@@ -24,7 +28,7 @@ $container['command.install'] = function ($c) {
     return new InstallCommand($c['installer.docker']);
 };
 
-$container['console.user_interaction'] = function($c) {
+$container['console.user_interaction'] = function ($c) {
     $userInteraction = new ConsoleUserInteraction();
 
     $c['event_dispatcher']->addListener(ConsoleEvents::COMMAND, function (ConsoleCommandEvent $event) use ($userInteraction) {
@@ -43,17 +47,23 @@ $container['process.silent_runner'] = function () {
 };
 
 $container['installer.docker'] = function ($c) {
-    return new DockerInstaller($c['process.interactive_runner']);
+    return new DockerInstaller($c['process.interactive_runner'], $c['console.user_interaction']);
 };
 
 $container['command.restart'] = function ($c) {
-    return new RestartCommand($c['process.interactive_runner']);
+    return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
 };
 
 $container['command.up'] = function ($c) {
-    return new UpCommand($c['process.silent_runner']);
+    return new UpCommand($c['process.silent_runner'], $c['console.user_interaction']);
 };
-$container['event_dispatcher'] = function() {
+$container['command.ps'] = function ($c) {
+    return new PsCommand(new Inspector($c['process.silent_runner']));
+};
+$container['command.logs'] = function ($c) {
+    return new LogsCommand($c['process.interactive_runner']);
+};
+$container['event_dispatcher'] = function () {
     return new EventDispatcher();
 };
 
@@ -66,6 +76,8 @@ $container['application'] = function ($c) {
             $c['command.install'],
             $c['command.restart'],
             $c['command.up'],
+            $c['command.ps'],
+            $c['command.logs'],
         )
     );
 

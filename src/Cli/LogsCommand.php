@@ -2,9 +2,7 @@
 
 namespace Dock\Cli;
 
-use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\IO\ProcessRunner;
-use Dock\IO\SilentProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +11,21 @@ use Symfony\Component\Process\Process;
 
 class LogsCommand extends Command
 {
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+
+    /**
+     * @param ProcessRunner $processRunner
+     */
+    public function __construct(ProcessRunner $processRunner)
+    {
+        parent::__construct();
+
+        $this->processRunner = $processRunner;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -30,25 +43,20 @@ class LogsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new SilentProcessRunner($userInteraction);
-
         $composeLogsArguments = ['logs'];
         if (null !== ($component = $input->getArgument('component'))) {
             $composeLogsArguments[] = $component;
         }
 
-        pcntl_exec($this->getDockerComposePath($processRunner), $composeLogsArguments);
+        pcntl_exec($this->getDockerComposePath(), $composeLogsArguments);
     }
 
     /**
-     * @param ProcessRunner $processRunner
-     *
      * @return string
      */
-    private function getDockerComposePath(ProcessRunner $processRunner)
+    private function getDockerComposePath()
     {
-        $output = $processRunner->run(new Process('which docker-compose'))->getOutput();
+        $output = $this->processRunner->run(new Process('which docker-compose'))->getOutput();
 
         return trim($output);
     }

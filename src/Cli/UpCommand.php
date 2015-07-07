@@ -2,8 +2,8 @@
 
 namespace Dock\Cli;
 
-use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\IO\ProcessRunner;
+use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,13 +19,20 @@ class UpCommand extends Command
     private $processRunner;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @var UserInteraction
      */
-    public function __construct(ProcessRunner $processRunner)
+    private $userInteraction;
+
+    /**
+     * @param ProcessRunner   $processRunner
+     * @param UserInteraction $userInteraction
+     */
+    public function __construct(ProcessRunner $processRunner, UserInteraction $userInteraction)
     {
         parent::__construct();
 
         $this->processRunner = $processRunner;
+        $this->userInteraction = $userInteraction;
     }
 
     /**
@@ -44,9 +51,6 @@ class UpCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userInteraction = new ConsoleUserInteraction($input, $output);
-        $this->processRunner->setUserInteraction($userInteraction);
-
         if (!$this->inHomeDirectory()) {
             $output->writeln(
                 '<error>The project have to be in your home directly to be able to share it with the Docker VM</error>'
@@ -55,11 +59,11 @@ class UpCommand extends Command
             return 1;
         }
 
-        $userInteraction->writeTitle('Starting application containers');
+        $this->userInteraction->writeTitle('Starting application containers');
 
         try {
             $this->processRunner->run(new Process('docker-compose up -d'));
-            $userInteraction->writeTitle('Application containers successfully started');
+            $this->userInteraction->writeTitle('Application containers successfully started');
         } catch (ProcessFailedException $e) {
             echo $e->getProcess()->getOutput();
 

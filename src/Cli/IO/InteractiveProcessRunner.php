@@ -4,7 +4,6 @@ namespace Dock\Cli\IO;
 
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Process\Process;
 
 class InteractiveProcessRunner implements ProcessRunner
