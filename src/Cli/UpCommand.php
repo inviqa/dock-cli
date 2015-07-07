@@ -2,9 +2,10 @@
 
 namespace Dock\Cli;
 
+use Dock\Cli\Helper\ContainerList;
 use Dock\Cli\IO\ConsoleUserInteraction;
-use Dock\Installer\InteractiveProcessRunner;
-use Dock\IO\ProcessRunner;
+use Dock\Compose\Inspector;
+use Dock\IO\SilentProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +31,7 @@ class UpCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $userInteraction = new ConsoleUserInteraction($input, $output);
-        $processRunner = new InteractiveProcessRunner($userInteraction);
+        $processRunner = new SilentProcessRunner($userInteraction);
 
         if (!$this->inHomeDirectory()) {
             $output->writeln(
@@ -39,28 +40,36 @@ class UpCommand extends Command
 
             return 1;
         }
-        try {
-            $dockerComposePath = $this->getDockerComposePath($processRunner);
-            pcntl_exec($dockerComposePath, ['up']);
 
-            return 0;
+        $userInteraction->writeTitle('Starting application containers');
+
+        try {
+            $processRunner->run(new Process('docker-compose up -d'));
+            $userInteraction->writeTitle('Application containers successfully started');
         } catch (ProcessFailedException $e) {
+            echo $e->getProcess()->getOutput();
+
             return 1;
         }
+
+        // Display running containers
+        $inspector = new Inspector($processRunner);
+        $containers = $inspector->getRunningContainers();
+
+        $list = new ContainerList($output);
+        $list->render($containers);
+
+        return 0;
     }
 
+    /**
+     * @return bool
+     */
     private function inHomeDirectory()
     {
         $home = getenv('HOME');
         $pwd = getcwd();
 
         return substr($pwd, 0, strlen($home)) === $home;
-    }
-
-    private function getDockerComposePath(ProcessRunner $processRunner)
-    {
-        $output = $processRunner->run(new Process('which docker-compose'))->getOutput();
-
-        return trim($output);
     }
 }
