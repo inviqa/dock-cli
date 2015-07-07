@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 interface ProcessRunner
 {
     /**
-     * @param $command
+     * @param string $command
      * @param bool $mustSucceed
      *
      * @return Process
