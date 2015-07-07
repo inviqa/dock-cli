@@ -21,7 +21,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     /**
      * @param DinghyCli $dinghy
      */
-    function __construct(DinghyCli $dinghy)
+    public function __construct(DinghyCli $dinghy)
     {
         $this->dinghy = $dinghy;
     }
