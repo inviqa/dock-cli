@@ -64,15 +64,14 @@ $container['process.silent_runner'] = function () {
 };
 
 $container['installer.docker'] = function ($c) {
-    $dinghyCli = new DinghyCli($c['process.interactive_runner']);
     return new DockerInstaller(
         new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
         new \SRIO\ChainOfResponsibility\ChainBuilder([
             new Homebrew(),
             new BrewCask(),
             new PhpSsh(),
-            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $dinghyCli),
-            new DockerRouting($dinghyCli),
+            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
+            new DockerRouting($c['cli.dinghy']),
             new DnsDock(new SshClient()),
             new Vagrant(),
             new VirtualBox(),
@@ -97,6 +96,10 @@ $container['command.logs'] = function ($c) {
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
+};
+
+$container['cli.dinghy'] = function ($c) {
+    return new DinghyCli($c['process.interactive_runner']);
 };
 
 $container['application'] = function ($c) {
