@@ -26,9 +26,10 @@ class UpCommand extends Command
         ;
     }
 
-    public function setProcessRunner(ProcessRunner $processRunner)
+    public function __construct(ProcessRunner $processRunner)
     {
         $this->processRunner = $processRunner;
+        parent::__construct();
     }
 
     /**
