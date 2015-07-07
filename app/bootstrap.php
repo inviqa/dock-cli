@@ -5,8 +5,6 @@ use Symfony\Component\Console\Application;
 
 $container = new Container();
 
-$container['use_mock_installer'] = true;
-
 $container['command.help'] = function ($c) {
     return new \Symfony\Component\Console\Command\HelpCommand();
 };
@@ -20,31 +18,19 @@ $container['command.selfupdate'] = function ($c) {
 };
 
 $container['command.install'] = function ($c) {
-    $command = new \Dock\Cli\InstallCommand();
-    $command->setDockerInstaller($c['installer.docker']);
-
-    return $command;
+    return new \Dock\Cli\InstallCommand($c['installer.docker']);
 };
 
-$container['runner.process.interactive'] = function ($c) {
+$container['runner.process'] = function ($c) {
     return new \Dock\Installer\InteractiveProcessRunner();
 };
-
-$container['runner.process.mock'] = function ($c) {
-    return new \Dock\Installer\MockProcessRunner();
-};
-
-$container['runner.process'] = $container['use_mock_installer'] ? $container['runner.process.mock'] : $container['runner.process.interactive'];
 
 $container['installer.docker'] = function ($c) {
     return new \Dock\Installer\DockerInstaller($c['runner.process']);
 };
 
 $container['command.restart'] = function ($c) {
-    $command = new \Dock\Cli\RestartCommand();
-    $command->setProcessRunner($c['runner.process']);
-
-    return $command;
+    return new \Dock\Cli\RestartCommand($c['runner.process']);
 };
 
 $container['command.up'] = function ($c) {

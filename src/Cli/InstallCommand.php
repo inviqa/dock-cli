@@ -12,6 +12,12 @@ class InstallCommand extends Command
 {
     private $dockerInstaller;
 
+    public function __construct(DockerInstaller $dockerInstaller)
+    {
+        $this->dockerInstaller = $dockerInstaller;
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -21,11 +27,6 @@ class InstallCommand extends Command
             ->setName('docker:install')
             ->setDescription('Install Docker on OSX')
         ;
-    }
-
-    public function setDockerInstaller(DockerInstaller $dockerInstaller)
-    {
-        $this->dockerInstaller = $dockerInstaller;
     }
 
     /**
