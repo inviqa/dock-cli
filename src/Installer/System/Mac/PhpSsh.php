@@ -7,7 +7,6 @@ use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Process\Process;
 
 class PhpSsh extends InstallerTask implements DependentChainProcessInterface
 {
@@ -35,37 +34,40 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
         $userInteraction = $context->getUserInteraction();
         $userInteraction->writeTitle('Checking PHP SSH2 extension');
 
-        if (!$this->sshExtensionInstalled()) {
-            $userInteraction->write('PHP SSH2 extension is required.');
+        if ($this->sshExtensionInstalled()) {
+            return;
+        }
 
-            $defaultPhpVersion = $this->guessSsh2PhpPackage();
-            $question = new Question(
-                sprintf('Which homebrew package do you want to install (default "%s") ? ("n" for nothing)', $defaultPhpVersion),
+        $userInteraction->write('PHP SSH2 extension is required.');
+
+        $defaultPhpVersion = $this->guessSsh2PhpPackage();
+        $question = new Question(
+            sprintf(
+                'Which homebrew package do you want to install (default "%s") ? ("n" for nothing)',
                 $defaultPhpVersion
-            );
-            $package = $userInteraction->ask($question);
+            ),
+            $defaultPhpVersion
+        );
+        $package = $userInteraction->ask($question);
 
-            if ($package == 'n') {
-                $userInteraction->write('Skipping PHP SSH2 extension installation, do it yourself.');
-            } else {
-                $processRunner = $context->getProcessRunner();
+        if ($package == 'n') {
+            $userInteraction->write('Skipping PHP SSH2 extension installation, do it yourself.');
+        } else {
+            $processRunner = $context->getProcessRunner();
 
-                // Check if the package is known
-                if (!$this->hasHomebrewPackage($processRunner, $package)) {
-                    $userInteraction->write(sprintf('Package "%s" not found, tapping default PHP brews', $package));
+            // Check if the package is known
+            if (!$this->hasHomebrewPackage($processRunner, $package)) {
+                $userInteraction->write(sprintf('Package "%s" not found, tapping default PHP brews', $package));
 
-                    $processRunner->run(new Process('brew tap homebrew/dupes'));
-                    $processRunner->run(new Process('brew tap homebrew/versions'));
-                    $processRunner->run(new Process('brew tap homebrew/homebrew-php'));
-                }
-
-                $processRunner->run(new Process('brew install '.$package));
+                $processRunner->run('brew tap homebrew/dupes');
+                $processRunner->run('brew tap homebrew/versions');
+                $processRunner->run('brew tap homebrew/homebrew-php');
             }
 
-            $userInteraction->write('Please re-run this installation script to have enabled PHP-SSH2 extension');
-
-            exit(1);
+            $processRunner->run('brew install '.$package);
         }
+
+        throw new \RuntimeException('Please re-run this installation script to have enabled PHP-SSH2 extension');
     }
 
     /**
@@ -83,13 +85,13 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * @param ProcessRunner $processRunner
-     * @param string        $package
+     * @param string $package
      *
      * @return bool
      */
     private function hasHomebrewPackage(ProcessRunner $processRunner, $package)
     {
-        return $processRunner->run(new Process('brew install --dry-run '.$package), false)->isSuccessful();
+        return $processRunner->run('brew install --dry-run '.$package, false)->isSuccessful();
     }
 
     /**

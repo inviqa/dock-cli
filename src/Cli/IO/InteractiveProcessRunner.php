@@ -24,8 +24,10 @@ class InteractiveProcessRunner implements ProcessRunner
     /**
      * {@inheritdoc}
      */
-    public function run(Process $process, $mustSucceed = true)
+    public function run($command, $mustSucceed = true)
     {
+        $process = new Process($command);
+
         $this->userInteraction->write('<info>RUN</info> '.$process->getCommandLine());
 
         if ($mustSucceed) {

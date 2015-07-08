@@ -9,8 +9,10 @@ class SilentProcessRunner implements ProcessRunner
     /**
      * {@inheritdoc}
      */
-    public function run(Process $process, $mustSucceed = true)
+    public function run($command, $mustSucceed = true)
     {
+        $process = new Process($command);
+
         if ($mustSucceed) {
             $process->setTimeout(null);
 

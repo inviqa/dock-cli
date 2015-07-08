@@ -9,6 +9,7 @@ use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\UpCommand;
 use Dock\Compose\Inspector;
+use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Dinghy\SshClient;
 use Dock\Installer\DNS\DnsDock;
@@ -26,6 +27,9 @@ use Dock\Installer\System\VirtualBox;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
+use Ssh\Authentication\Password;
+use Ssh\Configuration;
+use Ssh\Session;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -69,9 +73,12 @@ $container['installer.docker'] = function ($c) {
             new Homebrew(),
             new BrewCask(),
             new PhpSsh(),
-            new Dinghy(),
-            new DockerRouting(),
-            new DnsDock(new SshClient()),
+            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
+            new DockerRouting($c['cli.dinghy']),
+            new DnsDock(new SshClient(new Session(
+                new Configuration(SshClient::DEFAULT_HOSTNAME),
+                new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
+            ))),
             new Vagrant(),
             new VirtualBox(),
             new DockerCompose(),
@@ -95,6 +102,10 @@ $container['command.logs'] = function ($c) {
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
+};
+
+$container['cli.dinghy'] = function ($c) {
+    return new DinghyCli($c['process.interactive_runner']);
 };
 
 $container['application'] = function ($c) {

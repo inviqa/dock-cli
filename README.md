@@ -10,7 +10,7 @@ This CLI application provides an abstraction layer for Docker-based projects.
 
 Download the last PHAR release:
 ```
-wget http://sroze.github.io/dock-cli/downloads/dock-cli-1.0.0.phar -O dock-cli
+wget http://sroze.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
 chmod +x ./dock-cli
 sudo mv dock-cli /usr/bin/dock-cli
 ```

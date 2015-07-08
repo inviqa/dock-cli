@@ -2,13 +2,12 @@
 
 namespace Dock\Installer;
 
-use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\ChainBuilder;
 
 class DockerInstaller
 {
     /**
-     * @var ProcessRunner
+     * @var InstallContext
      */
     private $context;
 

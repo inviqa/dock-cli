@@ -31,7 +31,8 @@ class RestartCommand extends Command
     {
         $this
             ->setName('docker:restart')
-            ->setDescription('Restart Docker');
+            ->setDescription('Restart Docker')
+        ;
     }
 
     /**

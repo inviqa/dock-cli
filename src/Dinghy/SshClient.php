@@ -2,58 +2,43 @@
 
 namespace Dock\Dinghy;
 
-use Ssh\Authentication\Password;
-use Ssh\Configuration;
+use Ssh\Exec;
 use Ssh\Session;
 
 class SshClient
 {
+    const DEFAULT_HOSTNAME = '192.168.42.10';
+    const DEFAULT_USERNAME = 'docker';
+    const DEFAULT_PASSWORD = 'tcuser';
+
+    /**
+     * @var \Ssh\Session
+     */
     private $session;
-    /**
-     * @var string
-     */
-    private $hostname;
-    /**
-     * @var string
-     */
-    private $username;
-    /**
-     * @var string
-     */
-    private $password;
 
     /**
-     * @param string $hostname
-     * @param string $username
-     * @param string $password
+     * @var Exec
      */
-    public function __construct($hostname = '192.168.42.10', $username = 'docker', $password = 'tcuser')
+    private $exec;
+
+    /**
+     * @param Session $session
+     */
+    public function __construct(Session $session)
     {
-        $this->hostname = $hostname;
-        $this->username = $username;
-        $this->password = $password;
+        $this->session = $session;
     }
 
     /**
-     * @return \Ssh\Exec
+     * @param string $command
+     * @return string
      */
-    public function getExec()
+    public function run($command)
     {
-        return $this->getSession()->getExec();
-    }
-
-    /**
-     * @return Session
-     */
-    private function getSession()
-    {
-        if (null === $this->session) {
-            $this->session = new Session(
-                new Configuration($this->hostname),
-                new Password($this->username, $this->password)
-            );
+        if (!$this->exec) {
+            $this->exec = $this->session->getExec();
         }
 
-        return $this->session;
+        return $this->exec->run($command);
     }
 }
