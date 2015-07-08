@@ -58,29 +58,13 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
 
         $this->userInteraction->write('PHP SSH2 extension is required.');
 
-        $defaultPhpVersion = $this->guessSsh2PhpPackage();
-        $question = new Question(
-            sprintf(
-                'Which homebrew package do you want to install (default "%s") ? ("n" for nothing)',
-                $defaultPhpVersion
-            ),
-            $defaultPhpVersion
-        );
-        $package = $this->userInteraction->ask($question);
+        $package = $this->promptForPackageName();
 
         if ($package == 'n') {
             $this->userInteraction->write('Skipping PHP SSH2 extension installation, do it yourself.');
         } else {
-            // Check if the package is known
-            if (!$this->hasHomebrewPackage($package)) {
-                $this->userInteraction->write(sprintf('Package "%s" not found, tapping default PHP brews', $package));
+            $this->installHomebrewPackage($package);
 
-                $this->processRunner->run('brew tap homebrew/dupes');
-                $this->processRunner->run('brew tap homebrew/versions');
-                $this->processRunner->run('brew tap homebrew/homebrew-php');
-            }
-
-            $this->processRunner->run('brew install '.$package);
         }
 
         throw new \RuntimeException('Please re-run this installation script to have enabled PHP-SSH2 extension');
@@ -115,5 +99,40 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
     private function sshExtensionInstalled()
     {
         return function_exists('ssh2_exec');
+    }
+
+    /**
+     * @param $package
+     */
+    protected function installHomebrewPackage($package)
+    {
+// Check if the package is known
+        if (!$this->hasHomebrewPackage($package)) {
+            $this->userInteraction->write(sprintf('Package "%s" not found, tapping default PHP brews', $package));
+
+            $this->processRunner->run('brew tap homebrew/dupes');
+            $this->processRunner->run('brew tap homebrew/versions');
+            $this->processRunner->run('brew tap homebrew/homebrew-php');
+        }
+
+        $this->processRunner->run('brew install ' . $package);
+    }
+
+    /**
+     * @return string
+     */
+    protected function promptForPackageName()
+    {
+        $defaultPhpVersion = $this->guessSsh2PhpPackage();
+        $question = new Question(
+            sprintf(
+                'Which homebrew package do you want to install (default "%s") ? ("n" for nothing)',
+                $defaultPhpVersion
+            ),
+            $defaultPhpVersion
+        );
+        $package = $this->userInteraction->ask($question);
+
+        return $package;
     }
 }
