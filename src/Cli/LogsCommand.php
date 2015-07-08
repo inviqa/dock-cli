@@ -15,15 +15,21 @@ class LogsCommand extends Command
      * @var ComposeExecutableFinder
      */
     private $composeExecutableFinder;
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
 
     /**
      * @param ComposeExecutableFinder $composeExecutableFinder
+     * @param ProcessRunner $processRunner
      */
-    public function __construct(ComposeExecutableFinder $composeExecutableFinder)
+    public function __construct(ComposeExecutableFinder $composeExecutableFinder, ProcessRunner $processRunner)
     {
         parent::__construct();
 
         $this->composeExecutableFinder = $composeExecutableFinder;
+        $this->processRunner = $processRunner;
     }
 
     /**
@@ -48,6 +54,6 @@ class LogsCommand extends Command
             $composeLogsArguments[] = $component;
         }
 
-        pcntl_exec($this->composeExecutableFinder->find(), $composeLogsArguments);
+        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), $composeLogsArguments);
     }
 }

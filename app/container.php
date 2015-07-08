@@ -43,7 +43,7 @@ $container['command.selfupdate'] = function () {
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker']);
+    return new InstallCommand($c['installer.docker'], $c['process.silent_runner']);
 };
 
 $container['console.user_interaction'] = function ($c) {
@@ -97,13 +97,13 @@ $container['command.start'] = function ($c) {
     return new StartCommand($c['process.silent_runner'], $c['console.user_interaction']);
 };
 $container['command.stop'] = function ($c) {
-    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction']);
+    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
 };
 $container['command.ps'] = function ($c) {
     return new PsCommand(new Inspector($c['process.silent_runner']));
 };
 $container['command.logs'] = function ($c) {
-    return new LogsCommand($c['compose.executable_finder']);
+    return new LogsCommand($c['compose.executable_finder'], $c['process.silent_runner']);
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();

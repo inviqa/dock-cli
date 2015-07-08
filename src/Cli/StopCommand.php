@@ -24,15 +24,22 @@ class StopCommand extends Command
     private $composeExecutableFinder;
 
     /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+
+    /**
      * @param ComposeExecutableFinder $composeExecutableFinder
      * @param UserInteraction $userInteraction
+     * @param ProcessRunner $processRunner
      */
-    public function __construct(ComposeExecutableFinder $composeExecutableFinder, UserInteraction $userInteraction)
+    public function __construct(ComposeExecutableFinder $composeExecutableFinder, UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
         parent::__construct();
 
         $this->userInteraction = $userInteraction;
         $this->composeExecutableFinder = $composeExecutableFinder;
+        $this->processRunner = $processRunner;
     }
 
     /**
@@ -53,6 +60,6 @@ class StopCommand extends Command
     {
         $this->userInteraction->writeTitle('Stopping application containers');
 
-        pcntl_exec($this->composeExecutableFinder->find(), ['stop']);
+        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), ['stop']);
     }
 }
