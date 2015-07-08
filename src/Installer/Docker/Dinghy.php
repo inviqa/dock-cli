@@ -64,9 +64,9 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $process = $this->processRunner->run('dinghy version');
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
-        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';
+        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
 
-        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' '.$dnsMasqConfiguration;
+        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration;
         $this->processRunner->run($process);
     }
 
@@ -88,17 +88,20 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
     private function uninstallBoot2Docker()
     {
-        if ($this->boot2docker->isInstalled()) {
-            $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
-
-            if (!$this->boot2docker->uninstall()) {
-                $this->userInteraction->writeTitle(
-                    'Something went wrong while uninstalling Boot2Docker, continuing anyway.'
-                );
-            } else {
-                $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
-            }
+        if (!$this->boot2docker->isInstalled()) {
+            return;
         }
+
+        $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
+
+        if (!$this->boot2docker->uninstall()) {
+            $this->userInteraction->writeTitle(
+                'Something went wrong while uninstalling Boot2Docker, continuing anyway.'
+            );
+
+            return;
+        }
+        $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
     }
 
     private function installDinghy()

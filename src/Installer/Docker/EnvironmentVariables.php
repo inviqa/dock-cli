@@ -29,7 +29,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      * @param UserInteraction $userInteraction
      * @param ProcessRunner $processRunner
      */
-    public function  __construct(
+    public function __construct(
         EnvironManipulatorFactory $environManipulatorFactory,
         UserInteraction $userInteraction,
         ProcessRunner $processRunner
@@ -52,20 +52,9 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
 
         $this->userInteraction->writeTitle('Setting up dinghy environment variables');
 
-        $userHome = getenv('HOME');
-        $environmentVariables = [
-            new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
-            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.dinghy/certs'),
-            new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
-        ];
+        $environmentVariables = $this->getEnvironmentVariables();
 
-        $environManipulator = $this->environManipulatorFactory->getSystemManipulator($this->processRunner);
-
-        foreach ($environmentVariables as $environmentVariable) {
-            if (!$environManipulator->has($environmentVariable)) {
-                $environManipulator->save($environmentVariable);
-            }
-        }
+        $this->saveEnvironmentVariables($environmentVariables);
     }
 
     /**
@@ -90,5 +79,34 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
     public function getName()
     {
         return 'shell-env';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEnvironmentVariables()
+    {
+        $userHome = getenv('HOME');
+        $environmentVariables = [
+            new EnvironmentVariable('DOCKER_HOST', 'tcp://127.0.0.1:2376'),
+            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome . '/.dinghy/certs'),
+            new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
+        ];
+
+        return $environmentVariables;
+    }
+
+    /**
+     * @param $environmentVariables
+     */
+    protected function saveEnvironmentVariables($environmentVariables)
+    {
+        $environManipulator = $this->environManipulatorFactory->getSystemManipulator($this->processRunner);
+
+        foreach ($environmentVariables as $environmentVariable) {
+            if (!$environManipulator->has($environmentVariable)) {
+                $environManipulator->save($environmentVariable);
+            }
+        }
     }
 }
