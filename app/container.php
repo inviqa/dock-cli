@@ -84,6 +84,7 @@ $container['installer.task_providers'] = function ($c) {
             new System\Linux\NoSudo(),
             new System\Linux\DockerCompose(),
             new Dns\Linux\DnsDock(),
+            new Dns\Linux\DockerRouting(),
         ]),
     ];
 };

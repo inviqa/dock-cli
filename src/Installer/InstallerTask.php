@@ -4,10 +4,11 @@ namespace Dock\Installer;
 
 use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\ChainContext;
+use SRIO\ChainOfResponsibility\ChainProcessInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-abstract class InstallerTask
+abstract class InstallerTask implements ChainProcessInterface
 {
     /**
      * @param ChainContext $context

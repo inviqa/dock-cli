@@ -9,6 +9,8 @@ use Symfony\Component\Process\Process;
 
 class DnsDock extends InstallerTask implements DependentChainProcessInterface
 {
+    const IP = '172.17.42.1';
+
     /**
      * {@inheritdoc}
      */
@@ -33,7 +35,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
             $userInteraction = $context->getUserInteraction();
             $userInteraction->writeTitle('Configuring DNS resolution for Docker containers');
 
-            $processRunner->run('echo \'DOCKER_OPTS="--bip=172.17.42.1/24 --dns 172.17.42.1"\' | sudo tee -a /etc/default/docker');
+            $processRunner->run('echo \'DOCKER_OPTS="--bip=' . self::IP . '/24 --dns ' . self::IP . '"\' | sudo tee -a /etc/default/docker');
             $processRunner->run('sudo service docker restart');
         }
 
