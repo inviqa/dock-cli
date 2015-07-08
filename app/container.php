@@ -21,6 +21,7 @@ use Dock\Installer\TaskProvider;
 use Dock\Installer\TaskProviderFactory;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
+use Dock\System\OS;
 use Pimple\Container;
 use Ssh\Authentication\Password;
 use Ssh\Configuration;
@@ -37,7 +38,7 @@ $container['command.selfupdate'] = function () {
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker']);
+    return new InstallCommand($c['installer.docker'], $c['system.os']);
 };
 
 $container['console.user_interaction'] = function ($c) {
@@ -87,10 +88,14 @@ $container['installer.task_providers'] = function ($c) {
     ];
 };
 
+$container['system.os'] = function ($c) {
+    return new OS;
+};
+
 $container['installer.docker'] = function ($c) {
     return new DockerInstaller(
         new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
-        new TaskProviderFactory($c['installer.task_providers'])
+        new TaskProviderFactory($c['installer.task_providers'], $c['system.os'])
     );
 };
 

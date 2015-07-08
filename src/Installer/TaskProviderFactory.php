@@ -8,14 +8,15 @@ class TaskProviderFactory
 {
     private $providers;
 
-    public function __construct(array $providers)
+    public function __construct(array $providers, OS $os)
     {
         $this->providers = $providers;
+        $this->os = $os;
     }
 
     public function getProvider()
     {
-        $operatingSystem = OS::get();
+        $operatingSystem = $this->os->get();
 
         switch ($operatingSystem) {
             case OS::MAC:

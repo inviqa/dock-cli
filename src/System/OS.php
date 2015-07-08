@@ -11,7 +11,7 @@ class OS
     /**
      * @return int Current Operating System
      */
-    public static function get()
+    public function get()
     {
         $uname = strtolower(php_uname('s'));
 
@@ -24,6 +24,18 @@ class OS
                 return self::WINDOWS;
             default:
                 throw new \Exception("'$uname' is not a known operating system.");
+        }
+    }
+
+    public function createNewShell()
+    {
+        switch ($this->get()) {
+            case self::MAC:
+                pcntl_exec(getenv('SHELL'));
+            case self::LINUX:
+                pcntl_exec('/bin/su', array(get_current_user()));
+            default:
+                throw new \Exception('Unsupported operating system');
         }
     }
 }
