@@ -33,7 +33,7 @@ class OS
             case self::MAC:
                 pcntl_exec(getenv('SHELL'));
             case self::LINUX:
-                pcntl_exec('/bin/su', array(get_current_user()));
+                pcntl_exec('/usr/bin/sudo', array('su', get_current_user()));
             default:
                 throw new \Exception('Unsupported operating system');
         }
