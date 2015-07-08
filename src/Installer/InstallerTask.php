@@ -29,7 +29,7 @@ abstract class InstallerTask
     protected function isSuccessful($command, ProcessRunner $processRunner)
     {
         try {
-            $processRunner->run(new Process($command));
+            $processRunner->run($command);
             return true;
         } catch (ProcessFailedException $e) {
             return false;

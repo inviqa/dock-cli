@@ -2,10 +2,25 @@
 
 namespace Dock\Installer;
 
-interface TaskProvider
+use SRIO\ChainOfResponsibility\ChainBuilder;
+
+class TaskProvider
 {
+    private $tasks;
+
     /**
-     * @return array
+     * @param array $tasks
      */
-    public function getTasks();
+    public function __construct(array $tasks)
+    {
+        $this->tasks = $tasks;
+    }
+
+    /**
+     * @return ChainBuilder
+     */
+    public function getTasks()
+    {
+        return new ChainBuilder($this->tasks);
+    }
 }

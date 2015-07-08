@@ -12,18 +12,13 @@ use Dock\Compose\Inspector;
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Dinghy\SshClient;
-use Dock\Installer\DNS\DnsDock;
-use Dock\Installer\DNS\DockerRouting;
-use Dock\Installer\Docker\Dinghy;
-use Dock\Installer\Docker\EnvironmentVariables;
+use Dock\Installer\DNS;
+use Dock\Installer\Docker;
 use Dock\Installer\DockerInstaller;
 use Dock\Installer\InstallContext;
-use Dock\Installer\System\BrewCask;
-use Dock\Installer\System\DockerCompose;
-use Dock\Installer\System\Homebrew;
-use Dock\Installer\System\PhpSsh;
-use Dock\Installer\System\Vagrant;
-use Dock\Installer\System\VirtualBox;
+use Dock\Installer\System;
+use Dock\Installer\TaskProvider;
+use Dock\Installer\TaskProviderFactory;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
@@ -66,24 +61,36 @@ $container['process.silent_runner'] = function () {
     return new SilentProcessRunner();
 };
 
-$container['installer.docker'] = function ($c) {
-    return new DockerInstaller(
-        new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
-        new \SRIO\ChainOfResponsibility\ChainBuilder([
-            new Homebrew(),
-            new BrewCask(),
-            new PhpSsh(),
-            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
-            new DockerRouting($c['cli.dinghy']),
-            new DnsDock(new SshClient(new Session(
+$container['installer.task_providers'] = function ($c) {
+    return [
+        'mac' => new TaskProvider([
+            new System\Mac\Homebrew(),
+            new System\Mac\BrewCask(),
+            new System\Mac\PhpSsh(),
+            new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
+            new Dns\Mac\DockerRouting($c['cli.dinghy']),
+            new Dns\Mac\DnsDock(new SshClient(new Session(
                 new Configuration(SshClient::DEFAULT_HOSTNAME),
                 new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
             ))),
-            new Vagrant(),
-            new VirtualBox(),
-            new DockerCompose(),
-            new EnvironmentVariables(new EnvironManipulatorFactory()),
-        ])
+            new System\Mac\Vagrant(),
+            new System\Mac\VirtualBox(),
+            new System\Mac\DockerCompose(),
+            new Docker\EnvironmentVariables(new EnvironManipulatorFactory()),
+        ]),
+        'linux' => new TaskProvider([
+            new System\Linux\Docker(),
+            new System\Linux\NoSudo(),
+            new System\Linux\DockerCompose(),
+            new Dns\Linux\DnsDock(),
+        ]),
+    ];
+};
+
+$container['installer.docker'] = function ($c) {
+    return new DockerInstaller(
+        new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
+        new TaskProviderFactory($c['installer.task_providers'])
     );
 };
 

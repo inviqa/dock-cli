@@ -2,8 +2,6 @@
 
 namespace Dock\Installer;
 
-use SRIO\ChainOfResponsibility\ChainBuilder;
-
 class DockerInstaller
 {
     /**
@@ -12,18 +10,18 @@ class DockerInstaller
     private $context;
 
     /**
-     * @var ChainBuilder
+     * @var tasks
      */
-    private $chainBuilder;
+    private $tasks;
 
     /**
      * @param InstallContext $context
-     * @param ChainBuilder $chainBuilder
+     * @param TaskProviderFactory $tasks
      */
-    public function __construct(InstallContext $context, ChainBuilder $chainBuilder)
+    public function __construct(InstallContext $context, TaskProviderFactory $tasks)
     {
         $this->context = $context;
-        $this->chainBuilder = $chainBuilder;
+        $this->tasks = $tasks;
     }
 
     /**
@@ -31,6 +29,6 @@ class DockerInstaller
      */
     public function install()
     {
-        $this->chainBuilder->getRunner()->run($this->context);
+        $this->tasks->getProvider()->getTasks()->getRunner()->run($this->context);
     }
 }
