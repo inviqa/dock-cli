@@ -64,7 +64,6 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
             $this->userInteraction->write('Skipping PHP SSH2 extension installation, do it yourself.');
         } else {
             $this->installHomebrewPackage($package);
-
         }
 
         throw new \RuntimeException('Please re-run this installation script to have enabled PHP-SSH2 extension');
@@ -90,7 +89,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
      */
     private function hasHomebrewPackage($package)
     {
-        return $this->processRunner->run('brew install --dry-run '.$package, false)->isSuccessful();
+        return $this->processRunner->run('brew install --dry-run ' . $package, false)->isSuccessful();
     }
 
     /**
@@ -106,7 +105,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
      */
     protected function installHomebrewPackage($package)
     {
-// Check if the package is known
+        // Check if the package is known
         if (!$this->hasHomebrewPackage($package)) {
             $this->userInteraction->write(sprintf('Package "%s" not found, tapping default PHP brews', $package));
 
