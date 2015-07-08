@@ -18,7 +18,7 @@ sudo mv dock-cli /usr/bin/dock-cli
 To install the Docker development environment run:
 
 ```
-dock-cli docker-install
+dock-cli docker:install
 ```
 
 **Note:** This sets environment variables which are loaded for the current shell and any opened after running it.
