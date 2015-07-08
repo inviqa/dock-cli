@@ -25,14 +25,4 @@ abstract class InstallerTask
      * @param InstallContext $context
      */
     abstract public function run(InstallContext $context);
-
-    protected function isSuccessful($command, ProcessRunner $processRunner)
-    {
-        try {
-            $processRunner->run($command);
-            return true;
-        } catch (ProcessFailedException $e) {
-            return false;
-        }
-    }
 }

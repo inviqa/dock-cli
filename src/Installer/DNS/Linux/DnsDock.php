@@ -29,7 +29,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     {
         $processRunner = $context->getProcessRunner();
 
-        if (! $this->isSuccessful('grep "^DOCKER_OPTS" /etc/default/docker', $processRunner)) {
+        if (! $processRunner->run('grep "^DOCKER_OPTS" /etc/default/docker', false)->isSuccessful()) {
             $userInteraction = $context->getUserInteraction();
             $userInteraction->writeTitle('Configure DNS resolution for Docker containers');
 
