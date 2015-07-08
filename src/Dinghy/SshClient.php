@@ -46,7 +46,7 @@ class SshClient
      * @param string $command
      * @return bool
      */
-    public function runAndGetBooleanResult($command)
+    public function runAndCheckOutputWasGenerated($command)
     {
         try {
             $result = $this->run($command);
