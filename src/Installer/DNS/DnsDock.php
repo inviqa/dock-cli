@@ -55,13 +55,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     private function dnsDockerIsInStartupConfiguration()
     {
-        try {
-            $result = $this->sshClient->run('grep dnsdock /var/lib/boot2docker/bootlocal.sh');
-        } catch (\RuntimeException $e) {
-            $result = null;
-        }
-
-        return !empty($result);
+        return $this->sshClient->runAndCheckOutputWasGenerated('grep dnsdock /var/lib/boot2docker/bootlocal.sh');
     }
 
     /**
@@ -69,13 +63,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     private function hasDockerExtraArgs()
     {
-        try {
-            $result = $this->sshClient->run('grep EXTRA_ARGS /var/lib/boot2docker/profile');
-        } catch (\RuntimeException $e) {
-            $result = null;
-        }
-
-        return !empty($result);
+        return $this->sshClient->runAndCheckOutputWasGenerated('grep EXTRA_ARGS /var/lib/boot2docker/profile');
     }
 
     /**

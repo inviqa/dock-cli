@@ -41,4 +41,19 @@ class SshClient
 
         return $this->exec->run($command);
     }
+
+    /**
+     * @param string $command
+     * @return bool
+     */
+    public function runAndCheckOutputWasGenerated($command)
+    {
+        try {
+            $result = $this->run($command);
+        } catch (\RuntimeException $e) {
+            $result = null;
+        }
+
+        return !empty($result);
+    }
 }
