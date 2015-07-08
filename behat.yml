@@ -2,7 +2,12 @@ default:
   suites:
     application:
       contexts: [ ApplicationTesterContext ]
-    smoke: false
-
   gherkin:
     filters: { tags: ~@wip }
+
+
+smoke:
+  suites:
+    smoke:
+      contexts: [ SmokeContext ]
+      filters: { tags: @smoke }

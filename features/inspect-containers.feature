@@ -6,6 +6,7 @@ Feature: Viewing status of containers
   Background:
     Given I have a Docker Compose file that contains one container
 
+    @smoke
   Scenario: Container in config and running
     Given this container is running
     When I run the "ps" command
