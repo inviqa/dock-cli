@@ -14,16 +14,16 @@ class DockerInstaller
     /**
      * @var ChainBuilder
      */
-    private $tasks;
+    private $chainBuilder;
 
     /**
      * @param InstallContext $context
-     * @param ChainBuilder $tasks
+     * @param ChainBuilder $chainBuilder
      */
-    public function __construct(InstallContext $context, ChainBuilder $tasks)
+    public function __construct(InstallContext $context, ChainBuilder $chainBuilder)
     {
         $this->context = $context;
-        $this->tasks = $tasks;
+        $this->chainBuilder = $chainBuilder;
     }
 
     /**
@@ -31,6 +31,6 @@ class DockerInstaller
      */
     public function install()
     {
-        $this->tasks->getRunner()->run($this->context);
+        $this->chainBuilder->getRunner()->run($this->context);
     }
 }
