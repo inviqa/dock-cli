@@ -7,22 +7,15 @@ use SRIO\ChainOfResponsibility\ChainBuilder;
 class DockerInstaller
 {
     /**
-     * @var InstallContext
-     */
-    private $context;
-
-    /**
      * @var ChainBuilder
      */
     private $tasks;
 
     /**
-     * @param InstallContext $context
      * @param ChainBuilder $tasks
      */
-    public function __construct(InstallContext $context, ChainBuilder $tasks)
+    public function __construct(ChainBuilder $tasks)
     {
-        $this->context = $context;
         $this->tasks = $tasks;
     }
 
@@ -31,6 +24,6 @@ class DockerInstaller
      */
     public function install()
     {
-        $this->tasks->getRunner()->run($this->context);
+        $this->tasks->getRunner()->run();
     }
 }

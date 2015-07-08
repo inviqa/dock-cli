@@ -17,7 +17,6 @@ use Dock\Installer\DNS\DockerRouting;
 use Dock\Installer\Docker\Dinghy;
 use Dock\Installer\Docker\EnvironmentVariables;
 use Dock\Installer\DockerInstaller;
-use Dock\Installer\InstallContext;
 use Dock\Installer\System\BrewCask;
 use Dock\Installer\System\DockerCompose;
 use Dock\Installer\System\Homebrew;
@@ -68,21 +67,20 @@ $container['process.silent_runner'] = function () {
 
 $container['installer.docker'] = function ($c) {
     return new DockerInstaller(
-        new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
         new \SRIO\ChainOfResponsibility\ChainBuilder([
-            new Homebrew(),
-            new BrewCask(),
-            new PhpSsh(),
-            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
-            new DockerRouting($c['cli.dinghy']),
+            new Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
+            new BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
+            new PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
+            new DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
             new DnsDock(new SshClient(new Session(
                 new Configuration(SshClient::DEFAULT_HOSTNAME),
                 new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-            ))),
-            new Vagrant(),
-            new VirtualBox(),
-            new DockerCompose(),
-            new EnvironmentVariables(new EnvironManipulatorFactory()),
+            )), $c['console.user_interaction'], $c['process.interactive_runner']),
+            new Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
+            new VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
+            new DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
+            new EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
         ])
     );
 };
