@@ -4,12 +4,10 @@ namespace Dock\Installer\Docker;
 
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
-use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class Dinghy extends InstallerTask implements DependentChainProcessInterface
 {
@@ -35,21 +33,26 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     /**
      * @param Boot2DockerCli $boot2docker
      * @param DinghyCli $dinghy
+     * @param UserInteraction $userInteraction
+     * @param ProcessRunner $processRunner
      */
-    public function __construct(Boot2DockerCli $boot2docker, DinghyCli $dinghy)
-    {
+    public function __construct(
+        Boot2DockerCli $boot2docker,
+        DinghyCli $dinghy,
+        UserInteraction $userInteraction,
+        ProcessRunner $processRunner
+    ) {
         $this->boot2docker = $boot2docker;
         $this->dinghy = $dinghy;
+        $this->userInteraction = $userInteraction;
+        $this->processRunner = $processRunner;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run(InstallContext $context)
+    public function run()
     {
-        $this->userInteraction = $context->getUserInteraction();
-        $this->processRunner = $context->getProcessRunner();
-
         $this->uninstallBoot2Docker();
         $this->installDinghy();
         $this->changeDinghyDnsResolverNamespace();
