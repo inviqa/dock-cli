@@ -2,6 +2,7 @@
 
 namespace Dock\Cli;
 
+use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
@@ -61,7 +62,16 @@ class UpCommand extends Command
         $this->userInteraction->writeTitle('Starting application containers');
 
         try {
-            $this->processRunner->run('docker-compose up -d');
+            $interactiveProcessBuilder = new InteractiveProcessBuilder($this->userInteraction);
+            $processManager = $interactiveProcessBuilder->getManagerFor('docker-compose up -d');
+            $processManager
+                ->disableOutput()
+                ->ifTakesMoreThan(5000, function() use ($processManager) {
+                    $processManager->enableOutput(true);
+                })
+                ->run()
+            ;
+
             $this->userInteraction->writeTitle('Application containers successfully started');
         } catch (ProcessFailedException $e) {
             echo $e->getProcess()->getOutput();
