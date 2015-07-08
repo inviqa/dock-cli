@@ -2,26 +2,27 @@
 
 namespace Dock\Cli;
 
-use Dock\Installer\DockerInstaller;
+use Dock\Cli\Helper\ContainerList;
+use Dock\Compose\Inspector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallCommand extends Command
+class PsCommand extends Command
 {
     /**
-     * @var DockerInstaller
+     * @var Inspector
      */
-    private $dockerInstaller;
+    private $inspector;
 
     /**
-     * @param DockerInstaller $dockerInstaller
+     * @param Inspector $inspector
      */
-    public function __construct(DockerInstaller $dockerInstaller)
+    public function __construct(Inspector $inspector)
     {
         parent::__construct();
 
-        $this->dockerInstaller = $dockerInstaller;
+        $this->inspector = $inspector;
     }
 
     /**
@@ -30,8 +31,8 @@ class InstallCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('docker:install')
-            ->setDescription('Install Docker')
+            ->setName('ps')
+            ->setDescription('List running containers')
         ;
     }
 
@@ -40,8 +41,9 @@ class InstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->dockerInstaller->install();
+        $containers = $this->inspector->getRunningContainers();
 
-        pcntl_exec(getenv('SHELL'));
+        $list = new ContainerList($output);
+        $list->render($containers);
     }
 }

@@ -5,7 +5,9 @@
     "symfony/process": "~2.7",
     "sroze/chain-of-responsibility": "~1.2.0",
     "herzult/php-ssh": "~1.1",
-    "herrera-io/phar-update": "~2.0"
+    "herrera-io/phar-update": "~2.0",
+    "pimple/pimple": "^3.0",
+    "symfony/event-dispatcher": "~2.7"
   },
   "autoload": {
     "psr-4": {
@@ -16,6 +18,7 @@
     "app.php"
   ],
   "require-dev": {
-    "kherge/box": "~2.5"
+    "kherge/box": "~2.5",
+    "fabpot/php-cs-fixer": "~1.9"
   }
 }

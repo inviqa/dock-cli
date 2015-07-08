@@ -2,21 +2,36 @@
 
 namespace Dock\Installer;
 
-use Dock\Installer\InstallContext;
-use Dock\Installer\InteractiveProcessRunner;
-use Dock\IO\UserInteraction;
+use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\ChainBuilder;
 
 class DockerInstaller
 {
-    public function install(UserInteraction $userInteraction, TaskProvider $taskProvider)
+    /**
+     * @var ProcessRunner
+     */
+    private $context;
+
+    /**
+     * @var ChainBuilder
+     */
+    private $tasks;
+
+    /**
+     * @param InstallContext $context
+     * @param ChainBuilder $tasks
+     */
+    public function __construct(InstallContext $context, ChainBuilder $tasks)
     {
-        $builder = new ChainBuilder($taskProvider->getTasks());
+        $this->context = $context;
+        $this->tasks = $tasks;
+    }
 
-        $processRunner = new InteractiveProcessRunner($userInteraction);
-        $context = new InstallContext($processRunner, $userInteraction);
-
-        $runner = $builder->getRunner();
-        $runner->run($context);
+    /**
+     * Start the Docker installation process.
+     */
+    public function install()
+    {
+        $this->tasks->getRunner()->run($this->context);
     }
 }

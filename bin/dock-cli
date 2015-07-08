@@ -1,10 +1,12 @@
 #!/usr/bin/env php
 <?php
-// application.php
+use Symfony\Component\Console\Application;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-use Dock\Cli\Application;
+$container = require __DIR__ . '/../app/bootstrap.php';
 
-$application = new Application('Dock CLI', '@package_version@');
+/** @var Application $application */
+$application = $container['application'];
+
 $application->run();

@@ -14,6 +14,9 @@ class SelfUpdateCommand extends Command
 {
     const MANIFEST_FILE = 'http://sroze.github.io/dock-cli/manifest.json';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -23,6 +26,9 @@ class SelfUpdateCommand extends Command
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Looking for updates...');
@@ -31,6 +37,7 @@ class SelfUpdateCommand extends Command
             $manager = new Manager(Manifest::loadFile(self::MANIFEST_FILE));
         } catch (FileException $e) {
             $output->writeln('<error>Unable to search for updates</error>');
+
             return 1;
         }
 

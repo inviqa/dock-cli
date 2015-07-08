@@ -2,6 +2,7 @@
 
 namespace Dock\Installer\Docker;
 
+use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
@@ -29,6 +30,17 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $this->userInteraction = $context->getUserInteraction();
         $this->processRunner = $context->getProcessRunner();
 
+        $boot2docker = new Boot2DockerCli($this->processRunner);
+        if ($boot2docker->isInstalled()) {
+            $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
+
+            if (!$boot2docker->uninstall()) {
+                $this->userInteraction->writeTitle('Something went wrong while uninstalling Boot2Docker, continuing anyway.');
+            } else {
+                $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
+            }
+        }
+
         $dinghy = new DinghyCli($context->getProcessRunner());
         if (!$dinghy->isInstalled()) {
             $this->userInteraction->writeTitle('Installing Dinghy');
@@ -47,11 +59,6 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         } else {
             $this->userInteraction->writeTitle('Dinghy already started');
         }
-
-        if (!$this->haveDinghyEnvironmentVariables()) {
-            $this->userInteraction->writeTitle('Setting up dinghy environment variables');
-            $this->setupDinghyEnvironmentVariables();
-        }
     }
 
     private function installDinghy()
@@ -59,49 +66,9 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $this->processRunner->run(new Process('brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'));
     }
 
-    private function haveDinghyEnvironmentVariables()
-    {
-        return getenv('DOCKER_HOST') !== false;
-    }
-
-    private function setupDinghyEnvironmentVariables()
-    {
-        $userHome = getenv('HOME');
-        $exports = <<<EOF
-export DOCKER_HOST=tcp://127.0.0.1:2376
-export DOCKER_CERT_PATH={$userHome}/.dinghy/certs
-export DOCKER_TLS_VERIFY=1
-EOF;
-
-        if ($this->isUsingZsh()) {
-            $environmentFile = $userHome . '/.zshenv';
-        } else {
-            $environmentFile = $userHome . '/.bash_profile';
-        }
-
-        $process = new Process('grep DOCKER_HOST '.$environmentFile);
-        $this->processRunner->run($process, false);
-        $result = $process->getOutput();
-
-        if (empty($result)) {
-            $process = new Process('echo "'.$exports.'" >> '.$environmentFile);
-            $this->processRunner->run($process);
-
-            exec('source '.$environmentFile);
-        }
-    }
-
-    private function isUsingZsh()
-    {
-        $shell = getenv('SHELL');
-
-        return strpos($shell, 'zsh') !== false;
-    }
-
     private function changeDinghyDnsResolverNamespace()
     {
-        $process = new Process('dinghy version');
-        $this->processRunner->run($process);
+        $process = $this->processRunner->run(new Process('dinghy version'));
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
         $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';

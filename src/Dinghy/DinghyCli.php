@@ -22,7 +22,7 @@ class DinghyCli
     }
 
     /**
-     * Start dingly.
+     * Start dinghy.
      *
      * @throws ProcessFailedException
      */
@@ -32,7 +32,7 @@ class DinghyCli
     }
 
     /**
-     * Stop dingly.
+     * Stop dinghy.
      *
      * @throws ProcessFailedException
      */
@@ -78,12 +78,6 @@ class DinghyCli
      */
     public function isInstalled()
     {
-        try {
-            $this->getVersion();
-        } catch (ProcessFailedException $e) {
-            return false;
-        }
-
-        return true;
+        return $this->processRunner->run(new Process('dinghy version'), false)->isSuccessful();
     }
 }
