@@ -79,7 +79,7 @@ $container['installer.task_providers'] = function ($c) {
             new System\Mac\DockerCompose(),
             new Docker\EnvironmentVariables(new EnvironManipulatorFactory()),
         ]),
-        'linux' => new TaskProvider([
+        'debian' => new TaskProvider([
             new System\Linux\Docker(),
             new System\Linux\NoSudo(),
             new System\Linux\DockerCompose(),

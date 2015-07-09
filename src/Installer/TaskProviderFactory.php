@@ -18,13 +18,22 @@ class TaskProviderFactory
     {
         $operatingSystem = $this->os->get();
 
-        switch ($operatingSystem) {
-            case OS::MAC:
-                return $this->providers['mac'];
-            case OS::LINUX:
-                return $this->providers['linux'];
-            default:
-                throw new \Exception("Installer does not support operating system '$operatingSystem'");
+        if ($operatingSystem === OS::MAC) {
+            return $this->providers['mac'];
+        } elseif ($operatingSystem === OS::LINUX) {
+            $distro = $this->os->getLinuxDistro();
+            switch ($distro) {
+                case 'debian':
+                case 'ubuntu':
+                case 'linuxmint':
+                case 'elementary os':
+                case 'kali':
+                    return $this->providers['debian'];
+                default:
+                    throw new Exception("Linux distribution '$distro' is not supported.");
+            }
+        } else {
+            throw new \Exception("Installer does not support operating system '$operatingSystem'");
         }
     }
 }
