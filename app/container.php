@@ -34,12 +34,40 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
 
+$osDetector = new OS();
+$operatingSystem = $osDetector->get();
+
+if ($operatingSystem === OS::MAC) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
+} elseif ($operatingSystem === OS::LINUX) {
+    $distro = $osDetector->getLinuxDistro();
+    switch ($distro) {
+        case 'debian':
+        case 'ubuntu':
+        case 'linuxmint':
+        case 'elementary os':
+        case 'kali':
+            require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+            break;
+        case 'redhat':
+        case 'amzn':
+        case 'fedora':
+        case 'centos':
+            // require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
+            // break;
+        default:
+            throw new \Exception("Linux distribution '$distro' is not supported.");
+    }
+} else {
+    throw new \Exception("Installer does not support operating system '$operatingSystem'");
+}
+
 $container['command.selfupdate'] = function () {
     return new SelfUpdateCommand();
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker'], $c['system.os']);
+    return new InstallCommand($c['installer.docker'], $c['system.shell_creator']);
 };
 
 $container['console.user_interaction'] = function ($c) {

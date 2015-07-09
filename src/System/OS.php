@@ -27,18 +27,6 @@ class OS
         }
     }
 
-    public function createNewShell()
-    {
-        switch ($this->get()) {
-            case self::MAC:
-                pcntl_exec(getenv('SHELL'));
-            case self::LINUX:
-                pcntl_exec('/usr/bin/sudo', array('su', get_current_user()));
-            default:
-                throw new \Exception('Unsupported operating system');
-        }
-    }
-
     /**
      * @return string
      */
