@@ -22,7 +22,7 @@ class InstallCommand extends Command
 
     /**
      * @param DockerInstaller $dockerInstaller
-     * @param ProcessRunner $processRunner
+     * @param ShellCreator $shellCreator
      */
     public function __construct(DockerInstaller $dockerInstaller, ShellCreator $shellCreator)
     {
