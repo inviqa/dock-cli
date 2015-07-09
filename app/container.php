@@ -7,7 +7,9 @@ use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
-use Dock\Cli\UpCommand;
+use Dock\Cli\StartCommand;
+use Dock\Cli\StopCommand;
+use Dock\Compose\ComposeExecutableFinder;
 use Dock\Compose\Inspector;
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
@@ -41,7 +43,7 @@ $container['command.selfupdate'] = function () {
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker']);
+    return new InstallCommand($c['installer.docker'], $c['process.silent_runner']);
 };
 
 $container['console.user_interaction'] = function ($c) {
@@ -64,7 +66,9 @@ $container['process.interactive_runner'] = function ($c) {
 $container['process.silent_runner'] = function () {
     return new SilentProcessRunner();
 };
-
+$container['compose.executable_finder'] = function () {
+    return new ComposeExecutableFinder();
+};
 $container['installer.docker'] = function ($c) {
     return new DockerInstaller(
         new \SRIO\ChainOfResponsibility\ChainBuilder([
@@ -89,14 +93,17 @@ $container['command.restart'] = function ($c) {
     return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
 };
 
-$container['command.up'] = function ($c) {
-    return new UpCommand($c['process.silent_runner'], $c['console.user_interaction']);
+$container['command.start'] = function ($c) {
+    return new StartCommand($c['process.silent_runner'], $c['console.user_interaction']);
+};
+$container['command.stop'] = function ($c) {
+    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
 };
 $container['command.ps'] = function ($c) {
     return new PsCommand(new Inspector($c['process.silent_runner']));
 };
 $container['command.logs'] = function ($c) {
-    return new LogsCommand($c['process.interactive_runner']);
+    return new LogsCommand($c['compose.executable_finder'], $c['process.silent_runner']);
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
@@ -114,7 +121,8 @@ $container['application'] = function ($c) {
             $c['command.selfupdate'],
             $c['command.install'],
             $c['command.restart'],
-            $c['command.up'],
+            $c['command.start'],
+            $c['command.stop'],
             $c['command.ps'],
             $c['command.logs'],
         )

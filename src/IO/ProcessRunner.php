@@ -13,4 +13,10 @@ interface ProcessRunner
      * @return Process
      */
     public function run($command, $mustSucceed = true);
+
+    /**
+     * @param string $command
+     * @param array $arguments
+     */
+    public function followsUpWith($command, array $arguments = []);
 }

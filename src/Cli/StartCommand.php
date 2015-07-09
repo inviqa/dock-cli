@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class UpCommand extends Command
+class StartCommand extends Command
 {
     /**
      * @var ProcessRunner
@@ -40,7 +40,7 @@ class UpCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('up')
+            ->setName('start')
             ->setDescription('Start the project')
         ;
     }
@@ -59,15 +59,8 @@ class UpCommand extends Command
         }
 
         $this->userInteraction->writeTitle('Starting application containers');
-
-        try {
-            $this->processRunner->run('docker-compose up -d');
-            $this->userInteraction->writeTitle('Application containers successfully started');
-        } catch (ProcessFailedException $e) {
-            echo $e->getProcess()->getOutput();
-
-            return 1;
-        }
+        $this->processRunner->run('docker-compose up -d');
+        $this->userInteraction->writeTitle('Application containers successfully started');
 
         return $this->getApplication()->run(
             new ArrayInput(['command' => 'ps']),
