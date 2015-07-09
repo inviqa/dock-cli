@@ -42,6 +42,20 @@ class InteractiveProcessRunner implements ProcessRunner
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function followsUpWith($command, array $arguments = [])
+    {
+        $this->userInteraction->write(sprintf(
+            '<info>RUN</info> %s %s',
+            $command,
+            implode(' ', $arguments)
+        ));
+
+        pcntl_exec($command, $arguments);
+    }
+
+    /**
      * @param bool $highlightErrors
      *
      * @return callable
