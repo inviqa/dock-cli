@@ -2,7 +2,6 @@
 
 namespace Dock\Installer;
 
-use Dock\IO\ProcessRunner;
 use SRIO\ChainOfResponsibility\ChainContext;
 use SRIO\ChainOfResponsibility\ChainProcessInterface;
 
