@@ -25,6 +25,7 @@ use Dock\Installer\System\Homebrew;
 use Dock\Installer\System\PhpSsh;
 use Dock\Installer\System\Vagrant;
 use Dock\Installer\System\VirtualBox;
+use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Pimple\Container;
@@ -94,7 +95,7 @@ $container['command.restart'] = function ($c) {
 };
 
 $container['command.start'] = function ($c) {
-    return new StartCommand($c['process.silent_runner'], $c['console.user_interaction']);
+    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction']);
 };
 $container['command.stop'] = function ($c) {
     return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);

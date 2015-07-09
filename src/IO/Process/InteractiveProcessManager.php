@@ -9,25 +9,48 @@ use Dock\IO\UserInteraction;
 
 class InteractiveProcessManager
 {
+    /**
+     * @var InteractiveProcess
+     */
     private $process;
+
     /**
      * @var UserInteraction
      */
     private $userInteraction;
 
-    public function __construct(InteractiveProcess $process, UserInteraction $userInteraction)
+    /**
+     * @param UserInteraction $userInteraction
+     */
+    public function __construct(UserInteraction $userInteraction)
     {
-        $this->process = $process;
         $this->userInteraction = $userInteraction;
     }
 
+    /**
+     * Attach a process.
+     *
+     * @param InteractiveProcess $process
+     */
+    public function setProcess(InteractiveProcess $process)
+    {
+        $this->process = $process;
+    }
+
+    /**
+     * Disable the process output.
+     *
+     */
     public function disableOutput()
     {
         $this->process->updatePipe(new NullPipe());
-
-        return $this;
     }
 
+    /**
+     * Enable the process output.
+     *
+     * @param bool $retroActive
+     */
     public function enableOutput($retroActive = false)
     {
         $pipe = new UserInteractionPipe($this->userInteraction);
@@ -36,17 +59,12 @@ class InteractiveProcessManager
         }
 
         $this->process->updatePipe($pipe);
-
-        return $this;
     }
 
-    public function ifTakesMoreThan($milliSeconds, callable $callable)
-    {
-        $this->process->updateWaitStrategy(new TimeoutWait($milliSeconds, $callable));
-
-        return $this;
-    }
-
+    /**
+     * Run the given process.
+     *
+     */
     public function run()
     {
         $this->process->run();

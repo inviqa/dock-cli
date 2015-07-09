@@ -3,6 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\IO\Process\InteractiveProcessBuilder;
+use Dock\IO\Process\InteractiveProcessManager;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
@@ -14,25 +15,24 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class StartCommand extends Command
 {
     /**
-     * @var ProcessRunner
-     */
-    private $processRunner;
-
-    /**
      * @var UserInteraction
      */
     private $userInteraction;
+    /**
+     * @var InteractiveProcessBuilder
+     */
+    private $interactiveProcessBuilder;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @param InteractiveProcessBuilder $interactiveProcessBuilder
      * @param UserInteraction $userInteraction
      */
-    public function __construct(ProcessRunner $processRunner, UserInteraction $userInteraction)
+    public function __construct(InteractiveProcessBuilder $interactiveProcessBuilder, UserInteraction $userInteraction)
     {
         parent::__construct();
 
-        $this->processRunner = $processRunner;
         $this->userInteraction = $userInteraction;
+        $this->interactiveProcessBuilder = $interactiveProcessBuilder;
     }
 
     /**
@@ -61,14 +61,14 @@ class StartCommand extends Command
 
         $this->userInteraction->writeTitle('Starting application containers');
 
-        $interactiveProcessBuilder = new InteractiveProcessBuilder($this->userInteraction);
-        $processManager = $interactiveProcessBuilder->getManagerFor('docker-compose up -d');
-        $processManager
+        $this->interactiveProcessBuilder
+            ->forCommand('docker-compose up -d')
             ->disableOutput()
-            ->ifTakesMoreThan(5000, function() use ($processManager) {
+            ->ifTakesMoreThan(5000, function(InteractiveProcessManager $processManager) {
                 $processManager->enableOutput(true);
             })
-            ->run()
+            ->getManager()
+            ->run();
         ;
 
         return $this->getApplication()->run(
