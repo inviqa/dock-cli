@@ -44,6 +44,7 @@ git add manifest.json
 # Symlink latest version
 rm downloads/$PHAR_NAME-latest.phar
 cp downloads/$PHAR_NAME-${TAG}.phar downloads/$PHAR_NAME-latest.phar
+git add downloads/$PHAR_NAME-latest.phar
 
 git commit -m "Bump version ${TAG}"
 
