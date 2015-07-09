@@ -17,9 +17,7 @@ use Dock\Dinghy\SshClient;
 use Dock\Docker\ContainerDetails;
 use Dock\DockerCompose\ConfiguredContainerIds;
 use Dock\Installer\DockerInstaller;
-use Dock\Installer\System;
-use Dock\Installer\TaskProvider;
-use Dock\Installer\TaskProviderFactory;
+use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Dock\System\OperatingSystemDetector;
@@ -91,7 +89,7 @@ $container['command.restart'] = function ($c) {
 };
 
 $container['command.start'] = function ($c) {
-    return new StartCommand($c['process.silent_runner'], $c['console.user_interaction']);
+    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction']);
 };
 $container['command.stop'] = function ($c) {
     return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
