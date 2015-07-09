@@ -22,7 +22,7 @@ use Dock\Installer\TaskProvider;
 use Dock\Installer\TaskProviderFactory;
 use Dock\IO\SilentProcessRunner;
 use Dock\System\Environ\EnvironManipulatorFactory;
-use Dock\System\OS;
+use Dock\System\OperatingSystemDetector;
 use Pimple\Container;
 use Ssh\Authentication\Password;
 use Ssh\Configuration;
@@ -34,12 +34,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
 
-$osDetector = new OS();
+$osDetector = new OperatingSystemDetector();
 $operatingSystem = $osDetector->get();
 
-if ($operatingSystem === OS::MAC) {
+if ($operatingSystem === OperatingSystemDetector::MAC) {
     require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
-} elseif ($operatingSystem === OS::LINUX) {
+} elseif ($operatingSystem === OperatingSystemDetector::LINUX) {
     $distro = $osDetector->getLinuxDistro();
     switch ($distro) {
         case 'debian':

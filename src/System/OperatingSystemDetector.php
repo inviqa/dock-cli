@@ -2,7 +2,7 @@
 
 namespace Dock\System;
 
-class OS
+class OperatingSystemDetector
 {
     const MAC = 1;
     const LINUX = 2;
