@@ -21,6 +21,11 @@ class InteractiveProcess
      */
     private $process;
 
+    /**
+     * @param Process $process
+     * @param Pipe $pipe
+     * @param WaitStrategy $waitStrategy
+     */
     public function __construct(Process $process, Pipe $pipe, WaitStrategy $waitStrategy)
     {
         $this->pipe = $pipe;
@@ -28,16 +33,26 @@ class InteractiveProcess
         $this->process = $process;
     }
 
+    /**
+     * @param Pipe $pipe
+     */
     public function updatePipe(Pipe $pipe)
     {
         $this->pipe = $pipe;
     }
 
+    /**
+     * @param WaitStrategy $waitStrategy
+     */
     public function updateWaitStrategy(WaitStrategy $waitStrategy)
     {
         $this->waitStrategy = $waitStrategy;
     }
 
+    /**
+     * Run the process.
+     *
+     */
     public function run()
     {
         $this->process->start(function($type, $buffer) {
