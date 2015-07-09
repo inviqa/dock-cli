@@ -95,48 +95,8 @@ $container['compose.executable_finder'] = function () {
     return new ComposeExecutableFinder();
 };
 
-$container['installer.task_providers'] = function ($c) {
-    return [
-        'mac' => new TaskProvider([
-            new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dns\Mac\DnsDock(new SshClient(new Session(
-                new Configuration(SshClient::DEFAULT_HOSTNAME),
-                new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-            )), $c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Mac\VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
-        ]),
-        'debian' => new TaskProvider([
-            new System\Linux\Debian\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Linux\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Linux\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dns\Linux\Debian\DockerRouting($c['console.user_interaction'], $c['process.interactive_runner']),
-        ]),
-        'redhat' => new TaskProvider([
-            new System\Linux\RedHat\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Linux\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
-            new System\Linux\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']),
-            // new Dns\Linux\RedHat\DockerRouting($c['console.user_interaction'], $c['process.interactive_runner']), // TODO
-        ]),
-    ];
-};
-
-$container['system.os'] = function ($c) {
-    return new OS;
-};
-
 $container['installer.docker'] = function ($c) {
-    return new DockerInstaller(
-        new TaskProviderFactory($c['installer.task_providers'], $c['system.os'])
-    );
+    return new DockerInstaller($c['installer.task_provider']);
 };
 
 $container['command.restart'] = function ($c) {

@@ -5,16 +5,16 @@ namespace Dock\Installer;
 class DockerInstaller
 {
     /**
-     * @var TaskProviderFactory
+     * @var TaskProvider
      */
-    private $tasks;
+    private $taskProvider;
 
     /**
-     * @param TaskProviderFactory $tasks
+     * @param TaskProviderFactory $taskProvider
      */
-    public function __construct(TaskProviderFactory $tasks)
+    public function __construct(TaskProvider $taskProvider)
     {
-        $this->tasks = $tasks;
+        $this->taskProvider = $taskProvider;
     }
 
     /**
@@ -22,6 +22,6 @@ class DockerInstaller
      */
     public function install()
     {
-        $this->tasks->getProvider()->getTasks()->getRunner()->run();
+        $this->taskProvider->getChainBuilder()->getRunner()->run();
     }
 }

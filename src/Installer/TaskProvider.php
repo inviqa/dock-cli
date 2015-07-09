@@ -19,7 +19,7 @@ class TaskProvider
     /**
      * @return ChainBuilder
      */
-    public function getTasks()
+    public function getChainBuilder()
     {
         return new ChainBuilder($this->tasks);
     }
