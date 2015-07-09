@@ -8,34 +8,64 @@ class OperatingSystemDetector
     const LINUX = 2;
     const WINDOWS = 3;
 
-    /**
-     * @return int Current Operating System
-     */
-    public function get()
-    {
-        $uname = strtolower(php_uname('s'));
+    private $os;
+    private $distro;
 
-        switch ($uname) {
-            case 'darwin':
-                return self::MAC;
-            case 'linux':
-                return self::LINUX;
-            case 'win':
-                return self::WINDOWS;
-            default:
-                throw new \Exception("'$uname' is not a known operating system.");
+    public function __construct()
+    {
+        $this->os = strtolower(php_uname('s'));
+
+        if ($this->isLinux()) {
+            $this->distro = $this->getLinuxDistro();
         }
+    }
+
+    public function getOperatingSystem()
+    {
+        return $this->os;
+    }
+
+    public function getLinuxDistribution()
+    {
+        return $this->distro;
+    }
+
+    public function isMac()
+    {
+        return $this->os === 'darwin';
+    }
+
+    public function isLinux()
+    {
+        return $this->os === 'linux';
+    }
+
+    public function isDebian()
+    {
+        return in_array($this->distro, [
+            'debian',
+            'ubuntu',
+            'linuxmint',
+            'elementary os',
+            'kali',
+        ]);
+    }
+
+    public function isRedHat()
+    {
+        return in_array($this->distro, [
+            'redhat',
+            'amzn',
+            'fedora',
+            'centos',
+        ]);
     }
 
     /**
      * @return string
      */
-    public function getLinuxDistro()
+    private function getLinuxDistro()
     {
-        if ($this->get() !== self::LINUX) {
-            throw new \Exception('Not Linux');
-        }
-
         exec('command -v lsb_release > /dev/null 2>&1', $out, $return);
         if ($return === 0 && false) {
             $distro = shell_exec('lsb_release -si');

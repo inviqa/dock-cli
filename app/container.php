@@ -35,30 +35,17 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 $container = new Container();
 
 $osDetector = new OperatingSystemDetector();
-$operatingSystem = $osDetector->get();
-
-if ($operatingSystem === OperatingSystemDetector::MAC) {
+if ($osDetector->isMac()) {
     require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
-} elseif ($operatingSystem === OperatingSystemDetector::LINUX) {
-    $distro = $osDetector->getLinuxDistro();
-    switch ($distro) {
-        case 'debian':
-        case 'ubuntu':
-        case 'linuxmint':
-        case 'elementary os':
-        case 'kali':
-            require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
-            break;
-        case 'redhat':
-        case 'amzn':
-        case 'fedora':
-        case 'centos':
-            // require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
-            // break;
-        default:
-            throw new \Exception("Linux distribution '$distro' is not supported.");
+} elseif ($osDetector->isLinux()) {
+    if ($osDetector->isDebian()) {
+        require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+    } else {
+        $linuxDistribution = $osDetector->getLinuxDistribution();
+        throw new \Exception("Linux distribution '$linuxDistribution' is currently not supported.");
     }
 } else {
+    $operatingSystem = $osDetector->getOperatingSystem();
     throw new \Exception("Installer does not support operating system '$operatingSystem'");
 }
 
