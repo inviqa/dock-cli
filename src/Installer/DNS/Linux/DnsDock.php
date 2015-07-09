@@ -49,7 +49,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
 
     public function run()
     {
-        if (! $this->processRunner->run('grep "^DOCKER_OPTS" /etc/default/docker', false)->isSuccessful()) {
+        if (! $this->hasDockerOptions()) {
             $this->userInteraction->writeTitle('Configuring DNS resolution for Docker containers');
 
             $this->processRunner->run('echo \'DOCKER_OPTS="--bip=' . self::IP . '/24 --dns ' . self::IP . '"\' | sudo tee -a /etc/default/docker');
@@ -57,5 +57,10 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         }
 
         $this->processRunner->run('sudo docker start dnsdock || sudo docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock');
+    }
+
+    private function hasDockerOptions()
+    {
+        return $this->processRunner->run('grep "^DOCKER_OPTS" /etc/default/docker', false)->isSuccessful();
     }
 }

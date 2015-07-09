@@ -46,11 +46,14 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
 
     public function run()
     {
-        if (! $this->processRunner->run('groups | grep docker', false)->isSuccessful()) {
-            $this->userInteraction = $context->getUserInteraction();
+        if (! $this->isCurrentUserInDockerGroup()) {
             $this->userInteraction->writeTitle('Making docker work without sudo');
-
             $this->processRunner->run('sudo usermod -a -G docker $USER');
         }
+    }
+
+    private function isCurrentUserInDockerGroup()
+    {
+        return $this->processRunner->run('groups | grep docker', false)->isSuccessful();
     }
 }

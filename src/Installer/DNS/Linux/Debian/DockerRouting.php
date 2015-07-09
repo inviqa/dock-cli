@@ -41,11 +41,16 @@ class DockerRouting extends InstallerTask
      */
     public function run()
     {
-        if (! $this->processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful()) {
+        if (! $this->isUsingDnsDockDnsServer()) {
             $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
 
             $this->processRunner->run('echo "nameserver ' . DnsDock::IP . '" | sudo tee -a /etc/resolvconf/resolv.conf.d/head');
             $this->processRunner->run('sudo resolvconf -u');
         }
+    }
+
+    private function isUsingDnsDockDnsServer()
+    {
+        return $this->processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful();
     }
 }
