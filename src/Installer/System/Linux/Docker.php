@@ -27,6 +27,6 @@ class Docker extends SoftwareInstallTask
      */
     protected function getInstallCommand()
     {
-        return 'curl -sSL https://get.docker.com/ | sh && sudo service docker start';
+        return 'curl -sSL https://get.docker.com/ | sh';
     }
 }

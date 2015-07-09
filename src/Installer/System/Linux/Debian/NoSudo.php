@@ -20,7 +20,7 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * @param UserInteraction $userInteraction
-     * @param \Dock\IO\ProcessRunner $processRunner
+     * @param ProcessRunner $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
