@@ -1,0 +1,13 @@
+default:
+  suites:
+    application:
+      contexts: [ ApplicationTesterContext ]
+  gherkin:
+    filters: { tags: ~@wip }
+
+
+smoke:
+  suites:
+    smoke:
+      contexts: [ SmokeContext ]
+      filters: { tags: @smoke }

@@ -1,10 +1,11 @@
 <?php
 
-namespace Dock\Compose;
+namespace Dock\Docker;
 
+use Dock\Containers\Container;
 use Dock\IO\ProcessRunner;
 
-class Inspector
+class ContainerDetails implements \Dock\Containers\ContainerDetails
 {
     /**
      * @var ProcessRunner
@@ -20,20 +21,30 @@ class Inspector
     }
 
     /**
-     * @return Container[]
+     * @param string $containerId
+     * @return Container
      */
-    public function getRunningContainers()
+    public function findById($containerId)
     {
-        $containerIds = $this->getRunningContainerIds();
-        $containers = [];
+        return $this->getContainerFromInspection($this->inspectContainer($containerId));
+    }
 
-        foreach ($containerIds as $containerId) {
-            $inspection = $this->inspectContainer($containerId);
+    /**
+     * @param string $containerId
+     *
+     * @return array
+     */
+    private function inspectContainer($containerId)
+    {
+        $command = sprintf('docker inspect %s', $containerId);
+        $rawOutput = $this->processRunner->run($command)->getOutput();
+        $rawOutput = trim($rawOutput);
 
-            $containers[] = $this->getContainerFromInspection($inspection);
+        if (null === ($inspection = json_decode($rawOutput, true))) {
+            throw new \RuntimeException('Unable to inspect container');
         }
 
-        return $containers;
+        return $inspection[0];
     }
 
     /**
@@ -74,41 +85,4 @@ class Inspector
             $containerName.'.'.$containerImage.'.docker',
         ];
     }
-
-    /**
-     * @param string $containerId
-     *
-     * @return array
-     */
-    private function inspectContainer($containerId)
-    {
-        $command = sprintf('docker inspect %s', $containerId);
-        $rawOutput = $this->processRunner->run($command)->getOutput();
-        $rawOutput = trim($rawOutput);
-
-        if (null === ($inspection = json_decode($rawOutput, true))) {
-            throw new \RuntimeException('Unable to inspect container');
-        }
-
-        return $inspection[0];
-    }
-
-    /**
-     * @return array
-     */
-    private function getRunningContainerIds()
-    {
-        $rawOutput = $this->processRunner->run('docker-compose ps -q')->getOutput();
-        $lines = explode("\n", $rawOutput);
-        $containerIds = [];
-
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if (!empty($line)) {
-                $containerIds[] = $line;
-            }
-        }
-
-        return $containerIds;
-    }
-}
+} 
