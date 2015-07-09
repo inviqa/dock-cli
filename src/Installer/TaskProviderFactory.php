@@ -33,7 +33,7 @@ class TaskProviderFactory
                 case 'amzn':
                 case 'fedora':
                 case 'centos':
-                    return $this->providers['redhat'];
+                    // return $this->providers['redhat']; // doesn't quite work yet
                 default:
                     throw new Exception("Linux distribution '$distro' is not supported.");
             }
