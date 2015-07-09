@@ -4,12 +4,10 @@ namespace Dock\Installer\Docker;
 
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
-use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class Dinghy extends InstallerTask implements DependentChainProcessInterface
 {
@@ -35,21 +33,26 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     /**
      * @param Boot2DockerCli $boot2docker
      * @param DinghyCli $dinghy
+     * @param UserInteraction $userInteraction
+     * @param ProcessRunner $processRunner
      */
-    public function __construct(Boot2DockerCli $boot2docker, DinghyCli $dinghy)
-    {
+    public function __construct(
+        Boot2DockerCli $boot2docker,
+        DinghyCli $dinghy,
+        UserInteraction $userInteraction,
+        ProcessRunner $processRunner
+    ) {
         $this->boot2docker = $boot2docker;
         $this->dinghy = $dinghy;
+        $this->userInteraction = $userInteraction;
+        $this->processRunner = $processRunner;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run(InstallContext $context)
+    public function run()
     {
-        $this->userInteraction = $context->getUserInteraction();
-        $this->processRunner = $context->getProcessRunner();
-
         $this->uninstallBoot2Docker();
         $this->installDinghy();
         $this->changeDinghyDnsResolverNamespace();
@@ -61,9 +64,9 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $process = $this->processRunner->run('dinghy version');
         $dinghyVersionOutput = $process->getOutput();
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
-        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/'.$dinghyVersion.'/cli/dinghy/dnsmasq.rb';
+        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
 
-        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' '.$dnsMasqConfiguration;
+        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration;
         $this->processRunner->run($process);
     }
 
@@ -85,17 +88,20 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
     private function uninstallBoot2Docker()
     {
-        if ($this->boot2docker->isInstalled()) {
-            $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
-
-            if (!$this->boot2docker->uninstall()) {
-                $this->userInteraction->writeTitle(
-                    'Something went wrong while uninstalling Boot2Docker, continuing anyway.'
-                );
-            } else {
-                $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
-            }
+        if (!$this->boot2docker->isInstalled()) {
+            return;
         }
+
+        $this->userInteraction->writeTitle('Boot2Docker seems to be installed, removing it.');
+
+        if (!$this->boot2docker->uninstall()) {
+            $this->userInteraction->writeTitle(
+                'Something went wrong while uninstalling Boot2Docker, continuing anyway.'
+            );
+
+            return;
+        }
+        $this->userInteraction->writeTitle('Successfully uninstalled boot2docker');
     }
 
     private function installDinghy()

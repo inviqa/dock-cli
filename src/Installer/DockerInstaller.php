@@ -5,22 +5,15 @@ namespace Dock\Installer;
 class DockerInstaller
 {
     /**
-     * @var InstallContext
-     */
-    private $context;
-
-    /**
-     * @var tasks
+     * @var TaskProviderFactory
      */
     private $tasks;
 
     /**
-     * @param InstallContext $context
      * @param TaskProviderFactory $tasks
      */
-    public function __construct(InstallContext $context, TaskProviderFactory $tasks)
+    public function __construct(TaskProviderFactory $tasks)
     {
-        $this->context = $context;
         $this->tasks = $tasks;
     }
 
@@ -29,6 +22,6 @@ class DockerInstaller
      */
     public function install()
     {
-        $this->tasks->getProvider()->getTasks()->getRunner()->run($this->context);
+        $this->tasks->getProvider()->getTasks()->getRunner()->run();
     }
 }

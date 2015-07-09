@@ -2,13 +2,32 @@
 
 namespace Dock\Installer\System\Linux\Debian;
 
-use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
+use Dock\IO\ProcessRunner;
+use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class NoSudo extends InstallerTask implements DependentChainProcessInterface
 {
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+    /**
+     * @var UserInteraction
+     */
+    private $userInteraction;
+
+    /**
+     * @param UserInteraction $userInteraction
+     * @param \Dock\IO\ProcessRunner $processRunner
+     */
+    public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
+    {
+        $this->userInteraction = $userInteraction;
+        $this->processRunner = $processRunner;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -25,15 +44,13 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
         return 'noSudo';
     }
 
-    public function run(InstallContext $context)
+    public function run()
     {
-        $processRunner = $context->getProcessRunner();
+        if (! $this->processRunner->run('groups | grep docker', false)->isSuccessful()) {
+            $this->userInteraction = $context->getUserInteraction();
+            $this->userInteraction->writeTitle('Making docker work without sudo');
 
-        if (! $processRunner->run('groups | grep docker', false)->isSuccessful()) {
-            $userInteraction = $context->getUserInteraction();
-            $userInteraction->writeTitle('Making docker work without sudo');
-
-            $processRunner->run('sudo usermod -a -G docker $USER');
+            $this->processRunner->run('sudo usermod -a -G docker $USER');
         }
     }
 }

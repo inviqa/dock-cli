@@ -23,4 +23,12 @@ class SilentProcessRunner implements ProcessRunner
 
         return $process;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function followsUpWith($command, array $arguments = [])
+    {
+        pcntl_exec($command, $arguments);
+    }
 }

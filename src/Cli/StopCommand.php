@@ -4,17 +4,25 @@ namespace Dock\Cli;
 
 use Dock\Compose\ComposeExecutableFinder;
 use Dock\IO\ProcessRunner;
+use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class LogsCommand extends Command
+class StopCommand extends Command
 {
+    /**
+     * @var UserInteraction
+     */
+    private $userInteraction;
+
     /**
      * @var ComposeExecutableFinder
      */
     private $composeExecutableFinder;
+
     /**
      * @var ProcessRunner
      */
@@ -22,12 +30,14 @@ class LogsCommand extends Command
 
     /**
      * @param ComposeExecutableFinder $composeExecutableFinder
+     * @param UserInteraction $userInteraction
      * @param ProcessRunner $processRunner
      */
-    public function __construct(ComposeExecutableFinder $composeExecutableFinder, ProcessRunner $processRunner)
+    public function __construct(ComposeExecutableFinder $composeExecutableFinder, UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
         parent::__construct();
 
+        $this->userInteraction = $userInteraction;
         $this->composeExecutableFinder = $composeExecutableFinder;
         $this->processRunner = $processRunner;
     }
@@ -38,9 +48,8 @@ class LogsCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('logs')
-            ->setDescription('Follow logs of application containers')
-            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow')
+            ->setName('stop')
+            ->setDescription('Stop the project')
         ;
     }
 
@@ -49,11 +58,8 @@ class LogsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $composeLogsArguments = ['logs'];
-        if (null !== ($component = $input->getArgument('component'))) {
-            $composeLogsArguments[] = $component;
-        }
+        $this->userInteraction->writeTitle('Stopping application containers');
 
-        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), $composeLogsArguments);
+        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), ['stop']);
     }
 }

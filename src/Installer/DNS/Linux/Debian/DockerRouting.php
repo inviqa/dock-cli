@@ -2,11 +2,32 @@
 
 namespace Dock\Installer\DNS\Linux\Debian;
 
-use Dock\Installer\InstallContext;
+use Dock\Installer\DNS\Linux\DnsDock;
 use Dock\Installer\InstallerTask;
+use Dock\IO\ProcessRunner;
+use Dock\IO\UserInteraction;
 
 class DockerRouting extends InstallerTask
 {
+    /**
+     * @var ProcessRunner
+     */
+    private $processRunner;
+    /**
+     * @var UserInteraction
+     */
+    private $userInteraction;
+
+    /**
+     * @param UserInteraction $userInteraction
+     * @param \Dock\IO\ProcessRunner $processRunner
+     */
+    public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
+    {
+        $this->userInteraction = $userInteraction;
+        $this->processRunner = $processRunner;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -18,16 +39,13 @@ class DockerRouting extends InstallerTask
     /**
      * {@inheritdoc}
      */
-    public function run(InstallContext $context)
+    public function run()
     {
-        $processRunner = $context->getProcessRunner();
-        $userInteraction = $context->getUserInteraction();
+        if (! $this->processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful()) {
+            $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
 
-        if (! $processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful()) {
-            $userInteraction->writeTitle('Configure routing for direct Docker containers access');
-
-            $processRunner->run('echo "nameserver ' . DnsDock::IP . '" | sudo tee -a /etc/resolvconf/resolv.conf.d/head');
-            $processRunner->run('sudo resolvconf -u');
+            $this->processRunner->run('echo "nameserver ' . DnsDock::IP . '" | sudo tee -a /etc/resolvconf/resolv.conf.d/head');
+            $this->processRunner->run('sudo resolvconf -u');
         }
     }
 }

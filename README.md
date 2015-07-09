@@ -18,7 +18,7 @@ sudo mv dock-cli /usr/bin/dock-cli
 To install the Docker development environment run:
 
 ```
-dock-cli docker-install
+dock-cli docker:install
 ```
 
 **Note:** This sets environment variables which are loaded for the current shell and any opened after running it.
@@ -43,7 +43,8 @@ The following commands are available:
 
 ### Project commands
 
-- [`up` command](docs/cmd-up.md) starts the Docker environment for the project.
+- [`start` command](docs/cmd-start.md) starts the Docker environment for the project.
+- [`stop` command](docs/cmd-stop.md) stops the running Docker containers of the project.
 - [`ps` command](docs/cmd-ps.md) list all the project containers if any.
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 

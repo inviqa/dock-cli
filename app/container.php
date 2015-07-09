@@ -7,7 +7,9 @@ use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
 use Dock\Cli\SelfUpdateCommand;
-use Dock\Cli\UpCommand;
+use Dock\Cli\StartCommand;
+use Dock\Cli\StopCommand;
+use Dock\Compose\ComposeExecutableFinder;
 use Dock\Compose\Inspector;
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
@@ -15,7 +17,6 @@ use Dock\Dinghy\SshClient;
 use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\DockerInstaller;
-use Dock\Installer\InstallContext;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
 use Dock\Installer\TaskProviderFactory;
@@ -62,36 +63,40 @@ $container['process.silent_runner'] = function () {
     return new SilentProcessRunner();
 };
 
+$container['compose.executable_finder'] = function () {
+    return new ComposeExecutableFinder();
+};
+
 $container['installer.task_providers'] = function ($c) {
     return [
         'mac' => new TaskProvider([
-            new System\Mac\Homebrew(),
-            new System\Mac\BrewCask(),
-            new System\Mac\PhpSsh(),
-            new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy']),
-            new Dns\Mac\DockerRouting($c['cli.dinghy']),
+            new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
+            new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
             new Dns\Mac\DnsDock(new SshClient(new Session(
                 new Configuration(SshClient::DEFAULT_HOSTNAME),
                 new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-            ))),
-            new System\Mac\Vagrant(),
-            new System\Mac\VirtualBox(),
-            new System\Mac\DockerCompose(),
-            new Docker\EnvironmentVariables(new EnvironManipulatorFactory()),
+            )), $c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Mac\VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
         ]),
         'debian' => new TaskProvider([
-            new System\Linux\Debian\NoSudo(),
-            new System\Linux\Docker(),
-            new System\Linux\DockerCompose(),
-            new Dns\Linux\DnsDock(),
-            new Dns\Linux\Debian\DockerRouting(),
+            new System\Linux\Debian\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Linux\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Linux\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Dns\Linux\Debian\DockerRouting($c['console.user_interaction'], $c['process.interactive_runner']),
         ]),
         'redhat' => new TaskProvider([
-            new System\Linux\RedHat\NoSudo(),
-            new System\Linux\Docker(),
-            new System\Linux\DockerCompose(),
-            new Dns\Linux\DnsDock(),
-            // new Dns\Linux\RedHat\DockerRouting(), // TODO
+            new System\Linux\RedHat\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Linux\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
+            new System\Linux\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
+            new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']),
+            // new Dns\Linux\RedHat\DockerRouting($c['console.user_interaction'], $c['process.interactive_runner']), // TODO
         ]),
     ];
 };
@@ -102,7 +107,6 @@ $container['system.os'] = function ($c) {
 
 $container['installer.docker'] = function ($c) {
     return new DockerInstaller(
-        new InstallContext($c['process.interactive_runner'], $c['console.user_interaction']),
         new TaskProviderFactory($c['installer.task_providers'], $c['system.os'])
     );
 };
@@ -111,14 +115,17 @@ $container['command.restart'] = function ($c) {
     return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
 };
 
-$container['command.up'] = function ($c) {
-    return new UpCommand($c['process.silent_runner'], $c['console.user_interaction']);
+$container['command.start'] = function ($c) {
+    return new StartCommand($c['process.silent_runner'], $c['console.user_interaction']);
+};
+$container['command.stop'] = function ($c) {
+    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
 };
 $container['command.ps'] = function ($c) {
     return new PsCommand(new Inspector($c['process.silent_runner']));
 };
 $container['command.logs'] = function ($c) {
-    return new LogsCommand($c['process.interactive_runner']);
+    return new LogsCommand($c['compose.executable_finder'], $c['process.silent_runner']);
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
@@ -136,7 +143,8 @@ $container['application'] = function ($c) {
             $c['command.selfupdate'],
             $c['command.install'],
             $c['command.restart'],
-            $c['command.up'],
+            $c['command.start'],
+            $c['command.stop'],
             $c['command.ps'],
             $c['command.logs'],
         )
