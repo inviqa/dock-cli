@@ -29,6 +29,11 @@ class TaskProviderFactory
                 case 'elementary os':
                 case 'kali':
                     return $this->providers['debian'];
+                case 'redhat':
+                case 'amzn':
+                case 'fedora':
+                case 'centos':
+                    return $this->providers['redhat'];
                 default:
                     throw new Exception("Linux distribution '$distro' is not supported.");
             }

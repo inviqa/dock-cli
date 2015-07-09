@@ -84,7 +84,14 @@ $container['installer.task_providers'] = function ($c) {
             new System\Linux\Docker(),
             new System\Linux\DockerCompose(),
             new Dns\Linux\DnsDock(),
-            new Dns\Linux\DockerRouting(),
+            new Dns\Linux\Debian\DockerRouting(),
+        ]),
+        'redhat' => new TaskProvider([
+            new System\Linux\RedHat\NoSudo(),
+            new System\Linux\Docker(),
+            new System\Linux\DockerCompose(),
+            new Dns\Linux\DnsDock(),
+            // new Dns\Linux\RedHat\DockerRouting(), // TODO
         ]),
     ];
 };

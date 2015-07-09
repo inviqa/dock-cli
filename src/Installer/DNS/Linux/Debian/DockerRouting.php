@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\DNS\Linux;
+namespace Dock\Installer\DNS\Linux\Debian;
 
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
