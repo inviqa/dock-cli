@@ -63,17 +63,29 @@ class InteractiveProcessRunner implements ProcessRunner
     private function getRunningProcessCallback($highlightErrors = true)
     {
         return function ($type, $buffer) use ($highlightErrors) {
-            $lines = explode("\n", $buffer);
-            $prefix = Process::ERR === $type ?
-                ($highlightErrors ? '<error>ERR</error>' : 'ERR')
-                : '<question>OUT</question>';
+            $nonEmptyLines = array_filter(array_map('trim', explode("\n", $buffer)));
 
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if (!empty($line)) {
-                    $this->userInteraction->write($prefix.' '.$line);
-                }
+            foreach ($nonEmptyLines as $line) {
+                $this->userInteraction->write($this->prefix($type, $highlightErrors).$line);
             }
         };
+    }
+
+    /**
+     * @param string $type
+     * @param bool $highlightErrors
+     * @return string
+     */
+    private function prefix($type, $highlightErrors)
+    {
+        if (Process::ERR !== $type) {
+            return '<question>OUT</question> ';
+        }
+
+        if ($highlightErrors) {
+            return '<error>ERR</error> ';
+        }
+
+        return 'ERR ';
     }
 }
