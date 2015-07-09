@@ -80,8 +80,8 @@ $container['installer.task_providers'] = function ($c) {
             new Docker\EnvironmentVariables(new EnvironManipulatorFactory()),
         ]),
         'debian' => new TaskProvider([
+            new System\Linux\Debian\NoSudo(),
             new System\Linux\Docker(),
-            new System\Linux\NoSudo(),
             new System\Linux\DockerCompose(),
             new Dns\Linux\DnsDock(),
             new Dns\Linux\DockerRouting(),

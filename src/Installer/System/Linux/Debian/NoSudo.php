@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System\Linux;
+namespace Dock\Installer\System\Linux\Debian;
 
 use Dock\Installer\InstallContext;
 use Dock\Installer\InstallerTask;
