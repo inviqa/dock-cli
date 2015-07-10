@@ -3,7 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\Installer\DockerInstaller;
-use Dock\IO\ProcessRunner;
+use Dock\System\ShellCreator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,20 +16,20 @@ class InstallCommand extends Command
     private $dockerInstaller;
 
     /**
-     * @var ProcessRunner
+     * @var ShellCreator
      */
-    private $processRunner;
+    private $shellCreator;
 
     /**
      * @param DockerInstaller $dockerInstaller
-     * @param ProcessRunner $processRunner
+     * @param ShellCreator $shellCreator
      */
-    public function __construct(DockerInstaller $dockerInstaller, ProcessRunner $processRunner)
+    public function __construct(DockerInstaller $dockerInstaller, ShellCreator $shellCreator)
     {
         parent::__construct();
 
         $this->dockerInstaller = $dockerInstaller;
-        $this->processRunner = $processRunner;
+        $this->shellCreator = $shellCreator;
     }
 
     /**
@@ -39,7 +39,7 @@ class InstallCommand extends Command
     {
         $this
             ->setName('docker:install')
-            ->setDescription('Install Docker on OSX')
+            ->setDescription('Install Docker')
         ;
     }
 
@@ -49,6 +49,6 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->dockerInstaller->install();
-        $this->processRunner->followsUpWith(getenv('SHELL'));
+        $this->shellCreator->createNewShell();
     }
 }

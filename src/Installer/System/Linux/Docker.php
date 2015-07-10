@@ -1,17 +1,17 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Linux;
 
 use Dock\Installer\SoftwareInstallTask;
 
-class Homebrew extends SoftwareInstallTask
+class Docker extends SoftwareInstallTask
 {
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
-        return 'homebrew';
+        return 'docker';
     }
 
     /**
@@ -19,7 +19,7 @@ class Homebrew extends SoftwareInstallTask
      */
     protected function getVersionCommand()
     {
-        return 'brew --version';
+        return 'docker --version';
     }
 
     /**
@@ -27,6 +27,6 @@ class Homebrew extends SoftwareInstallTask
      */
     protected function getInstallCommand()
     {
-        return 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"';
+        return 'curl -sSL https://get.docker.com/ | sh';
     }
 }

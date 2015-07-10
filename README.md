@@ -4,7 +4,7 @@
 
 This CLI application provides an abstraction layer for Docker-based projects.
 
-**Note:** right now, it's focused exclusively on OSX.
+**Note:** right now, it's focused on OSX and Debian-based Linux distributions.
 
 ## Getting started
 

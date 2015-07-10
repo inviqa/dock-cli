@@ -11,29 +11,14 @@ use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
 use Dock\Compose\ComposeExecutableFinder;
 use Dock\Containers\ConfiguredContainers;
-use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\DinghyCli;
-use Dock\Dinghy\SshClient;
 use Dock\Docker\ContainerDetails;
 use Dock\DockerCompose\ConfiguredContainerIds;
-use Dock\Installer\DNS\DnsDock;
-use Dock\Installer\DNS\DockerRouting;
-use Dock\Installer\Docker\Dinghy;
-use Dock\Installer\Docker\EnvironmentVariables;
 use Dock\Installer\DockerInstaller;
-use Dock\Installer\System\BrewCask;
-use Dock\Installer\System\DockerCompose;
-use Dock\Installer\System\Homebrew;
-use Dock\Installer\System\PhpSsh;
-use Dock\Installer\System\Vagrant;
-use Dock\Installer\System\VirtualBox;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
-use Dock\System\Environ\EnvironManipulatorFactory;
+use Dock\System\OperatingSystemDetector;
 use Pimple\Container;
-use Ssh\Authentication\Password;
-use Ssh\Configuration;
-use Ssh\Session;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -41,12 +26,23 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
 
+$osDetector = new OperatingSystemDetector();
+if ($osDetector->isMac()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
+} elseif ($osDetector->isDebian()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+} else {
+    throw new \Exception($osDetector->isLinux()
+        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
+        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
+}
+
 $container['command.selfupdate'] = function () {
     return new SelfUpdateCommand();
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker'], $c['process.silent_runner']);
+    return new InstallCommand($c['installer.docker'], $c['system.shell_creator']);
 };
 
 $container['console.user_interaction'] = function ($c) {
@@ -69,27 +65,13 @@ $container['process.interactive_runner'] = function ($c) {
 $container['process.silent_runner'] = function () {
     return new SilentProcessRunner();
 };
+
 $container['compose.executable_finder'] = function () {
     return new ComposeExecutableFinder();
 };
+
 $container['installer.docker'] = function ($c) {
-    return new DockerInstaller(
-        new \SRIO\ChainOfResponsibility\ChainBuilder([
-            new Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
-            new BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
-            new PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
-            new Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-            new DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-            new DnsDock(new SshClient(new Session(
-                new Configuration(SshClient::DEFAULT_HOSTNAME),
-                new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-            )), $c['console.user_interaction'], $c['process.interactive_runner']),
-            new Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
-            new VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
-            new DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-            new EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
-        ])
-    );
+    return new DockerInstaller($c['installer.task_provider']);
 };
 
 $container['command.restart'] = function ($c) {

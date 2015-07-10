@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System;
+namespace Dock\Installer\System\Mac;
 
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;

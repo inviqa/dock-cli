@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\DNS;
+namespace Dock\Installer\DNS\Mac;
 
 use Dock\Dinghy\SshClient;
 use Dock\Installer\InstallerTask;
@@ -26,7 +26,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     /**
      * @param SshClient $sshClient
      * @param UserInteraction $userInteraction
-     * @param \Dock\IO\ProcessRunner $processRunner
+     * @param ProcessRunner $processRunner
      */
     public function __construct(SshClient $sshClient, UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
