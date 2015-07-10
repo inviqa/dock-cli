@@ -55,3 +55,13 @@ To update this tool, simply run the `self-update` command:
 ```
 dock-cli self-update
 ```
+
+## Contributing
+
+**Note** If you are cloning this repository then one of the packages included in the vendors
+requires the ssh2 PHP extension. If you do not have this installed and do not require the
+associated functionality then you can ignore this requirement when installing the vendors:
+
+  ```
+  composer install --ignore-platform-reqs
+  ```
