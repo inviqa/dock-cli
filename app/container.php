@@ -29,16 +29,12 @@ $container = new Container();
 $osDetector = new OperatingSystemDetector();
 if ($osDetector->isMac()) {
     require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
-} elseif ($osDetector->isLinux()) {
-    if ($osDetector->isDebian()) {
-        require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
-    } else {
-        $linuxDistribution = $osDetector->getLinuxDistribution();
-        throw new \Exception("Linux distribution '$linuxDistribution' is currently not supported.");
-    }
+} elseif ($osDetector->isDebian()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
 } else {
-    $operatingSystem = $osDetector->getOperatingSystem();
-    throw new \Exception("Installer does not support operating system '$operatingSystem'");
+    throw new \Exception($osDetector->isLinux()
+        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
+        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
 }
 
 $container['command.selfupdate'] = function () {

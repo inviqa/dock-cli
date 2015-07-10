@@ -42,7 +42,7 @@ class OperatingSystemDetector
 
     public function isDebian()
     {
-        return in_array($this->distro, [
+        return $this->isLinux() && in_array($this->distro, [
             'debian',
             'ubuntu',
             'linuxmint',
@@ -53,7 +53,7 @@ class OperatingSystemDetector
 
     public function isRedHat()
     {
-        return in_array($this->distro, [
+        return $this->isLinux() && in_array($this->distro, [
             'redhat',
             'amzn',
             'fedora',
