@@ -83,7 +83,7 @@ class InteractiveProcessBuilder
     public function ifTakesMoreThan($milliSeconds, callable $callback)
     {
         $manager = $this->manager;
-        $this->waitStrategy = new TimeoutWait($milliSeconds, function() use ($callback, $manager) {
+        $this->waitStrategy = new TimeoutWait($milliSeconds, function () use ($callback, $manager) {
             $callback($manager);
         });
 

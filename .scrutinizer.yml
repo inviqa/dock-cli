@@ -2,3 +2,27 @@ build:
   environment:
     php:
       version: 5.6.9
+tools:
+    php_mess_detector: true
+    php_pdepend: true
+    php_analyzer: true
+    sensiolabs_security_checker: true
+    php_cs_fixer:
+        config: { level: psr2 }
+        enabled: true
+    php_code_sniffer:
+        config:
+            standard: "PSR2"
+checks:
+    php:
+        code_rating: true
+        duplication: true
+
+filter:
+    paths:
+        - 'src/*'
+
+build_failure_conditions:
+    - 'elements.rating(<= C).new.exists' 
+    - 'issues.label("coding-style").exists'
+    - 'project.metric("scrutinizer.quality", < 9.5)'

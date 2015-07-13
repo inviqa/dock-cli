@@ -64,7 +64,7 @@ class StartCommand extends Command
         $this->interactiveProcessBuilder
             ->forCommand('docker-compose up -d')
             ->disableOutput()
-            ->ifTakesMoreThan(5000, function(InteractiveProcessManager $processManager) {
+            ->ifTakesMoreThan(5000, function (InteractiveProcessManager $processManager) {
                 $processManager->enableOutput(true);
             })
             ->getManager()

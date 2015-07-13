@@ -85,4 +85,4 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
             $containerName.'.'.$containerImage.'.docker',
         ];
     }
-} 
+}

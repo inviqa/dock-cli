@@ -46,4 +46,4 @@ class Logs implements \Dock\Containers\Logs
     {
         $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), $composeLogsArguments);
     }
-} 
+}

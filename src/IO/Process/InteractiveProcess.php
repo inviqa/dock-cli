@@ -55,7 +55,7 @@ class InteractiveProcess
      */
     public function run()
     {
-        $this->process->start(function($type, $buffer) {
+        $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
                 $this->pipe->error($buffer);
             } else {
