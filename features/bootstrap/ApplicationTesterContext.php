@@ -1,10 +1,7 @@
 <?php
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Dock\Containers\Container;
 
 class ApplicationTesterContext implements Context, SnippetAcceptingContext
@@ -12,11 +9,12 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
     private $container;
 
     const CONTAINER_ID = '12541255';
+    const SECOND_CONTAINER_ID = '8798757656';
     const FAKE_DNS = 'docker.hostname';
 
     public function __construct()
     {
-        $this->container = require __DIR__.'/app/container.php';
+        $this->container = require __DIR__ . '/app/container.php';
     }
 
     /**
@@ -32,7 +30,13 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thisContainerIsRunning()
     {
-        $this->container['containers.container_details']->setState(self::CONTAINER_ID, Container::STATE_RUNNING, self::FAKE_DNS);
+        $this->container['containers.container_details']->setState(
+            self::CONTAINER_ID,
+            Container::STATE_RUNNING,
+            self::FAKE_DNS
+        );
+
+        $this->container['logs']->setRunningContainerIds([self::CONTAINER_ID]);
     }
 
     /**
@@ -40,7 +44,11 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thisContainerIsNotRunning()
     {
-        $this->container['containers.container_details']->setState(self::CONTAINER_ID, Container::STATE_EXITED, self::FAKE_DNS);
+        $this->container['containers.container_details']->setState(
+            self::CONTAINER_ID,
+            Container::STATE_EXITED,
+            self::FAKE_DNS
+        );
     }
 
     /**
@@ -56,9 +64,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeThatThisContainerHasAStatusOf($status)
     {
-        $output = $this->getApplicationOutput();
-
-        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/', $output)) {
+        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/', $this->getApplicationOutput())) {
             throw new \Exception("Container status was not $status");
         }
     }
@@ -68,10 +74,12 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeTheDnsResolutionOfTheContainer()
     {
-        $output = $this->getApplicationOutput();
-
-        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote(self::FAKE_DNS) . '/', $output)) {
-            throw new \Exception("Container DNS was not displayed as ". self::FAKE_DNS);
+        if (!preg_match(
+            '/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote(self::FAKE_DNS) . '/',
+            $this->getApplicationOutput()
+        )
+        ) {
+            throw new \Exception("Container DNS was not displayed as " . self::FAKE_DNS);
         }
     }
 
@@ -80,8 +88,69 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     private function getApplicationOutput()
     {
-        $output = $this->container['application_tester']->getDisplay();
+        return $this->container['application_tester']->getDisplay();
+    }
 
-        return $output;
+    /**
+     * @Then I should see this container's logs
+     */
+    public function iShouldSeeThatThisContainerSLogs()
+    {
+        $id = self::CONTAINER_ID;
+
+        if ($this->getApplicationOutput() !== "[$id] is running\n") {
+            throw new \Exception('Logs for all components not displayed');
+        }
+    }
+
+    /**
+     * @Given I have a Docker Compose file that contains two containers
+     */
+    public function iHaveADockerComposeFileThatContainsTwoContainers()
+    {
+        $this->container['containers.configured_container_ids']->setIds(
+            [self::CONTAINER_ID, self::SECOND_CONTAINER_ID]
+        );
+    }
+
+    /**
+     * @Given those containers are running
+     */
+    public function thoseContainersAreRunning()
+    {
+        $this->container['containers.container_details']->setState(
+            self::CONTAINER_ID,
+            Container::STATE_RUNNING,
+            self::FAKE_DNS
+        );
+
+        $this->container['containers.container_details']->setState(
+            self::SECOND_CONTAINER_ID,
+            Container::STATE_RUNNING,
+            self::FAKE_DNS
+        );
+
+        $this->container['logs']->setRunningContainerIds([self::CONTAINER_ID, self::SECOND_CONTAINER_ID]);
+    }
+
+    /**
+     * @Then I should see those container's logs
+     */
+    public function iShouldSeeThatThoseContainerSLogs()
+    {
+        $id = self::CONTAINER_ID;
+        $id2 = self::SECOND_CONTAINER_ID;
+
+        if ($this->getApplicationOutput() !== "[$id] is running\n[$id2] is running\n") {
+            throw new \Exception('Logs for all components not displayed');
+        }
+    }
+
+    /**
+     * @When I run the :command command for one of the components
+     */
+    public function iRunTheCommandForOneOfTheComponents($command)
+    {
+        $this->container['application_tester']->run(['command' => $command, 'component' => self::CONTAINER_ID]);
     }
 }
