@@ -10,5 +10,11 @@
         "sha1": "46d58f20c2887bfdc3f4b9383d226dbb41057972",
         "url": "http://sroze.github.io/dock-cli/downloads/dock-cli-0.3.0.phar",
         "version": "0.3.0"
+    },
+    {
+        "name": "dock-cli.phar",
+        "sha1": "5aadb24d8e4eca242f0e6ccac4b41e5a11545b00",
+        "url": "http://inviqa.github.io/dock-cli/downloads/dock-cli-0.3.1.phar",
+        "version": "0.3.1"
     }
 ]
