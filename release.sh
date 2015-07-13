@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PHAR_NAME=dock-cli
-MANIFEST_BASE_URL=http://sroze.github.io/dock-cli
+MANIFEST_BASE_URL=http://inviqa.github.io/dock-cli
 set -e
 
 
