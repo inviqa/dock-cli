@@ -2,8 +2,7 @@
 
 namespace Dock\Cli;
 
-use Dock\Compose\ComposeExecutableFinder;
-use Dock\IO\ProcessRunner;
+use Dock\Containers\Logs;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,24 +11,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class LogsCommand extends Command
 {
     /**
-     * @var ComposeExecutableFinder
+     * @var Logs
      */
-    private $composeExecutableFinder;
-    /**
-     * @var ProcessRunner
-     */
-    private $processRunner;
+    private $logs;
 
     /**
-     * @param ComposeExecutableFinder $composeExecutableFinder
-     * @param ProcessRunner $processRunner
+     * @param Logs $logs
      */
-    public function __construct(ComposeExecutableFinder $composeExecutableFinder, ProcessRunner $processRunner)
+    public function __construct(Logs $logs)
     {
         parent::__construct();
 
-        $this->composeExecutableFinder = $composeExecutableFinder;
-        $this->processRunner = $processRunner;
+        $this->logs = $logs;
     }
 
     /**
@@ -40,8 +33,7 @@ class LogsCommand extends Command
         $this
             ->setName('logs')
             ->setDescription('Follow logs of application containers')
-            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow')
-        ;
+            ->addArgument('component', InputArgument::OPTIONAL, 'Name of component to follow');
     }
 
     /**
@@ -49,11 +41,8 @@ class LogsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $composeLogsArguments = ['logs'];
-        if (null !== ($component = $input->getArgument('component'))) {
-            $composeLogsArguments[] = $component;
-        }
-
-        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), $composeLogsArguments);
+        $input->getArgument('component')
+            ? $this->logs->displayComponent($input->getArgument('component'))
+            : $this->logs->displayAll();
     }
 }

@@ -3,8 +3,6 @@
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Dock\Containers\Container;
 
 class ApplicationTesterContext implements Context, SnippetAcceptingContext
@@ -16,7 +14,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
 
     public function __construct()
     {
-        $this->container = require __DIR__.'/app/container.php';
+        $this->container = require __DIR__ . '/app/container.php';
     }
 
     /**
@@ -32,7 +30,11 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thisContainerIsRunning()
     {
-        $this->container['containers.container_details']->setState(self::CONTAINER_ID, Container::STATE_RUNNING, self::FAKE_DNS);
+        $this->container['containers.container_details']->setState(
+            self::CONTAINER_ID,
+            Container::STATE_RUNNING,
+            self::FAKE_DNS
+        );
     }
 
     /**
@@ -40,7 +42,11 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thisContainerIsNotRunning()
     {
-        $this->container['containers.container_details']->setState(self::CONTAINER_ID, Container::STATE_EXITED, self::FAKE_DNS);
+        $this->container['containers.container_details']->setState(
+            self::CONTAINER_ID,
+            Container::STATE_EXITED,
+            self::FAKE_DNS
+        );
     }
 
     /**
@@ -56,9 +62,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeThatThisContainerHasAStatusOf($status)
     {
-        $output = $this->getApplicationOutput();
-
-        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/', $output)) {
+        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/', $this->getApplicationOutput())) {
             throw new \Exception("Container status was not $status");
         }
     }
@@ -68,10 +72,8 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeTheDnsResolutionOfTheContainer()
     {
-        $output = $this->getApplicationOutput();
-
-        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote(self::FAKE_DNS) . '/', $output)) {
-            throw new \Exception("Container DNS was not displayed as ". self::FAKE_DNS);
+        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote(self::FAKE_DNS) . '/', $this->getApplicationOutput())) {
+            throw new \Exception("Container DNS was not displayed as " . self::FAKE_DNS);
         }
     }
 
@@ -80,8 +82,24 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     private function getApplicationOutput()
     {
-        $output = $this->container['application_tester']->getDisplay();
+        return $this->container['application_tester']->getDisplay();
+    }
 
-        return $output;
+    /**
+     * @Then I should see that this container's logs
+     */
+    public function iShouldSeeThatThisContainerSLogs()
+    {
+        if ($this->getApplicationOutput() !== "log line for all components\n") {
+            throw new \Exception('Logs for all components not displayed');
+        }
+    }
+
+    /**
+     * @Given I have a Docker Compose file that contains two containers
+     */
+    public function iHaveADockerComposeFileThatContainsTwoContainers()
+    {
+        throw new PendingException();
     }
 }

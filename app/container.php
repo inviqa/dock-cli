@@ -14,6 +14,7 @@ use Dock\Containers\ConfiguredContainers;
 use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
 use Dock\DockerCompose\ConfiguredContainerIds;
+use Dock\DockerCompose\Logs;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
@@ -98,7 +99,7 @@ $container['containers.container_details'] = function ($c) {
 };
 
 $container['command.logs'] = function ($c) {
-    return new LogsCommand($c['compose.executable_finder'], $c['process.silent_runner']);
+    return new LogsCommand($c['logs']);
 };
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
