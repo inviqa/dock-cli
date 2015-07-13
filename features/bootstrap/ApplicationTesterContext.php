@@ -64,11 +64,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeThatThisContainerHasAStatusOf($status)
     {
-        if (!preg_match(
-            '/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/',
-            $this->getApplicationOutput()
-        )
-        ) {
+        if (!preg_match('/CONTAINER_' . self::CONTAINER_ID . '.*' . preg_quote($status) . '/', $this->getApplicationOutput())) {
             throw new \Exception("Container status was not $status");
         }
     }
