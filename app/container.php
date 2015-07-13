@@ -109,6 +109,10 @@ $container['cli.dinghy'] = function ($c) {
     return new DinghyCli($c['process.interactive_runner']);
 };
 
+$container['logs'] = function ($c) {
+    return new Logs($c['compose.executable_finder'], $c['process.silent_runner']);
+};
+
 $container['application'] = function ($c) {
     $application = new Application('Dock CLI', '@package_version@');
     $application->setDispatcher($c['event_dispatcher']);
