@@ -7,15 +7,21 @@ use Dock\IO\UserInteraction;
 class Logs implements \Dock\Containers\Logs
 {
     private $userInteraction;
+    private $runningContainerIds = [];
 
     public function __construct(UserInteraction $userInteraction)
     {
         $this->userInteraction = $userInteraction;
     }
 
+    public function setRunningContainerIds(array $containerIds)
+    {
+        $this->runningContainerIds = $containerIds;
+    }
+
     public function displayAll()
     {
-        $this->userInteraction->write('log line for all components');
+        $this->displayLogs($this->runningContainerIds);
     }
 
     /**
@@ -23,6 +29,23 @@ class Logs implements \Dock\Containers\Logs
      */
     public function displayComponent($component)
     {
-        $this->userInteraction->write('log line for component - '.$component);
+        $this->displayLogs(
+            array_filter(
+                $this->runningContainerIds,
+                function ($id) use ($component) {
+                    return $id == $component;
+                }
+            )
+        );
+    }
+
+    /**
+     * @param $ids
+     */
+    private function displayLogs($ids)
+    {
+        foreach ($ids as $id) {
+            $this->userInteraction->write("[$id] is running");
+        }
     }
 }
