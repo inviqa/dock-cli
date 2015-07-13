@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SelfUpdateCommand extends Command
 {
-    const MANIFEST_FILE = 'http://sroze.github.io/dock-cli/manifest.json';
+    const MANIFEST_FILE = 'http://inviqa.github.io/dock-cli/manifest.json';
 
     /**
      * {@inheritdoc}

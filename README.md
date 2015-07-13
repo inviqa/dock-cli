@@ -1,6 +1,6 @@
 # Dock CLI
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sroze/dock-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sroze/dock-cli/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/inviqa/dock-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sroze/dock-cli/?branch=master)
 
 This CLI application provides an abstraction layer for Docker-based projects.
 
@@ -10,7 +10,7 @@ This CLI application provides an abstraction layer for Docker-based projects.
 
 Download the last PHAR release:
 ```
-wget http://sroze.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
+wget http://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
 chmod +x ./dock-cli
 sudo mv dock-cli /usr/bin/dock-cli
 ```
