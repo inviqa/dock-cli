@@ -1,6 +1,7 @@
 # Dock CLI
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/inviqa/dock-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sroze/dock-cli/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/inviqa/dock-cli/badges/build.png?b=master)](https://scrutinizer-ci.com/g/inviqa/dock-cli/build-status/master)
 
 This CLI application provides an abstraction layer for Docker-based projects.
 
