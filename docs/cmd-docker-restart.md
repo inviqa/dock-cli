@@ -1,4 +1,4 @@
-# `restart` command
+# `docker:restart` command
 
 This command simply restarts the virtual machine running Docker.
 
