@@ -14,6 +14,12 @@ use Symfony\Component\Process\Process;
 class InteractiveProcessBuilder
 {
     /**
+     * Default process timeout, in seconds.
+     *
+     */
+    const DEFAULT_TIMEOUT = 60;
+
+    /**
      * @var InteractiveProcessManager
      */
     private $manager;
@@ -39,11 +45,19 @@ class InteractiveProcessBuilder
     private $waitStrategy;
 
     /**
+     * Timeout of the built process, in seconds.
+     *
+     * @var int
+     */
+    private $timeout;
+
+    /**
      * @param UserInteraction $userInteraction
      */
     public function __construct(UserInteraction $userInteraction)
     {
         $this->userInteraction = $userInteraction;
+        $this->timeout = self::DEFAULT_TIMEOUT;
     }
 
     /**
@@ -73,6 +87,16 @@ class InteractiveProcessBuilder
     }
 
     /**
+     * @return InteractiveProcessBuilder
+     */
+    public function withoutTimeout()
+    {
+        $this->timeout = null;
+
+        return $this;
+    }
+
+    /**
      * Makes the process to call the given callback after the given time.
      *
      * @param int $milliSeconds
@@ -97,11 +121,16 @@ class InteractiveProcessBuilder
      */
     public function getManager()
     {
-        $this->manager->setProcess(new InteractiveProcess(
-            new Process($this->command),
+        $symfonyProcess = new Process($this->command);
+        $symfonyProcess->setTimeout($this->timeout);
+
+        $process = new InteractiveProcess(
+            $symfonyProcess,
             $this->pipe,
             $this->waitStrategy
-        ));
+        );
+
+        $this->manager->setProcess($process);
 
         return $this->manager;
     }
