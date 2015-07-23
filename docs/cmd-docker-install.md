@@ -1,6 +1,6 @@
 # `docker:install` command
 
-This command's goal is to help you setup the most efficient Docker setup.
+This command's goal is to help you setup the most efficient Docker environment.
 
 ## Usage
 
