@@ -5,6 +5,7 @@ namespace Dock\Cli;
 use Dock\Dinghy\DinghyCli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RestartCommand extends Command
@@ -32,6 +33,7 @@ class RestartCommand extends Command
         $this
             ->setName('docker:restart')
             ->setDescription('Restart Docker')
+            ->addOption('memory', 'm', InputOption::VALUE_REQUIRED, 'Memory (in MB) allocated to the Dinghy VM')
         ;
     }
 
@@ -44,6 +46,6 @@ class RestartCommand extends Command
             $this->dinghy->stop();
         }
 
-        $this->dinghy->start();
+        $this->dinghy->start($input->getOption('memory'));
     }
 }

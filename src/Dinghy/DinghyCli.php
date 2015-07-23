@@ -23,11 +23,18 @@ class DinghyCli
     /**
      * Start dinghy.
      *
+     * @param int $memory The memory, in MB, allocated to the virtual machine
+     *
      * @throws ProcessFailedException
      */
-    public function start()
+    public function start($memory = null)
     {
-        $this->processRunner->run('dinghy up --no-proxy');
+        $arguments = ['--no-proxy'];
+        if (null !== $memory) {
+            $arguments[] = '--memory='.$memory;
+        }
+
+        $this->processRunner->run('dinghy up '.implode(' ', $arguments));
     }
 
     /**
