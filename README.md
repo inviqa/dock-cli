@@ -16,6 +16,7 @@ chmod +x ./dock-cli
 sudo mv dock-cli /usr/bin/dock-cli
 ```
 
+## Install Docker on your system
 To install the Docker development environment run:
 
 ```
@@ -27,10 +28,11 @@ If you have any other shells already opened you will need to `source` these vari
 If you see an error message similar to `Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?`
 when running subsequent commands then this may be the issue.
 
-You can now start up a specific project by running the `up` command in the project directory:
+## Project-related usage
 
+You can now start up a specific project by running the [`start` command](docs/cmd-start.md) in the project directory:
 ```
-dock-cli up
+dock-cli start
 ```
 
 ## Commands
@@ -63,6 +65,6 @@ dock-cli self-update
 requires the ssh2 PHP extension. If you do not have this installed and do not require the
 associated functionality then you can ignore this requirement when installing the vendors:
 
-  ```
-  composer install --ignore-platform-reqs
-  ```
+```
+composer install --ignore-platform-reqs
+```
