@@ -23,6 +23,7 @@ class SelfUpdateCommand extends Command
             ->setName('self-update')
             ->setDescription('Updates Dock CLI to the latest version')
             ->addOption('major', null, InputOption::VALUE_NONE, 'Allow major version update')
+            ->addOption('disallow-unstable', null, InputOption::VALUE_NONE, 'Disallow unstable versions')
         ;
     }
 
@@ -43,7 +44,9 @@ class SelfUpdateCommand extends Command
 
         $currentVersion = $this->getApplication()->getVersion();
         $allowMajor = $input->getOption('major');
-        if ($manager->update($currentVersion, $allowMajor)) {
+        $allowUnstableVersions = !$input->getOption('disallow-unstable');
+
+        if ($manager->update($currentVersion, $allowMajor, $allowUnstableVersions)) {
             $output->writeln('<info>Updated to latest version</info>');
         } else {
             $output->writeln('<comment>Already up-to-date</comment>');
