@@ -6,6 +6,7 @@ use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
+use Dock\Cli\RunCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
@@ -101,6 +102,11 @@ $container['containers.container_details'] = function ($c) {
 $container['command.logs'] = function ($c) {
     return new LogsCommand($c['logs']);
 };
+
+$container['command.run'] = function ($c) {
+    return new RunCommand($c['process.interactive_runner']);
+};
+
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
 };
@@ -121,6 +127,7 @@ $container['application'] = function ($c) {
             $c['command.selfupdate'],
             $c['command.install'],
             $c['command.restart'],
+            $c['command.run'],
             $c['command.start'],
             $c['command.stop'],
             $c['command.ps'],
