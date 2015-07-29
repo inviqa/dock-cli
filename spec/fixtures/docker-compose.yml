@@ -1,0 +1,22 @@
+web:
+  build: .
+  environment:
+    DATABASE_NAME: database
+    DATABASE_USER: root
+    DATABASE_PASSWORD: password
+  volumes:
+    - .:/app
+  links:
+    - mysql
+    - elasticsearch
+elasticsearch:
+  build: ./services/elasticsearch/
+other:
+  build: ./services/other/
+mysql:
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+    MYSQL_DATABASE: database
+    MYSQL_USER: root
+    MYSQL_PASSWORD: password
