@@ -2,45 +2,54 @@
 
 namespace spec\Dock\Compose;
 
+use Dock\Cli\Helper\Project;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class ConfigSpec extends ObjectBehavior
 {
-    function it_finds_service_on_precise_path()
+    function let(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose.yml');
-        $this->getCurrentService('services/elasticsearch')->shouldReturn('elasticsearch');
+        $project->getComposeConfigPath()->willReturn('spec/fixtures/docker-compose.yml');
+        $this->beConstructedWith($project);
     }
 
-    function it_finds_service_when_in_subdirectory()
+    function it_finds_service_on_precise_path(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose.yml');
-        $this->getCurrentService('services/elasticsearch/other')->shouldReturn('elasticsearch');
+        $project->getCurrentRelativePath()->willReturn('services/elasticsearch');
+        $this->getCurrentService()->shouldReturn('elasticsearch');
     }
 
-    function it_finds_default_service()
+    function it_finds_service_when_in_subdirectory(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose.yml');
-        $this->getCurrentService('')->shouldReturn('web');
+        $project->getCurrentRelativePath()->willReturn('services/elasticsearch/other');
+        $this->getCurrentService()->shouldReturn('elasticsearch');
     }
 
-    function it_finds_default_service_when_in_subdirectory()
+    function it_finds_default_service(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose.yml');
-        $this->getCurrentService('services/')->shouldReturn('web');
+        $project->getCurrentRelativePath()->willReturn('');
+        $this->getCurrentService()->shouldReturn('web');
+    }
+
+    function it_finds_default_service_when_in_subdirectory(Project $project)
+    {
+        $project->getCurrentRelativePath()->willReturn('services/');
+        $this->getCurrentService()->shouldReturn('web');
     }
 
 
-    function it_finds_service_when_no_default_service_exists()
+    function it_finds_service_when_no_default_service_exists(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose.yml');
-        $this->getCurrentService('app/config')->shouldReturn('web');
+        $project->getCurrentRelativePath()->willReturn('app/config');
+        $project->getComposeConfigPath()->willReturn('spec/fixtures/docker-compose-nodefault.yml');
+        $this->getCurrentService()->shouldReturn('web');
     }
 
-    function it_throws_an_exception_when_not_in_service()
+    function it_throws_an_exception_when_not_in_service(Project $project)
     {
-        $this->beConstructedWith('spec/fixtures/docker-compose-nodefault.yml');
-        $this->shouldThrow('\Exception')->during('getCurrentService', array(''));
+        $project->getCurrentRelativePath()->willReturn('');
+        $project->getComposeConfigPath()->willReturn('spec/fixtures/docker-compose-nodefault.yml');
+        $this->shouldThrow('\Exception')->during('getCurrentService');
     }
 }

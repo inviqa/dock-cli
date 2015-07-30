@@ -2,32 +2,39 @@
 
 namespace Dock\Compose;
 
+use Dock\Cli\Helper\Project;
 use Symfony\Component\Yaml\Parser;
 
 class Config
 {
+    /**
+     * @var Project
+     */
+    private $project;
+
     /**
      * @var array
      */
     private $config;
 
     /**
-     * @param string $configPath
+     * @param Project $project
      */
-    public function __construct($configPath)
+    public function __construct(Project $project)
     {
-        $yaml = new Parser();
-        $this->config = $yaml->parse(file_get_contents($configPath));
+        $this->project = $project;
+        $configPath = $project->getComposeConfigPath();
+        $this->config = (new Parser)->parse(file_get_contents($configPath));
     }
 
     /**
-     * Return docker-compose service based on directory
+     * Return docker-compose service based on current directory
      *
-     * @param string $directory
      * @return string Service
      */
-    public function getCurrentService($directory)
+    public function getCurrentService()
     {
+        $directory = $this->project->getCurrentRelativePath();
         $servicePaths = $this->getServiceBuildPaths();
         $dirParts = $this->directoryPathToArray($directory);
 
