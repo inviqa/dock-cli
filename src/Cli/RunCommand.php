@@ -2,10 +2,12 @@
 
 namespace Dock\Cli;
 
+use Dock\Compose\Config;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends Command
@@ -16,13 +18,19 @@ class RunCommand extends Command
     private $processRunner;
 
     /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @param ProcessRunner $processRunner
      */
-    public function __construct(ProcessRunner $processRunner)
+    public function __construct(ProcessRunner $processRunner, Config $config)
     {
         parent::__construct();
 
         $this->processRunner = $processRunner;
+        $this->config = $config;
     }
 
     /**
@@ -33,15 +41,16 @@ class RunCommand extends Command
         $this
             ->setName('run')
             ->setDescription('Run a command on a service')
-            ->addArgument(
+            ->addOption(
                 'service',
-                InputArgument::REQUIRED,
+                's',
+                InputOption::VALUE_REQUIRED,
                 'Service to run the command on'
             )
             ->addArgument(
                 'service_command',
                 InputArgument::REQUIRED,
-                'Command to run on the service'
+                'Command to run on the current service'
             )
         ;
     }
@@ -51,7 +60,12 @@ class RunCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $service = $input->getArgument('service');
+        if ($input->getOption('service') !== null) {
+            $service = $input->getOption('service');
+        } else {
+            $service = $this->config->getCurrentService();
+        }
+
         $command = $input->getArgument('service_command');
         $this->processRunner->run("docker-compose run $service $command");
     }
