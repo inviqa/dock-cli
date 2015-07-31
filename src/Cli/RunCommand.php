@@ -50,7 +50,7 @@ class RunCommand extends Command
             )
             ->addArgument(
                 'service_command',
-                InputArgument::REQUIRED,
+                InputArgument::IS_ARRAY,
                 'Command to run on the current service'
             )
         ;
@@ -71,7 +71,7 @@ class RunCommand extends Command
             }
         }
 
-        $command = $input->getArgument('service_command');
+        $command = implode(' ', $input->getArgument('service_command'));
         $this->processRunner->run("docker-compose run $service $command");
     }
 
