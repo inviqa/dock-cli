@@ -1,5 +1,6 @@
 <?php
 
+use Dock\Cli\DoctorCommand;
 use Dock\Cli\InstallCommand;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Cli\IO\InteractiveProcessRunner;
@@ -44,6 +45,10 @@ $container['command.selfupdate'] = function () {
 
 $container['command.install'] = function ($c) {
     return new InstallCommand($c['installer.docker'], $c['system.shell_creator']);
+};
+
+$container['command.doctor'] = function ($c) {
+    return new DoctorCommand($c['process.silent_runner']);
 };
 
 $container['console.user_interaction'] = function ($c) {
@@ -119,6 +124,7 @@ $container['application'] = function ($c) {
     $application->addCommands(
         array(
             $c['command.selfupdate'],
+            $c['command.doctor'],
             $c['command.install'],
             $c['command.restart'],
             $c['command.start'],
