@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class RunCommand extends Command
 {
@@ -63,10 +64,26 @@ class RunCommand extends Command
         if ($input->getOption('service') !== null) {
             $service = $input->getOption('service');
         } else {
-            $service = $this->config->getCurrentService();
+            try {
+                $service = $this->config->getCurrentService();
+            } catch (\Exception $e) {
+                $service = $this->askForTheService($input, $output);
+            }
         }
 
         $command = $input->getArgument('service_command');
         $this->processRunner->run("docker-compose run $service $command");
+    }
+
+    private function askForTheService(InputInterface $input, OutputInterface $output)
+    {
+        $services = $this->config->getServices();
+
+        $question = new ChoiceQuestion(
+            'Please select the service to run your command on',
+            array_combine($services, $services) // work around a bug in symfony/console 2.7
+        );
+
+        return $this->getHelper('question')->ask($input, $output, $question);
     }
 }
