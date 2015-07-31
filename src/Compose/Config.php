@@ -28,6 +28,16 @@ class Config
     }
 
     /**
+     * List docker-compose services
+     *
+     * @return array
+     */
+    public function getServices()
+    {
+        return array_keys($this->config);
+    }
+
+    /**
      * Return docker-compose service based on current directory
      *
      * @return string Service

@@ -52,4 +52,9 @@ class ConfigSpec extends ObjectBehavior
         $project->getComposeConfigPath()->willReturn('spec/fixtures/docker-compose-nodefault.yml');
         $this->shouldThrow('\Exception')->during('getCurrentService');
     }
+
+    function it_gets_a_list_of_services()
+    {
+        $this->getServices()->shouldReturn(['web', 'elasticsearch', 'other', 'mysql']);
+    }
 }
