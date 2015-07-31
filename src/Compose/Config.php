@@ -13,18 +13,11 @@ class Config
     private $project;
 
     /**
-     * @var array
-     */
-    private $config;
-
-    /**
      * @param Project $project
      */
     public function __construct(Project $project)
     {
         $this->project = $project;
-        $configPath = $project->getComposeConfigPath();
-        $this->config = (new Parser)->parse(file_get_contents($configPath));
     }
 
     /**
@@ -34,7 +27,7 @@ class Config
      */
     public function getServices()
     {
-        return array_keys($this->config);
+        return array_keys($this->getConfig());
     }
 
     /**
@@ -66,7 +59,7 @@ class Config
     {
         return array_map(function($item) {
             return $this->directoryPathToArray($item['build']);
-        }, array_filter($this->config, function($item) {
+        }, array_filter($this->getConfig(), function($item) {
             return array_key_exists('build', $item);
         }));
     }
@@ -79,5 +72,11 @@ class Config
         return array_values(array_filter(explode('/', $path), function($item) {
             return !in_array($item, ['', '.']);
         }));
+    }
+
+    private function getConfig()
+    {
+        $configPath = $this->project->getComposeConfigPath();
+        return (new Parser)->parse(file_get_contents($configPath));
     }
 }
