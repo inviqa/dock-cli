@@ -26,6 +26,7 @@ class RunCommand extends Command
 
     /**
      * @param ProcessRunner $processRunner
+     * @param Config $config
      */
     public function __construct(ProcessRunner $processRunner, Config $config)
     {
