@@ -3,6 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\Compose\Config;
+use Dock\Compose\NotWithinServiceException;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -66,7 +67,7 @@ class RunCommand extends Command
         } else {
             try {
                 $service = $this->config->getCurrentService();
-            } catch (\Exception $e) {
+            } catch (NotWithinServiceException $e) {
                 $service = $this->askForTheService($input, $output);
             }
         }

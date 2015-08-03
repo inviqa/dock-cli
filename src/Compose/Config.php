@@ -49,7 +49,7 @@ class Config
             }
         } while (array_pop($dirParts));
 
-        throw new \Exception("Directory $directory is not within any known service");
+        throw new NotWithinServiceException("Directory $directory is not within any known service");
     }
 
     /**
