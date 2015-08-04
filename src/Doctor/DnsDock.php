@@ -3,9 +3,8 @@
 namespace Dock\Doctor;
 
 use Dock\IO\ProcessRunner;
-use Dock\Installer\InstallerTask;
 
-class DnsDock
+class DnsDock extends Task
 {
     /**
      * @var ProcessRunner
@@ -70,29 +69,5 @@ class DnsDock
         }
 
         return true;
-    }
-
-    /**
-     * @param string $method Method to check whether problem exists
-     * @param string $problem Problem description
-     * @param string $suggestedSolution Suggested solution
-     * @param InstallerTask $installerTask Task to fix the problem
-     * @param bool $dryRun Try to fix the problem?
-     */
-    public function handle($method, $problem, $suggestedSolution, InstallerTask $installerTask, $dryRun)
-    {
-        if (! $this->$method()) {
-            $exception = new \Exception("$problem\n$suggestedSolution");
-
-            if ($dryRun) {
-                throw $exception;
-            } else {
-                $installerTask->run();
-
-                if (! $this->$method()) {
-                    throw $exception;
-                }
-            }
-        }
     }
 }
