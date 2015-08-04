@@ -16,6 +16,7 @@ use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
 use Dock\DockerCompose\ConfiguredContainerIds;
 use Dock\DockerCompose\Logs;
+use Dock\Doctor\Doctor;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
@@ -47,8 +48,12 @@ $container['command.install'] = function ($c) {
     return new InstallCommand($c['installer.docker'], $c['system.shell_creator']);
 };
 
+$container['doctor'] = function ($c) {
+    return new Doctor($c['doctor.tasks']);
+};
+
 $container['command.doctor'] = function ($c) {
-    return new DoctorCommand($c['process.silent_runner']);
+    return new DoctorCommand($c['doctor']);
 };
 
 $container['console.user_interaction'] = function ($c) {

@@ -2,6 +2,7 @@
 
 use Dock\Dinghy\Boot2DockerCli;
 use Dock\Dinghy\SshClient;
+use Dock\Doctor;
 use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\System;
@@ -32,4 +33,11 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
         new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
     ]);
+};
+
+$container['doctor.tasks'] = function($c) {
+    return array(
+        new Doctor\Docker($c['process.interactive_runner']),
+        new Doctor\DnsDock($c['process.interactive_runner']),
+    );
 };

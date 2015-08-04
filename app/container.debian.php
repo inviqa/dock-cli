@@ -1,5 +1,6 @@
 <?php
 
+use Dock\Doctor;
 use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\System;
@@ -18,4 +19,11 @@ $container['installer.task_provider'] = function ($c) {
         new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']),
         new Dns\Linux\Debian\DockerRouting($c['console.user_interaction'], $c['process.interactive_runner']),
     ]);
+};
+
+$container['doctor.tasks'] = function($c) {
+    return array(
+        new Doctor\Docker($c['process.interactive_runner']),
+        new Doctor\DnsDock($c['process.interactive_runner']),
+    );
 };
