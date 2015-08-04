@@ -3,6 +3,7 @@
 namespace Dock\Doctor;
 
 use Dock\IO\ProcessRunner;
+use Dock\Installer\InstallerTask;
 
 class DnsDock
 {
@@ -12,38 +13,86 @@ class DnsDock
     private $processRunner;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @var mixed
      */
-    public function __construct(ProcessRunner $processRunner)
+    private $dnsDockInstaller;
+
+    /**
+     * @var mixed
+     */
+    private $dockerRouting;
+
+    /**
+     * @param ProcessRunner $processRunner
+     * @param mixed $dnsDockInstaller
+     * @param mixed $dockerRouting
+     */
+    public function __construct(ProcessRunner $processRunner, $dnsDockInstaller, $dockerRouting)
     {
         $this->processRunner = $processRunner;
+        $this->dnsDockInstaller = $dnsDockInstaller;
+        $this->dockerRouting = $dockerRouting;
     }
 
     /**
-     * @param bool $dryRun
+     * {@inheritdoc}
      */
     public function run($dryRun)
     {
-        $dnsdockId = $this->processRunner->run('docker ps -q --filter=name=dnsdock')->getOutput();
+        $this->handle(
+            "isDnsDockRunning",
+            "Command `docker ps -q --filter=name=dnsdock` did not return any results - seems dnsdock is not running.",
+            "Install and start dnsdock by running: `dock-cli docker:install`",
+            $this->dnsDockInstaller,
+            $dryRun
+        );
 
-        if ($dnsdockId === null) {
-            throw new \Exception("Command `docker ps -q --filter=name=dnsdock` did not return any results - seems dnsdock is not running.\n"
-                . "Start it with `dock-cli docker:install`");
-        }
+        $this->handle(
+            "canReachDnsdockContainer",
+            "Command `ping -c1 dnsdock.docker` failed - it seems your dns is not set up properly.",
+             "Add 172.17.42.1 as one of your DNS servers. `dock-cli docker:install` will try to do that",
+            $this->dockerRouting,
+            $dryRun
+        );
+    }
 
-        try {
-            $this->processRunner->run('ping -c1 172.17.42.1');
-        } catch (ProcessFailedException $e) {
-            throw new \Exception("Command `ping -c1 172.17.42.1` failed - we can't reach the dnsdock container.\n"
-                . "TODO? This should never happen.");
-        }
+    protected function isDnsdockRunning()
+    {
+        return null !== $this->processRunner->run('docker ps -q --filter=name=dnsdock')->getOutput();
+    }
 
+    protected function canReachDnsdockContainer()
+    {
         try {
             $this->processRunner->run('ping -c1 dnsdock.docker');
         } catch (ProcessFailedException $e) {
-            throw new \Exception("Command `ping -c1 dnsdock.docker` failed - it seems your dns is not set up properly.\n"
-                . "Add 172.17.42.1 as one of your DNS servers. `dock-cli docker:install` will try to do that");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $method Method to check whether problem exists
+     * @param string $problem Problem description
+     * @param string $suggestedSolution Suggested solution
+     * @param InstallerTask $installerTask Task to fix the problem
+     * @param bool $dryRun Try to fix the problem?
+     */
+    public function handle($method, $problem, $suggestedSolution, InstallerTask $installerTask, $dryRun)
+    {
+        if (! $this->$method()) {
+            $exception = new \Exception("$problem\n$suggestedSolution");
+
+            if ($dryRun) {
+                throw $exception;
+            } else {
+                $installerTask->run();
+
+                if (! $this->$method()) {
+                    throw $exception;
+                }
+            }
         }
     }
 }
-

@@ -37,5 +37,16 @@ class Docker
             throw new \Exception("Command `docker info` failed - it seems the docker daemon is not running.\n"
                 . "Start it with `sudo service docker start`");
         }
+
+        try {
+            $this->processRunner->run('ping -c1 172.17.42.1');
+        } catch (ProcessFailedException $e) {
+            $this->handle(
+                "Command `ping -c1 172.17.42.1` failed - we can't reach docker.",
+                "Install and start docker by running: `dock-cli docker:install`",
+                $this->dnsDockInstaller,
+                $dryRun
+            );
+        }
     }
 }
