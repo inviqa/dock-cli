@@ -3,20 +3,22 @@
 namespace Dock\Doctor;
 
 use Dock\IO\ProcessRunner;
+use Dock\Installer\DockerInstaller;
 
-class Docker
+class Docker extends Task
 {
     /**
-     * @var ProcessRunner
+     * @var DockerInstaller
      */
-    private $processRunner;
+    private $dockerInstaller;
 
     /**
      * @param ProcessRunner $processRunner
      */
-    public function __construct(ProcessRunner $processRunner)
+    public function __construct(ProcessRunner $processRunner, DockerInstaller $dockerInstaller)
     {
         $this->processRunner = $processRunner;
+        $this->dockerInstaller = $dockerInstaller;
     }
 
     /**
@@ -24,29 +26,28 @@ class Docker
      */
     public function run($dryRun)
     {
-        try {
-            $this->processRunner->run('docker -v');
-        } catch (ProcessFailedException $e) {
-            throw new \Exception("Command `docker -v` failed - it seems docker is not installed.\n"
-                . "Install it with `dock-cli docker:install`");
-        }
+        $this->handle(
+            "docker -v",
+            "It seems docker is not installed.",
+            "Install docker with `dock-cli docker:install`",
+            $this->dockerInstaller,
+            $dryRun
+        );
 
-        try {
-            $this->processRunner->run('docker info');
-        } catch (ProcessFailedException $e) {
-            throw new \Exception("Command `docker info` failed - it seems the docker daemon is not running.\n"
-                . "Start it with `sudo service docker start`");
-        }
+        $this->handle(
+            "docker info",
+            "It seems docker daemon is not running.",
+            "Start it with `sudo service docker start`",
+            $this->dockerInstaller,
+            $dryRun
+        );
 
-        try {
-            $this->processRunner->run('ping -c1 172.17.42.1');
-        } catch (ProcessFailedException $e) {
-            $this->handle(
-                "Command `ping -c1 172.17.42.1` failed - we can't reach docker.",
-                "Install and start docker by running: `dock-cli docker:install`",
-                $this->dnsDockInstaller,
-                $dryRun
-            );
-        }
+        $this->handle(
+            "ping -c1 172.17.42.1",
+            "We can't reach docker.",
+            "Install and start docker by running: `dock-cli docker:install`",
+            $this->dockerInstaller,
+            $dryRun
+        );
     }
 }

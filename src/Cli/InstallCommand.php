@@ -48,7 +48,7 @@ class InstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->dockerInstaller->install();
+        $this->dockerInstaller->run();
         $this->shellCreator->createNewShell();
     }
 }
