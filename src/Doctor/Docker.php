@@ -19,7 +19,10 @@ class Docker
         $this->processRunner = $processRunner;
     }
 
-    public function run()
+    /**
+     * @param bool $dryRun
+     */
+    public function run($dryRun)
     {
         try {
             $this->processRunner->run('docker -v');

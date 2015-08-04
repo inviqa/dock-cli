@@ -19,7 +19,10 @@ class DnsDock
         $this->processRunner = $processRunner;
     }
 
-    public function run()
+    /**
+     * @param bool $dryRun
+     */
+    public function run($dryRun)
     {
         $dnsdockId = $this->processRunner->run('docker ps -q --filter=name=dnsdock')->getOutput();
 

@@ -17,10 +17,10 @@ class Doctor
         $this->tasks = $tasks;
     }
 
-    public function examine()
+    public function examine($dryRun)
     {
         foreach ($this->tasks as $task) {
-            $task->run();
+            $task->run($dryRun);
         }
     }
 }

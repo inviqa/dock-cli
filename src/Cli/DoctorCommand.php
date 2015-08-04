@@ -5,6 +5,7 @@ namespace Dock\Cli;
 use Dock\Doctor\Doctor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -32,7 +33,13 @@ class DoctorCommand extends Command
     {
         $this
             ->setName('docker:doctor')
-            ->setDescription('Diagnose problems with Docker setup')
+            ->setDescription('Diagnose problems with Docker setup and attempt to fix them')
+            ->addOption(
+                'dry-run',
+                null,
+                InputOption::VALUE_NONE,
+                "Diagnose problems, don't attempt to fix them"
+            )
         ;
     }
 
@@ -41,6 +48,6 @@ class DoctorCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->doctor->examine();
+        $this->doctor->examine($input->getOption('dry-run'));
     }
 }
