@@ -17,17 +17,24 @@ $container['system.shell_creator'] = function() {
     return new ShellCreator();
 };
 
+$container['installer.dns.dnsdock'] = function($c) {
+    return new Dns\Mac\DnsDock(new SshClient(new Session(
+        new Configuration(SshClient::DEFAULT_HOSTNAME),
+        new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
+    )), $c['console.user_interaction'], $c['process.interactive_runner'])
+};
+$container['installer.dns.docker_routing'] = function($c) {
+    return new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']);
+};
+
 $container['installer.task_provider'] = function ($c) {
     return new TaskProvider([
         new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
         new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-        new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-        new Dns\Mac\DnsDock(new SshClient(new Session(
-            new Configuration(SshClient::DEFAULT_HOSTNAME),
-            new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-        )), $c['console.user_interaction'], $c['process.interactive_runner']),
+        $c['installer.dns.dnsdock'],
+        $c['installer.dns.docker_routing'],
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
@@ -37,7 +44,7 @@ $container['installer.task_provider'] = function ($c) {
 
 $container['doctor.tasks'] = function($c) {
     return array(
-        new Doctor\Docker($c['process.interactive_runner']),
-        new Doctor\DnsDock($c['process.interactive_runner']),
+        new Doctor\Docker($c['process.interactive_runner'], $c['installer.docker']),
+        new Doctor\DnsDock($c['process.interactive_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
     );
 };
