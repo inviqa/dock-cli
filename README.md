@@ -50,6 +50,7 @@ The following commands are available:
 - [`stop` command](docs/cmd-stop.md) stops the running Docker containers of the project.
 - [`ps` command](docs/cmd-ps.md) list all the project containers if any.
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
+- [`run` command](docs/cmd-run.md) run a command in a container with the application context.
 
 ## Update
 
