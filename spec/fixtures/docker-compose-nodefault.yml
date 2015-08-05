@@ -1,0 +1,4 @@
+web:
+  build: ./app
+elasticsearch:
+  build: ./elasticsearch
