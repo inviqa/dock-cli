@@ -4,7 +4,6 @@ namespace Dock\Cli;
 
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\Process\InteractiveProcessManager;
-use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;

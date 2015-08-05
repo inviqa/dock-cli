@@ -1,16 +1,19 @@
 <?php
 
 use Dock\Cli\DoctorCommand;
+use Dock\Cli\Helper\Project;
 use Dock\Cli\InstallCommand;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
+use Dock\Cli\RunCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
 use Dock\Compose\ComposeExecutableFinder;
+use Dock\Compose\Config;
 use Dock\Containers\ConfiguredContainers;
 use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
@@ -111,6 +114,19 @@ $container['containers.container_details'] = function ($c) {
 $container['command.logs'] = function ($c) {
     return new LogsCommand($c['logs']);
 };
+
+$container['cli.helper.project'] = function ($c) {
+    return new Project();
+};
+
+$container['compose.config'] = function ($c) {
+    return new Config($c['cli.helper.project']);
+};
+
+$container['command.run'] = function ($c) {
+    return new RunCommand($c['process.interactive_runner'], $c['compose.config']);
+};
+
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
 };
@@ -132,6 +148,7 @@ $container['application'] = function ($c) {
             $c['command.doctor'],
             $c['command.install'],
             $c['command.restart'],
+            $c['command.run'],
             $c['command.start'],
             $c['command.stop'],
             $c['command.ps'],
