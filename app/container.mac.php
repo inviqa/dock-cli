@@ -6,6 +6,7 @@ use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
+use Dock\IO\PharFileExtractor;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Dock\System\Mac\ShellCreator;
 use Ssh\Authentication\Password;
@@ -16,14 +17,18 @@ $container['system.shell_creator'] = function() {
     return new ShellCreator();
 };
 
+$container['io.phar_file_extractor'] = function() {
+    return new PharFileExtractor();
+};
+
 $container['installer.task_provider'] = function ($c) {
     return new TaskProvider([
         new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
-        new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-        new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
-        new Dns\Mac\DnsDock(new SshClient(new Session(
+        new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner'], $c['io.phar_file_extractor']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
+        new DNS\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']),
+        new DNS\Mac\DnsDock(new SshClient(new Session(
             new Configuration(SshClient::DEFAULT_HOSTNAME),
             new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
         )), $c['console.user_interaction'], $c['process.interactive_runner']),
