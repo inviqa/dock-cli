@@ -22,7 +22,7 @@ class Docker extends Task
     }
 
     /**
-     * @param bool $dryRun
+     * {@inheritdoc}
      */
     public function run($dryRun)
     {
