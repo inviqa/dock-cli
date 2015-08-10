@@ -29,7 +29,7 @@ abstract class Task
     {
         if (! $this->testCommand($command)) {
             if ($dryRun) {
-                throw new \Exception("Command $command failed. $problem\n$suggestedSolution");
+                throw new CommandFailedException("Command $command failed. $problem\n$suggestedSolution");
             } else {
                 $installable->run();
                 $this->handle($command, $problem, $suggestedSolution, $installable, true);
