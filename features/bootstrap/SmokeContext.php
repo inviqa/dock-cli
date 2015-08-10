@@ -33,8 +33,9 @@ class SmokeContext implements Context, SnippetAcceptingContext
     public function iHaveADockerComposeFileThatContainsOneContainer()
     {
         $path = __DIR__ . '/../../tmp/';
-        $this->fs->remove($path);
-        $this->fs->mkdir($path);
+        if (!$this->fs->exists($path)) {
+            $this->fs->mkdir($path);
+        }
         chdir($path);
 
         $config = <<<EOF
@@ -50,7 +51,7 @@ EOF;
      */
     public function thisContainerIsRunning()
     {
-        $this->executeCommand('up');
+        $this->executeCommand('start');
     }
 
     /**
