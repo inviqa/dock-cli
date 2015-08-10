@@ -142,19 +142,17 @@ $container['logs'] = function ($c) {
 $container['application'] = function ($c) {
     $application = new Application('Dock CLI', '@package_version@');
     $application->setDispatcher($c['event_dispatcher']);
-    $application->addCommands(
-        array(
-            $c['command.selfupdate'],
-            $c['command.doctor'],
-            $c['command.install'],
-            $c['command.restart'],
-            $c['command.run'],
-            $c['command.start'],
-            $c['command.stop'],
-            $c['command.ps'],
-            $c['command.logs'],
-        )
-    );
+    $application->addCommands([
+        $c['command.selfupdate'],
+        $c['command.doctor'],
+        $c['command.install'],
+        $c['command.restart'],
+        $c['command.run'],
+        $c['command.start'],
+        $c['command.stop'],
+        $c['command.ps'],
+        $c['command.logs'],
+    ]);
 
     return $application;
 };

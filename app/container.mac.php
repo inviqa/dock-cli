@@ -43,8 +43,8 @@ $container['installer.task_provider'] = function ($c) {
 };
 
 $container['doctor.tasks'] = function($c) {
-    return array(
+    return [
         new Doctor\Docker($c['process.interactive_runner'], $c['installer.docker']),
         new Doctor\DnsDock($c['process.interactive_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
-    );
+    ];
 };
