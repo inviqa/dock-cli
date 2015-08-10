@@ -3,25 +3,29 @@
 namespace Dock\Doctor;
 
 use Dock\IO\ProcessRunner;
+use Dock\Installer\InstallerTask;
 
 class DnsDock extends Task
 {
     /**
-     * @var mixed
+     * @var InstallerTask $dnsDockInstaller
      */
     private $dnsDockInstaller;
 
     /**
-     * @var mixed
+     * @var InstallerTask $dockerRouting
      */
     private $dockerRouting;
 
     /**
      * @param ProcessRunner $processRunner
-     * @param mixed $dnsDockInstaller
-     * @param mixed $dockerRouting
+     * @param InstallerTask $dnsDockInstaller
+     * @param InstallerTask $dockerRouting
      */
-    public function __construct(ProcessRunner $processRunner, $dnsDockInstaller, $dockerRouting)
+    public function __construct(
+        ProcessRunner $processRunner,
+        InstallerTask $dnsDockInstaller,
+        InstallerTask $dockerRouting)
     {
         $this->processRunner = $processRunner;
         $this->dnsDockInstaller = $dnsDockInstaller;
