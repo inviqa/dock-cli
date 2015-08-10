@@ -78,17 +78,8 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     private function configureRouting($dinghyIp)
     {
-        try {
-            $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
-        } catch (ProcessFailedException $e) {
-            if (strpos($e->getProcess()->getErrorOutput(), 'File exists') !== false) {
-                $this->userInteraction->writeTitle('Routing already configured');
-
-                return;
-            }
-
-            throw $e;
-        }
+        $this->processRunner->run('sudo route -n delete 172.17.0.0/16', false);
+        $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
     }
 
     /**
