@@ -87,16 +87,31 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     private function addPermanentRouting($dinghyIp)
     {
-        if (file_exists('/Library/LaunchDaemons/com.docker.route.plist')) {
-            return;
-        }
-
         $filePath = $this->fileExtractor->extract(__DIR__.'/fixtures/com.docker.route.plist');
 
         // Replace the Dinghy IP
         file_put_contents($filePath, str_replace('__DINGHY_IP__', $dinghyIp, file_get_contents($filePath)));
 
+        // Replace the network interface used
+        $dinghyInterface = $this->resolveDinghyNetworkInterface($dinghyIp);
+        file_put_contents($filePath, str_replace('__DINGHY_INTERFACE__', $dinghyInterface, file_get_contents($filePath)));
+
         $this->processRunner->run(sprintf('sudo cp %s /Library/LaunchDaemons/com.docker.route.plist', $filePath));
         $this->processRunner->run('sudo launchctl load /Library/LaunchDaemons/com.docker.route.plist');
+    }
+
+    /**
+     * Resolve the network interface name for Dinghy IP.
+     *
+     * @param string $dinghyIp
+     *
+     * @return string
+     */
+    private function resolveDinghyNetworkInterface($dinghyIp)
+    {
+        $process = $this->processRunner->run('ifconfig `route get '.$dinghyIp.' | grep "interface: " | sed "s/[^:]*: \(.*\)/\1/"` | head -n 1 | sed "s/\([^:]*\): .*/\1/"');
+        $interface = $process->getOutput();
+
+        return trim($interface);
     }
 }
