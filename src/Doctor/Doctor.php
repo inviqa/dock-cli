@@ -2,6 +2,8 @@
 
 namespace Dock\Doctor;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class Doctor
 {
     /**
@@ -17,10 +19,14 @@ class Doctor
         $this->tasks = $tasks;
     }
 
-    public function examine($dryRun)
+    public function examine(OutputInterface $output, $dryRun)
     {
+        $output->writeLn('<info>Running Docker Doctor</info>');
+
         foreach ($this->tasks as $task) {
-            $task->run($dryRun);
+            $task->run($output, $dryRun);
         }
+
+        $output->writeLn('<info>Yay! Your setup is working perfectly!</info>');
     }
 }

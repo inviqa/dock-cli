@@ -4,6 +4,7 @@ namespace Dock\Doctor;
 
 use Dock\IO\ProcessRunner;
 use Dock\Installer\InstallerTask;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DnsDock extends Task
 {
@@ -35,10 +36,12 @@ class DnsDock extends Task
     /**
      * {@inheritdoc}
      */
-    public function run($dryRun)
+    public function run(OutputInterface $output, $dryRun)
     {
         $this->handle(
+            $output,
             "test 0 -lt `docker ps -q --filter=name=dnsdock | wc -l`",
+            "Dnsdock container is running",
             "It seems dnsdock is not running.",
             "Install and start dnsdock by running: `dock-cli docker:install`",
             $this->dnsDockInstaller,
@@ -46,7 +49,9 @@ class DnsDock extends Task
         );
 
         $this->handle(
+            $output,
             "ping -c1 dnsdock.docker",
+            "Can ping dnsdock container using its domain name",
             "It seems your DNS is not set up properly.",
             "Add 172.17.42.1 as one of your DNS servers. `dock-cli docker:install` will try to do that",
             $this->dockerRouting,

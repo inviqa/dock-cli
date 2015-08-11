@@ -44,7 +44,7 @@ $container['installer.task_provider'] = function ($c) {
 
 $container['doctor.tasks'] = function($c) {
     return [
-        new Doctor\Docker($c['process.interactive_runner'], $c['installer.docker']),
-        new Doctor\DnsDock($c['process.interactive_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
+        new Doctor\Docker($c['process.silent_runner'], $c['installer.docker']),
+        new Doctor\DnsDock($c['process.silent_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
     ];
 };

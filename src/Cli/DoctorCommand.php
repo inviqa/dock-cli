@@ -48,6 +48,6 @@ class DoctorCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->doctor->examine($input->getOption('dry-run'));
+        $this->doctor->examine($output, $input->getOption('dry-run'));
     }
 }
