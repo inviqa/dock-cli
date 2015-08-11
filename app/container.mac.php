@@ -7,6 +7,7 @@ use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
+use Dock\IO\PharFileExtractor;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Dock\System\Mac\ShellCreator;
 use Ssh\Authentication\Password;
@@ -24,7 +25,11 @@ $container['installer.dns.dnsdock'] = function($c) {
     )), $c['console.user_interaction'], $c['process.interactive_runner']);
 };
 $container['installer.dns.docker_routing'] = function($c) {
-    return new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']);
+    return new DNS\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']);
+};
+
+$container['io.phar_file_extractor'] = function() {
+    return new PharFileExtractor();
 };
 
 $container['installer.task_provider'] = function ($c) {

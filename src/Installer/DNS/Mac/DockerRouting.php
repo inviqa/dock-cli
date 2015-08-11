@@ -4,6 +4,7 @@ namespace Dock\Installer\DNS\Mac;
 
 use Dock\Dinghy\DinghyCli;
 use Dock\Installer\InstallerTask;
+use Dock\IO\PharFileExtractor;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
@@ -23,17 +24,23 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      * @var DinghyCli
      */
     private $dinghy;
+    /**
+     * @var PharFileExtractor
+     */
+    private $fileExtractor;
 
     /**
      * @param DinghyCli $dinghy
      * @param UserInteraction $userInteraction
      * @param ProcessRunner $processRunner
+     * @param PharFileExtractor $fileExtractor
      */
-    public function __construct(DinghyCli $dinghy, UserInteraction $userInteraction, ProcessRunner $processRunner)
+    public function __construct(DinghyCli $dinghy, UserInteraction $userInteraction, ProcessRunner $processRunner, PharFileExtractor $fileExtractor)
     {
         $this->dinghy = $dinghy;
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
+        $this->fileExtractor = $fileExtractor;
     }
 
     /**
@@ -71,17 +78,8 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     private function configureRouting($dinghyIp)
     {
-        try {
-            $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
-        } catch (ProcessFailedException $e) {
-            if (strpos($e->getProcess()->getErrorOutput(), 'File exists') !== false) {
-                $this->userInteraction->writeTitle('Routing already configured');
-
-                return;
-            }
-
-            throw $e;
-        }
+        $this->processRunner->run('sudo route -n delete 172.17.0.0/16', false);
+        $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
     }
 
     /**
@@ -93,14 +91,12 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
             return;
         }
 
-        $source = __DIR__.'/fixtures/com.docker.route.plist';
-        $dockerRouteFileContents = file_get_contents($source);
-        $dockerRouteFileContents = str_replace('__DINGHY_IP__', $dinghyIp, $dockerRouteFileContents);
+        $filePath = $this->fileExtractor->extract(__DIR__.'/fixtures/com.docker.route.plist');
 
-        $temporaryFile = tempnam(sys_get_temp_dir(), 'DockerInstaller');
-        file_put_contents($temporaryFile, $dockerRouteFileContents);
+        // Replace the Dinghy IP
+        file_put_contents($filePath, str_replace('__DINGHY_IP__', $dinghyIp, file_get_contents($filePath)));
 
-        $this->processRunner->run(sprintf('sudo cp %s /Library/LaunchDaemons/com.docker.route.plist', $temporaryFile));
+        $this->processRunner->run(sprintf('sudo cp %s /Library/LaunchDaemons/com.docker.route.plist', $filePath));
         $this->processRunner->run('sudo launchctl load /Library/LaunchDaemons/com.docker.route.plist');
     }
 }

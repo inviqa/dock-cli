@@ -2,6 +2,7 @@
 
 namespace Dock\Dinghy;
 
+use Dock\IO\PharFileExtractor;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -14,11 +15,18 @@ class Boot2DockerCli
     private $processRunner;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @var PharFileExtractor
      */
-    public function __construct(ProcessRunner $processRunner)
+    private $fileExtractor;
+
+    /**
+     * @param ProcessRunner $processRunner
+     * @param PharFileExtractor $fileExtractor
+     */
+    public function __construct(ProcessRunner $processRunner, PharFileExtractor $fileExtractor)
     {
         $this->processRunner = $processRunner;
+        $this->fileExtractor = $fileExtractor;
     }
 
     /**
@@ -69,6 +77,6 @@ class Boot2DockerCli
      */
     private function getUninstallScriptPath()
     {
-        return __DIR__.'/Resources/boot2docker-uninstaller.sh';
+        return $this->fileExtractor->extract(__DIR__.'/Resources/boot2docker-uninstaller.sh');
     }
 }
