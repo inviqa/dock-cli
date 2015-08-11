@@ -16,6 +16,10 @@ dock-cli docker:doctor
 
 ## What does it do?
 
-- Test whether docker is installed and running.
-- Test whether dnsdock container is running and whether it's used as one of the
-  dns servers.
+| Test name             | Test description                            | Automatic fix provided |
+| --------------------- | ------------------------------------------- | ---------------------- |
+| Docker version        | Verify docker command exists                | Yes                    |
+| Docker info           | Verify docker is running                    | Yes                    |
+| Ping docker           | Verify we can ping docker network interface | Yes                    |
+| Dnsdock running       | Verify dnsdock container is running         | Yes                    |
+| Dnsdock as DNS server | Verify dnsdock is used as a DNS server      | Yes                    |
