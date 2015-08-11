@@ -21,7 +21,7 @@ $container['installer.dns.dnsdock'] = function($c) {
     return new Dns\Mac\DnsDock(new SshClient(new Session(
         new Configuration(SshClient::DEFAULT_HOSTNAME),
         new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-    )), $c['console.user_interaction'], $c['process.interactive_runner'])
+    )), $c['console.user_interaction'], $c['process.interactive_runner']);
 };
 $container['installer.dns.docker_routing'] = function($c) {
     return new Dns\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']);
