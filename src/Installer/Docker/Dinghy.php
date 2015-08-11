@@ -59,6 +59,10 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $this->startDinghy();
     }
 
+    /**
+     * Update the default DNS resolver namespace of Dinghy.
+     *
+     */
     private function changeDinghyDnsResolverNamespace()
     {
         $process = $this->processRunner->run('dinghy version');
@@ -66,8 +70,9 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
         $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
         $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
 
-        $process = 'sed -i \'\' \'s/docker/zzz-dinghy/\' ' . $dnsMasqConfiguration;
-        $this->processRunner->run($process);
+        $dinghyDnsMasqContents = file_get_contents($dnsMasqConfiguration);
+        $dinghyDnsMasqContents = preg_replace('#RESOLVER_FILE = RESOLVER_DIR\.join\("([a-z-]+)"\)#', 'RESOLVER_FILE = RESOLVER_DIR.join("zzz-dinghy2")', $dinghyDnsMasqContents);
+        file_put_contents($dnsMasqConfiguration, $dinghyDnsMasqContents);
     }
 
     /**
