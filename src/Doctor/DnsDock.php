@@ -47,8 +47,8 @@ class DnsDock extends Task
 
         $this->handle(
             "ping -c1 dnsdock.docker",
-            "It seems your dns is not set up properly.",
-             "Add 172.17.42.1 as one of your DNS servers. `dock-cli docker:install` will try to do that",
+            "It seems your DNS is not set up properly.",
+            "Add 172.17.42.1 as one of your DNS servers. `dock-cli docker:install` will try to do that",
             $this->dockerRouting,
             $dryRun
         );
