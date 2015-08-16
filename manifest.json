@@ -34,5 +34,11 @@
         "sha1": "9c8ed9dc13de6b95df2e95922e7d5d86ad920766",
         "url": "http://inviqa.github.io/dock-cli/downloads/dock-cli-0.3.4.phar",
         "version": "0.3.4"
+    },
+    {
+        "name": "dock-cli.phar",
+        "sha1": "8c88bcacf7e702e3cb43097fe3b3c2b2162d5645",
+        "url": "http://inviqa.github.io/dock-cli/downloads/dock-cli-0.3.5.phar",
+        "version": "0.3.5"
     }
 ]
