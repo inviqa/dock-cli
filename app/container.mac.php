@@ -37,7 +37,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
-        new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
+        new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner'], $c['io.phar_file_extractor']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
         $c['installer.dns.dnsdock'],
         $c['installer.dns.docker_routing'],
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
