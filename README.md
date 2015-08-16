@@ -43,6 +43,7 @@ The following commands are available:
 
 - [`docker:install` command](docs/cmd-docker-install.md) sets up your Docker development environment.
 - [`docker:restart` command](docs/cmd-docker-restart.md) restarts your Docker VM.
+- [`docker:doctor` command](docs/cmd-docker-doctor.md) diagnoses problems with Docker setup and attempts to fix them.
 
 ### Project commands
 

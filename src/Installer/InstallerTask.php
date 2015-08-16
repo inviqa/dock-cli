@@ -5,7 +5,7 @@ namespace Dock\Installer;
 use SRIO\ChainOfResponsibility\ChainContext;
 use SRIO\ChainOfResponsibility\ChainProcessInterface;
 
-abstract class InstallerTask implements ChainProcessInterface
+abstract class InstallerTask implements ChainProcessInterface, Installable
 {
     /**
      * {@inheritdoc}

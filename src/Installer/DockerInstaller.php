@@ -2,7 +2,7 @@
 
 namespace Dock\Installer;
 
-class DockerInstaller
+class DockerInstaller implements Installable
 {
     /**
      * @var TaskProvider
@@ -20,7 +20,7 @@ class DockerInstaller
     /**
      * Start the Docker installation process.
      */
-    public function install()
+    public function run()
     {
         $this->taskProvider->getChainBuilder()->getRunner()->run();
     }
