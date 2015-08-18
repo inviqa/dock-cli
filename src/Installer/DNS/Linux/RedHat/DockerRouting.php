@@ -44,7 +44,6 @@ class DockerRouting extends InstallerTask
         if (! $this->isUsingDnsDockDnsServer()) {
             $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
 
-            //$this->processRunner->run('echo "nameserver ' . DnsDock::IP . '" | sudo tee -a /etc/resolv.conf');
             $this->processRunner->run("sudo sed -i -e '1inameserver " . DnsDock::IP . "\\' /etc/resolv.conf");
         }
     }
