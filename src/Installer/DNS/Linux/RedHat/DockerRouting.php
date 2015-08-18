@@ -1,13 +1,13 @@
 <?php
 
-namespace Dock\Installer\System\Linux\Debian;
+namespace Dock\Installer\DNS\Linux\RedHat;
 
+use Dock\Installer\DNS\Linux\DnsDock;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
-use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 
-class NoSudo extends InstallerTask implements DependentChainProcessInterface
+class DockerRouting extends InstallerTask
 {
     /**
      * @var ProcessRunner
@@ -31,29 +31,25 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
     /**
      * {@inheritdoc}
      */
-    public function dependsOn()
+    public function getName()
     {
-        return ['docker'];
+        return 'routing';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'noSudo';
-    }
-
     public function run()
     {
-        if (! $this->isCurrentUserInDockerGroup()) {
-            $this->userInteraction->writeTitle('Making docker work without sudo');
-            $this->processRunner->run('sudo usermod -a -G docker $USER');
+        if (! $this->isUsingDnsDockDnsServer()) {
+            $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
+
+            $this->processRunner->run("sudo sed -i -e '1inameserver " . DnsDock::IP . "\\' /etc/resolv.conf");
         }
     }
 
-    private function isCurrentUserInDockerGroup()
+    private function isUsingDnsDockDnsServer()
     {
-        return $this->processRunner->run('groups | grep docker', false)->isSuccessful();
+        return $this->processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful();
     }
 }

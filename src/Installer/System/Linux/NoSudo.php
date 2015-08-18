@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System\Linux\RedHat;
+namespace Dock\Installer\System\Linux;
 
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
@@ -46,14 +46,14 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
 
     public function run()
     {
-        if (! $this->isCurrentUserInDockerrootGroup()) {
+        if (! $this->isCurrentUserInDockerGroup()) {
             $this->userInteraction->writeTitle('Making docker work without sudo');
-            $this->processRunner->run('sudo usermod -a -G dockerroot $USER');
+            $this->processRunner->run('sudo usermod -a -G docker $USER');
         }
     }
 
-    private function isCurrentUserInDockerrootGroup()
+    private function isCurrentUserInDockerGroup()
     {
-        return $this->processRunner->run('groups | grep dockerroot', false)->isSuccessful();
+        return $this->processRunner->run('groups | grep docker', false)->isSuccessful();
     }
 }

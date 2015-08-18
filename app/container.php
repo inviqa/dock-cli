@@ -37,6 +37,8 @@ if ($osDetector->isMac()) {
     require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
 } elseif ($osDetector->isDebian()) {
     require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+} elseif ($osDetector->isRedHat()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
 } else {
     throw new \Exception($osDetector->isLinux()
         ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
