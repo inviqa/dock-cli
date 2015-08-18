@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Installer\System\Linux\Debian;
+namespace Dock\Installer\System\Linux;
 
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;

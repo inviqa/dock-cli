@@ -20,7 +20,7 @@ $container['installer.dns.docker_routing'] = function($c) {
 
 $container['installer.task_provider'] = function ($c) {
     return new TaskProvider([
-        new System\Linux\RedHat\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
+        new System\Linux\NoSudo($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Linux\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Linux\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
         $c['installer.dns.dnsdock'],
