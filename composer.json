@@ -17,7 +17,7 @@
     }
   },
   "bin": [
-    "app.php"
+    "bin/dock-cli"
   ],
   "require-dev": {
     "behat/behat": "^3.0",
