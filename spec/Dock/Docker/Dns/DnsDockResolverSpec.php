@@ -10,7 +10,7 @@ class DnsDockResolverSpec extends ObjectBehavior
 {
     function it_is_a_container_address_resolve()
     {
-        $this->shouldImplement(ContainerAddressResolver::class);
+        $this->shouldImplement('Dock\Docker\Dns\ContainerAddressResolver');
     }
 
     function it_returns_the_resolution_with_just_the_image_name()
