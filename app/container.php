@@ -95,7 +95,7 @@ $container['command.restart'] = function ($c) {
 };
 
 $container['command.start'] = function ($c) {
-    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction']);
+    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction'], $c['doctor']);
 };
 $container['command.stop'] = function ($c) {
     return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
