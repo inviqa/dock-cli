@@ -17,6 +17,7 @@ use Dock\Compose\Config;
 use Dock\Containers\ConfiguredContainers;
 use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
+use Dock\Docker\Dns\DnsDockResolver;
 use Dock\DockerCompose\ConfiguredContainerIds;
 use Dock\DockerCompose\Logs;
 use Dock\Doctor\Doctor;
@@ -110,7 +111,7 @@ $container['containers.configured_container_ids'] = function ($c) {
     return new ConfiguredContainerIds($c['process.silent_runner']);
 };
 $container['containers.container_details'] = function ($c) {
-    return new ContainerDetails($c['process.silent_runner']);
+    return new ContainerDetails($c['process.silent_runner'], new DnsDockResolver());
 };
 
 $container['command.logs'] = function ($c) {
