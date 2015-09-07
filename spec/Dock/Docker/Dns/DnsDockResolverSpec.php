@@ -22,4 +22,9 @@ class DnsDockResolverSpec extends ObjectBehavior
     {
         $this->getDnsByContainerNameAndImage('container', 'image')->shouldContain('container.image.docker');
     }
+
+    function it_removes_the_tag_in_image_name()
+    {
+        $this->getDnsByContainerNameAndImage('container', 'image:latest')->shouldContain('container.image.docker');
+    }
 }
