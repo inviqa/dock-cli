@@ -3,6 +3,7 @@
 namespace Dock\Docker;
 
 use Dock\Containers\Container;
+use Dock\Docker\Dns\ContainerAddressResolver;
 use Dock\IO\ProcessRunner;
 
 class ContainerDetails implements \Dock\Containers\ContainerDetails
@@ -13,11 +14,19 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
     private $processRunner;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @var ContainerAddressResolver
      */
-    public function __construct(ProcessRunner $processRunner)
+    private $containerAddressResolver;
+
+    /**
+     * @param ProcessRunner $processRunner
+     * @param ContainerAddressResolver $containerAddressResolver
+     */
+    public function __construct(ProcessRunner $processRunner, ContainerAddressResolver $containerAddressResolver
+    )
     {
         $this->processRunner = $processRunner;
+        $this->containerAddressResolver = $containerAddressResolver;
     }
 
     /**
@@ -66,23 +75,9 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
             $containerName,
             $imageName,
             $inspection['State']['Running'] ? Container::STATE_RUNNING : Container::STATE_EXITED,
-            $this->getDnsByContainerNameAndImage($containerName, $imageName),
+            $this->containerAddressResolver->getDnsByContainerNameAndImage($containerName, $imageName),
             $exposedPorts,
             $componentName
         );
-    }
-
-    /**
-     * @param string $containerName
-     * @param string $containerImage
-     *
-     * @return array
-     */
-    private function getDnsByContainerNameAndImage($containerName, $containerImage)
-    {
-        return [
-            $containerImage.'.docker',
-            $containerName.'.'.$containerImage.'.docker',
-        ];
     }
 }
