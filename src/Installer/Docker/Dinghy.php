@@ -65,14 +65,28 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
      */
     private function changeDinghyDnsResolverNamespace()
     {
-        $process = $this->processRunner->run('dinghy version');
-        $dinghyVersionOutput = $process->getOutput();
-        $dinghyVersion = substr(trim($dinghyVersionOutput), strlen('Dinghy '));
-        $dnsMasqConfiguration = '/usr/local/Cellar/dinghy/' . $dinghyVersion . '/cli/dinghy/dnsmasq.rb';
-
-        $dinghyDnsMasqContents = file_get_contents($dnsMasqConfiguration);
+        $dnsMasqConfigurationPath = $this->getDinghyDnsMasqFilePath();
+        $dinghyDnsMasqContents = file_get_contents($dnsMasqConfigurationPath);
         $dinghyDnsMasqContents = preg_replace('#RESOLVER_FILE = RESOLVER_DIR\.join\("([a-z-]+)"\)#', 'RESOLVER_FILE = RESOLVER_DIR.join("zzz-dinghy2")', $dinghyDnsMasqContents);
-        file_put_contents($dnsMasqConfiguration, $dinghyDnsMasqContents);
+        file_put_contents($dnsMasqConfigurationPath, $dinghyDnsMasqContents);
+    }
+
+    /**
+     * @return string
+     */
+    private function getDinghyDnsMasqFilePath()
+    {
+        $versions = [$this->dinghy->getVersion(), 'HEAD'];
+
+        foreach ($versions as $version) {
+            $path = '/usr/local/Cellar/dinghy/'.$version.'/cli/dinghy/dnsmasq.rb';
+
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        throw new \RuntimeException('Unable to find Dinghy\'s dnsmask configuration file');
     }
 
     /**
@@ -112,29 +126,49 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     private function installDinghy()
     {
         if ($this->dinghy->isInstalled()) {
-            $this->userInteraction->writeTitle('Dinghy already installed, skipping.');
+            $version = $this->dinghy->getVersion();
 
-            return;
+            if (version_compare($version, '4.0.0') >= 0) {
+                $this->userInteraction->writeTitle('Dinghy already installed, skipping.');
+
+                return;
+            } else {
+                $this->userInteraction->writeTitle('And old Dinghy version found, upgrading.');
+
+                $this->upgradeDinghy();
+            }
+        } else {
+            $this->userInteraction->writeTitle('Installing Dinghy');
+            $this->processRunner->run(
+                'brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'
+            );
         }
 
-        $this->userInteraction->writeTitle('Installing Dinghy');
-        $this->processRunner->run(
-            'brew install https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'
-        );
         $this->userInteraction->writeTitle('Successfully installed Dinghy');
     }
 
     private function startDinghy()
     {
-        $this->userInteraction->writeTitle('Starting up Dinghy');
-
         if ($this->dinghy->isRunning()) {
             $this->userInteraction->writeTitle('Dinghy already started');
 
             return;
         }
 
-        $this->dinghy->start();
+        $this->userInteraction->writeTitle('Starting up Dinghy');
+        if (!$this->dinghy->isCreated()) {
+            $this->dinghy->create();
+        } else {
+            $this->dinghy->start();
+        }
+
         $this->userInteraction->writeTitle('Started Dinghy');
+    }
+
+    private function upgradeDinghy()
+    {
+        $this->processRunner->run(
+            'brew reinstall --HEAD https://github.com/codekitchen/dinghy/raw/latest/dinghy.rb'
+        );
     }
 }

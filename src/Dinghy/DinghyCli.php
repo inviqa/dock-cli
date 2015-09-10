@@ -48,13 +48,28 @@ class DinghyCli
     }
 
     /**
+     * Create the Dinghy VM.
+     *
+     * @throws ProcessFailedException
+     */
+    public function create()
+    {
+        $this->processRunner->run('dinghy create --provider virtualbox');
+    }
+
+    /**
      * @return string
      */
     public function getVersion()
     {
         $process = $this->processRunner->run('dinghy version');
+        $output = $process->getOutput();
 
-        return $process->getOutput();
+        if (!preg_match('#([0-9\.]+)#', $output, $matches)) {
+            throw new \RuntimeException('Unable to resolve Dinghy\'s version');
+        }
+
+        return $matches[1];
     }
 
     /**
@@ -66,6 +81,17 @@ class DinghyCli
         $dinghyIp = $process->getOutput();
 
         return trim($dinghyIp);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCreated()
+    {
+        $process = $this->processRunner->run('dinghy status');
+        $output = $process->getOutput();
+
+        return strpos($output, 'VM: not created') === false;
     }
 
     /**
