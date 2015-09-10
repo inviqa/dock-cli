@@ -40,7 +40,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-        new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
+        new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner'], $c['cli.dinghy']),
     ]);
 };
 
