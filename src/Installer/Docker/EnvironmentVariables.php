@@ -62,7 +62,13 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      */
     private function isEnvironmentConfigured()
     {
-        return getenv('DOCKER_HOST') == 'tcp://127.0.0.1:2376';
+        foreach ($this->getEnvironmentVariables() as $environmentVariable) {
+            if (getenv($environmentVariable->getName()) != $environmentVariable->getValue()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -82,7 +88,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
     }
 
     /**
-     * @return array
+     * @return EnvironmentVariable[]
      */
     protected function getEnvironmentVariables()
     {
