@@ -24,6 +24,8 @@ use Dock\Doctor\Doctor;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
+use Dock\Project\Decorator\CheckDockerConfigurationBeforeStarting;
+use Dock\Project\DockerComposeProjectManager;
 use Dock\System\OperatingSystemDetector;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
@@ -91,15 +93,29 @@ $container['installer.docker'] = function ($c) {
     return new DockerInstaller($c['installer.task_provider']);
 };
 
+$container['project.manager'] = function ($c) {
+    $projectManager = new DockerComposeProjectManager(
+        $c['interactive.process_builder'],
+        $c['console.user_interaction'],
+        $c['process.interactive_runner'],
+        $c['compose.executable_finder']
+    );
+
+    return new CheckDockerConfigurationBeforeStarting($projectManager, $c['doctor'], $c['console.user_interaction']);
+};
+
 $container['command.restart'] = function ($c) {
     return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
 };
 
+$container['interactive.process_builder'] = function($c) {
+    return new InteractiveProcessBuilder($c['console.user_interaction']);
+};
 $container['command.start'] = function ($c) {
-    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction'], $c['doctor']);
+    return new StartCommand($c['project.manager']);
 };
 $container['command.stop'] = function ($c) {
-    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
+    return new StopCommand($c['project.manager']);
 };
 $container['command.ps'] = function ($c) {
     return new PsCommand(new ConfiguredContainers(

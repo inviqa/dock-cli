@@ -153,4 +153,36 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
     {
         $this->container['application_tester']->run(['command' => $command, 'component' => self::CONTAINER_ID]);
     }
+
+    /**
+     * @Given I have a composer.json file that contains the extra domain name :domainName
+     */
+    public function iHaveAComposerJsonFileThatContainsTheExtraDomainName($domainName)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I start the application
+     */
+    public function iStartTheApplication()
+    {
+        $this->container['application_tester']->run(['command' => 'start']);
+    }
+
+    /**
+     * @When the container address is :address
+     */
+    public function theContainerAddressIs($address)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then the domain name :domainName should be resolved as :address
+     */
+    public function theDomainNameShouldBeResolvedAs($domainName, $address)
+    {
+        throw new PendingException();
+    }
 }
