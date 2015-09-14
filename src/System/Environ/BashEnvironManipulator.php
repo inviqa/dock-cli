@@ -46,7 +46,7 @@ class BashEnvironManipulator implements EnvironManipulator
     public function has(EnvironmentVariable $environmentVariable)
     {
         $process = $this->processRunner->run(
-            sprintf('grep %s %s', $environmentVariable->getName(), $this->file),
+            sprintf('grep %s=%s %s', $environmentVariable->getName(), $environmentVariable->getValue(), $this->file),
             false
         );
 

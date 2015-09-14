@@ -19,10 +19,7 @@ $container['system.shell_creator'] = function() {
 };
 
 $container['installer.dns.dnsdock'] = function($c) {
-    return new Dns\Mac\DnsDock(new SshClient(new Session(
-        new Configuration(SshClient::DEFAULT_HOSTNAME),
-        new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
-    )), $c['console.user_interaction'], $c['process.interactive_runner']);
+    return new Dns\Mac\DnsDock(new SshClient($c['cli.dinghy']), $c['console.user_interaction'], $c['process.interactive_runner']);
 };
 $container['installer.dns.docker_routing'] = function($c) {
     return new DNS\Mac\DockerRouting($c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']);
@@ -43,7 +40,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\VirtualBox($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
-        new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner']),
+        new Docker\EnvironmentVariables(new EnvironManipulatorFactory(), $c['console.user_interaction'], $c['process.interactive_runner'], $c['cli.dinghy']),
     ]);
 };
 
