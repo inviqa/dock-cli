@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Cli\Helper;
+namespace Dock\Compose;
 
 class Project
 {
