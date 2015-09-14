@@ -2,7 +2,6 @@
 
 namespace Dock\Compose;
 
-use Dock\Cli\Helper\Project;
 use Symfony\Component\Yaml\Parser;
 
 class Config
