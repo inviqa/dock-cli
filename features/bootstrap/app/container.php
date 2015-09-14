@@ -5,6 +5,7 @@ use Fake\ContainerDetails;
 use Fake\Logs;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Test\Compose\PredictableProject;
+use Test\Doctor\NullDoctor;
 use Test\Plugins\ExtraHostname\InMemoryResolutionWriter;
 use Test\Project\PredictableManager;
 
@@ -29,11 +30,15 @@ $container['logs'] = function ($c) {
     return new Logs($c['console.user_interaction']);
 };
 
-$container['compose.project'] = function ($c) {
+$container['compose.project'] = function () {
     return new PredictableProject(getcwd());
 };
 
-$container['project.manager.docker_compose'] = function($c) {
+$container['doctor'] = function () {
+    return new NullDoctor();
+};
+
+$container['project.manager.docker_compose'] = function() {
     return new PredictableManager();
 };
 
