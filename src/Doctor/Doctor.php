@@ -7,12 +7,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Doctor
 {
     /**
-     * @var array
+     * @var Task[]
      */
     private $tasks;
 
     /**
-     * @param array $tasks
+     * @param Task[] $tasks
      */
     public function __construct(array $tasks)
     {
