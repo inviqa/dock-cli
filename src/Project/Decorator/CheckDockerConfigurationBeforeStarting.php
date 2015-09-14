@@ -2,6 +2,7 @@
 
 namespace Dock\Project\Decorator;
 
+use Dock\Compose\Project;
 use Dock\Doctor\CommandFailedException;
 use Dock\Doctor\Doctor;
 use Dock\IO\UserInteraction;
@@ -41,7 +42,7 @@ class CheckDockerConfigurationBeforeStarting implements ProjectManager
     /**
      * {@inheritdoc}
      */
-    public function start()
+    public function start(Project $project)
     {
         try {
             $this->doctor->examine(new NullOutput(), true);
@@ -56,14 +57,14 @@ class CheckDockerConfigurationBeforeStarting implements ProjectManager
             }
         }
 
-        return $this->projectManager->start();
+        return $this->projectManager->start($project);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function stop()
+    public function stop(Project $project)
     {
-        return $this->projectManager->stop();
+        return $this->projectManager->stop($project);
     }
 }

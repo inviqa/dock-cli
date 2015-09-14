@@ -3,6 +3,7 @@
 namespace Dock\Project;
 
 use Dock\Compose\ComposeExecutableFinder;
+use Dock\Compose\Project;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\Process\InteractiveProcessManager;
 use Dock\IO\ProcessRunner;
@@ -48,7 +49,7 @@ class DockerComposeProjectManager implements ProjectManager
     /**
      * {@inheritdoc}
      */
-    public function start()
+    public function start(Project $project)
     {
         $this->userInteraction->writeTitle('Starting application containers');
 
@@ -70,7 +71,7 @@ class DockerComposeProjectManager implements ProjectManager
     /**
      * {@inheritdoc}
      */
-    public function stop()
+    public function stop(Project $project)
     {
         $this->userInteraction->writeTitle('Stopping application containers');
 

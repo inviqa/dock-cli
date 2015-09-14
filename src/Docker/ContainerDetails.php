@@ -22,8 +22,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
      * @param ProcessRunner $processRunner
      * @param ContainerAddressResolver $containerAddressResolver
      */
-    public function __construct(ProcessRunner $processRunner, ContainerAddressResolver $containerAddressResolver
-    )
+    public function __construct(ProcessRunner $processRunner, ContainerAddressResolver $containerAddressResolver)
     {
         $this->processRunner = $processRunner;
         $this->containerAddressResolver = $containerAddressResolver;

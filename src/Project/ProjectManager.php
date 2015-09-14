@@ -2,9 +2,21 @@
 
 namespace Dock\Project;
 
+use Dock\Compose\Project;
+
 interface ProjectManager
 {
-    public function start();
+    /**
+     * Start the project.
+     *
+     * @param Project $project
+     */
+    public function start(Project $project);
 
-    public function stop();
+    /**
+     * Stop the current project.
+     *
+     * @param Project $project
+     */
+    public function stop(Project $project);
 }

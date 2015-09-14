@@ -3,6 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\Compose\ComposeExecutableFinder;
+use Dock\Compose\Project;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use Dock\Project\ProjectManager;
@@ -20,13 +21,20 @@ class StopCommand extends Command
     private $projectManager;
 
     /**
-     * @param ProjectManager $projectManager
+     * @var Project
      */
-    public function __construct(ProjectManager $projectManager)
+    private $project;
+
+    /**
+     * @param ProjectManager $projectManager
+     * @param Project $project
+     */
+    public function __construct(ProjectManager $projectManager, Project $project)
     {
         parent::__construct();
 
         $this->projectManager = $projectManager;
+        $this->project = $project;
     }
 
     /**
@@ -45,6 +53,6 @@ class StopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->projectManager->stop();
+        $this->projectManager->stop($this->project);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Dock\Cli;
 
+use Dock\Compose\Project;
 use Dock\Doctor\CommandFailedException;
 use Dock\Doctor\Doctor;
 use Dock\IO\Process\InteractiveProcessBuilder;
@@ -22,15 +23,21 @@ class StartCommand extends Command
      * @var ProjectManager
      */
     private $projectManager;
+    /**
+     * @var Project
+     */
+    private $project;
 
     /**
      * @param ProjectManager $projectManager
+     * @param Project $project
      */
-    public function __construct(ProjectManager $projectManager)
+    public function __construct(ProjectManager $projectManager, Project $project)
     {
         parent::__construct();
 
         $this->projectManager = $projectManager;
+        $this->project = $project;
     }
 
     /**
@@ -57,7 +64,7 @@ class StartCommand extends Command
             return 1;
         }
 
-        $this->projectManager->start();
+        $this->projectManager->start($this->project);
 
         return $this->getApplication()->run(
             new ArrayInput(['command' => 'ps']),
