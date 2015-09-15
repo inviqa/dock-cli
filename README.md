@@ -21,6 +21,12 @@ You can now start up a specific project by running the [`start` command](docs/cm
 dock-cli start
 ```
 
+Once the containers are compiled and started, this start command will display you an overview of the running components
+and their addresses (that you can also to have later with the [`ps` command](docs/cmd-ps.md)).
+
+![](docs/images/docker-php-example-ps-output.png)
+*Example output using the [`docker-php-example` project](https://github.com/sroze/docker-php-example)*
+
 ## Commands
 
 The following commands are available:
