@@ -45,6 +45,14 @@ The following commands are available:
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 - [`run` command](docs/cmd-run.md) run a command in a container with the application context.
 
+## Plugins
+
+In order to improve developer experience, we are also shipping `dock-cli` with some plugins.
+
+- [Extra host names](docs/plugins/extra-host-names.md) that will automatically configure your system to use given
+  host names for your application components.
+
+
 ## Update
 
 To update this tool, simply run the `self-update` command:
