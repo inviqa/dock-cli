@@ -12,14 +12,14 @@ domain names like that in your `composer.json` file:
 
 ```json
 {
-  "extra": {
-    "dock-cli": {
-      "extra-hostname": {
-        "api": ["my-api.acme.tld", "local.api.acme.tld"],
-        "ui": ["local.acme.tld"]
-      }
+    "extra": {
+        "dock-cli": {
+            "extra-hostname": {
+                "api": ["my-api.acme.tld", "local.api.acme.tld"],
+                "ui": ["local.acme.tld"]
+            }
+        }
     }
-  }
 }
 ```
 
