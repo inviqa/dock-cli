@@ -69,6 +69,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
             $containerConfiguration['ExposedPorts']
         ) : [];
         $componentName = isset($containerConfiguration['Labels']['com.docker.compose.service']) ? $containerConfiguration['Labels']['com.docker.compose.service'] : null;
+        $ipAddress = isset($inspection['NetworkSettings']['IPAddress']) ? $inspection['NetworkSettings']['IPAddress'] : null;
 
         return new Container(
             $containerName,
@@ -76,7 +77,8 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
             $inspection['State']['Running'] ? Container::STATE_RUNNING : Container::STATE_EXITED,
             $this->containerAddressResolver->getDnsByContainerNameAndImage($containerName, $imageName),
             $exposedPorts,
-            $componentName
+            $componentName,
+            $ipAddress
         );
     }
 }

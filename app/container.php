@@ -22,6 +22,7 @@ use Dock\DockerCompose\ConfiguredContainerIds;
 use Dock\DockerCompose\ContainerInspector;
 use Dock\DockerCompose\Logs;
 use Dock\Doctor\Doctor;
+use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
@@ -61,7 +62,7 @@ $container['command.install'] = function ($c) {
 };
 
 $container['doctor'] = function ($c) {
-    return new Doctor($c['doctor.tasks']);
+    return new TaskBasedDoctor($c['doctor.tasks']);
 };
 
 $container['command.doctor'] = function ($c) {
