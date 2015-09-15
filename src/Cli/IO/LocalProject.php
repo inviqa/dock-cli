@@ -1,11 +1,11 @@
 <?php
 
-namespace Dock\Cli\Helper;
+namespace Dock\Cli\IO;
 
-class Project
+use Dock\Compose\Project;
+
+class LocalProject implements Project
 {
-    const CONFIG_FILE = '/docker-compose.yml';
-
     public function getProjectBasePath()
     {
         $baseDir = getcwd();

@@ -9,24 +9,10 @@ This CLI application provides an abstraction layer for Docker-based projects.
 
 ## Getting started
 
-Download the last PHAR release:
-```
-wget http://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
-chmod +x ./dock-cli
-sudo mv dock-cli /usr/bin/dock-cli
-```
+This tool also helps you to install our recommended Docker setup on your computer, including direct container routing
+and DNS resolutions.
 
-## Install Docker on your system
-To install the Docker development environment run:
-
-```
-dock-cli docker:install
-```
-
-**Note:** This sets environment variables which are loaded for the current shell and any opened after running it.
-If you have any other shells already opened you will need to `source` these variables before running the other commands.
-If you see an error message similar to `Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?`
-when running subsequent commands then this may be the issue.
+Read [the installation instructions](docs/install.md).
 
 ## Project-related usage
 
@@ -34,6 +20,12 @@ You can now start up a specific project by running the [`start` command](docs/cm
 ```
 dock-cli start
 ```
+
+Once the containers are compiled and started, this start command will display you an overview of the running components
+and their addresses (that you can also to have later with the [`ps` command](docs/cmd-ps.md)).
+
+![](docs/images/docker-php-example-ps-output.png)
+*Example output using the [`docker-php-example` project](https://github.com/sroze/docker-php-example)*
 
 ## Commands
 
@@ -52,6 +44,14 @@ The following commands are available:
 - [`ps` command](docs/cmd-ps.md) list all the project containers if any.
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 - [`run` command](docs/cmd-run.md) run a command in a container with the application context.
+
+## Plugins
+
+In order to improve developer experience, we are also shipping `dock-cli` with some plugins.
+
+- [Extra host names](docs/plugins/extra-host-names.md) that will automatically configure your system to use given
+  host names for your application components.
+
 
 ## Update
 

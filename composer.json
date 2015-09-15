@@ -9,7 +9,8 @@
     "pimple/pimple": "^3.0",
     "symfony/event-dispatcher": "~2.7",
     "symfony/yaml": "~2.7",
-    "symfony/filesystem": "^2.7"
+    "symfony/filesystem": "^2.7",
+    "symfony/property-access": "^2.7"
   },
   "autoload": {
     "psr-4": {

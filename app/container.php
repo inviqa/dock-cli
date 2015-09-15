@@ -1,10 +1,10 @@
 <?php
 
 use Dock\Cli\DoctorCommand;
-use Dock\Cli\Helper\Project;
 use Dock\Cli\InstallCommand;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Cli\IO\InteractiveProcessRunner;
+use Dock\Cli\IO\LocalProject;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\RestartCommand;
@@ -19,11 +19,18 @@ use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
 use Dock\Docker\Dns\DnsDockResolver;
 use Dock\DockerCompose\ConfiguredContainerIds;
+use Dock\DockerCompose\ContainerInspector;
 use Dock\DockerCompose\Logs;
 use Dock\Doctor\Doctor;
+use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
+use Dock\Plugins\ExtraHostname\HostnameFromComposerResolver;
+use Dock\Plugins\ExtraHostname\HostsFileResolutionWriter;
+use Dock\Plugins\ExtraHostname\ProjectManager\UpdatesManualDnsNamesOfContainers;
+use Dock\Project\Decorator\CheckDockerConfigurationBeforeStarting;
+use Dock\Project\DockerComposeProjectManager;
 use Dock\System\OperatingSystemDetector;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
@@ -55,7 +62,7 @@ $container['command.install'] = function ($c) {
 };
 
 $container['doctor'] = function ($c) {
-    return new Doctor($c['doctor.tasks']);
+    return new TaskBasedDoctor($c['doctor.tasks']);
 };
 
 $container['command.doctor'] = function ($c) {
@@ -91,15 +98,48 @@ $container['installer.docker'] = function ($c) {
     return new DockerInstaller($c['installer.task_provider']);
 };
 
+$container['project.manager.docker_compose'] = function ($c) {
+    return new DockerComposeProjectManager(
+        $c['interactive.process_builder'],
+        $c['console.user_interaction'],
+        $c['process.interactive_runner'],
+        $c['compose.executable_finder']
+    );
+};
+
+$container['plugins.extra_hostname.composer_hostname_resolver'] = function ($c) {
+    return new HostnameFromComposerResolver();
+};
+
+$container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
+    return new HostsFileResolutionWriter($c['process.silent_runner']);
+};
+
+$container['project.manager'] = function ($c) {
+    $projectManager = $c['project.manager.docker_compose'];
+    $projectManager = new CheckDockerConfigurationBeforeStarting($projectManager, $c['doctor'], $c['console.user_interaction']);
+    $projectManager = new UpdatesManualDnsNamesOfContainers(
+        $projectManager,
+        $c['plugins.extra_hostname.composer_hostname_resolver'],
+        $c['plugins.extra_hostname.hostname_resolution_writer'],
+        $c['containers.inspector']
+    );
+
+    return $projectManager;
+};
+
 $container['command.restart'] = function ($c) {
     return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
 };
 
+$container['interactive.process_builder'] = function($c) {
+    return new InteractiveProcessBuilder($c['console.user_interaction']);
+};
 $container['command.start'] = function ($c) {
-    return new StartCommand(new InteractiveProcessBuilder($c['console.user_interaction']), $c['console.user_interaction'], $c['doctor']);
+    return new StartCommand($c['project.manager'], $c['compose.project']);
 };
 $container['command.stop'] = function ($c) {
-    return new StopCommand($c['compose.executable_finder'], $c['console.user_interaction'], $c['process.silent_runner']);
+    return new StopCommand($c['project.manager'], $c['compose.project']);
 };
 $container['command.ps'] = function ($c) {
     return new PsCommand(new ConfiguredContainers(
@@ -114,16 +154,20 @@ $container['containers.container_details'] = function ($c) {
     return new ContainerDetails($c['process.silent_runner'], new DnsDockResolver());
 };
 
+$container['containers.inspector'] = function ($c) {
+    return new ContainerInspector($c['containers.configured_container_ids'], $c['containers.container_details']);
+};
+
 $container['command.logs'] = function ($c) {
     return new LogsCommand($c['logs']);
 };
 
-$container['cli.helper.project'] = function ($c) {
-    return new Project();
+$container['compose.project'] = function ($c) {
+    return new LocalProject();
 };
 
 $container['compose.config'] = function ($c) {
-    return new Config($c['cli.helper.project']);
+    return new Config($c['compose.project']);
 };
 
 $container['command.run'] = function ($c) {

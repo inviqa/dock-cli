@@ -3,6 +3,7 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Dock\Containers\Container;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ApplicationTesterContext implements Context, SnippetAcceptingContext
 {
@@ -14,7 +15,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
 
     public function __construct()
     {
-        $this->container = require __DIR__ . '/app/container.php';
+        $this->container = new \Test\Container();
     }
 
     /**
@@ -22,7 +23,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iHaveADockerComposeFileThatContainsOneContainer()
     {
-        $this->container['containers.configured_container_ids']->setIds([self::CONTAINER_ID]);
+        $this->container->getConfiguredContainerIds()->setIds([self::CONTAINER_ID]);
     }
 
     /**
@@ -30,21 +31,35 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thisContainerIsRunning()
     {
-        $this->container['containers.container_details']->setState(
+        $this->container->getContainerDetails()->setState(
             self::CONTAINER_ID,
             Container::STATE_RUNNING,
             self::FAKE_DNS
         );
 
-        $this->container['logs']->setRunningContainerIds([self::CONTAINER_ID]);
+        $this->container->getLogs()->setRunningContainerIds([self::CONTAINER_ID]);
+    }
+
+    /**
+     * @Given this container is not running
+     */
+    public function thisContainerIsNotRunning()
+    {
+        $this->container->getContainerDetails()->setState(
+            self::CONTAINER_ID,
+            Container::STATE_EXITED,
+            self::FAKE_DNS
+        );
+
+        $this->container->getLogs()->setRunningContainerIds([self::CONTAINER_ID]);
     }
 
     /**
      * @Given this container ran previously but is not currently running
      */
-    public function thisContainerIsNotRunning()
+    public function thisContainerRanPreviouslyButIsNotRunning()
     {
-        $this->container['containers.container_details']->setState(
+        $this->container->getContainerDetails()->setState(
             self::CONTAINER_ID,
             Container::STATE_EXITED,
             self::FAKE_DNS
@@ -56,7 +71,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iRunTheCommand($command)
     {
-        $this->container['application_tester']->run([$command]);
+        $this->container->getApplicationTester()->run([$command]);
     }
 
     /**
@@ -88,7 +103,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     private function getApplicationOutput()
     {
-        return $this->container['application_tester']->getDisplay();
+        return $this->container->getApplicationTester()->getDisplay();
     }
 
     /**
@@ -108,7 +123,7 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iHaveADockerComposeFileThatContainsTwoContainers()
     {
-        $this->container['containers.configured_container_ids']->setIds(
+        $this->container->getConfiguredContainerIds()->setIds(
             [self::CONTAINER_ID, self::SECOND_CONTAINER_ID]
         );
     }
@@ -118,19 +133,19 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function thoseContainersAreRunning()
     {
-        $this->container['containers.container_details']->setState(
+        $this->container->getContainerDetails()->setState(
             self::CONTAINER_ID,
             Container::STATE_RUNNING,
             self::FAKE_DNS
         );
 
-        $this->container['containers.container_details']->setState(
+        $this->container->getContainerDetails()->setState(
             self::SECOND_CONTAINER_ID,
             Container::STATE_RUNNING,
             self::FAKE_DNS
         );
 
-        $this->container['logs']->setRunningContainerIds([self::CONTAINER_ID, self::SECOND_CONTAINER_ID]);
+        $this->container->getLogs()->setRunningContainerIds([self::CONTAINER_ID, self::SECOND_CONTAINER_ID]);
     }
 
     /**
@@ -151,6 +166,83 @@ class ApplicationTesterContext implements Context, SnippetAcceptingContext
      */
     public function iRunTheCommandForOneOfTheComponents($command)
     {
-        $this->container['application_tester']->run(['command' => $command, 'component' => self::CONTAINER_ID]);
+        $this->container->getApplicationTester()->run(['command' => $command, 'component' => self::CONTAINER_ID]);
+    }
+
+    /**
+     * @Given I have a composer.json file that contains the extra domain name :domainName
+     */
+    public function iHaveAComposerJsonFileThatContainsTheExtraDomainName($domainName)
+    {
+        $composeFileContents = <<<EOF
+{
+  "extra": {
+    "dock-cli": {
+      "extra-hostname": {
+        "web": ["$domainName"]
+      }
+    }
+  }
+}
+EOF;
+
+        $project = $this->container->getProject();
+        $project->isolate();
+        file_put_contents($project->getProjectBasePath().DIRECTORY_SEPARATOR.'composer.json', $composeFileContents);
+    }
+
+    /**
+     * @When I start the application
+     */
+    public function iStartTheApplication()
+    {
+        $tester = $this->container->getApplicationTester();
+        $status = $tester->run(['command' => 'start'], [
+            'verbosity' => OutputInterface::VERBOSITY_DEBUG
+        ]);
+
+        if ($status != 0) {
+            echo $tester->getDisplay();
+
+            throw new \RuntimeException(sprintf(
+                'Expected status code 0, got %d',
+                $status
+            ));
+        }
+    }
+
+    /**
+     * @When the container address is :address
+     */
+    public function theContainerAddressIs($address)
+    {
+        $this->container->getContainerDetails()->setState(
+            self::CONTAINER_ID,
+            Container::STATE_RUNNING,
+            null,
+            $address
+        );
+    }
+
+    /**
+     * @Then the domain name :domainName should be resolved as :address
+     */
+    public function theDomainNameShouldBeResolvedAs($domainName, $address)
+    {
+        $resolutions = $this->container->getResolutionWriter()->getResolutions();
+        if (!array_key_exists($domainName, $resolutions)) {
+            throw new \RuntimeException(sprintf(
+                'No resolution found for domain name "%s"',
+                $domainName
+            ));
+        }
+
+        if ($resolutions[$domainName] != $address) {
+            throw new \RuntimeException(sprintf(
+                'Found resolution "%s" while expecting "%s"',
+                $resolutions[$domainName],
+                $address
+            ));
+        }
     }
 }

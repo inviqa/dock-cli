@@ -2,11 +2,13 @@
 
 namespace Dock\Cli;
 
+use Dock\Compose\Project;
 use Dock\Doctor\CommandFailedException;
 use Dock\Doctor\Doctor;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\Process\InteractiveProcessManager;
 use Dock\IO\UserInteraction;
+use Dock\Project\ProjectManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,32 +20,24 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class StartCommand extends Command
 {
     /**
-     * @var UserInteraction
+     * @var ProjectManager
      */
-    private $userInteraction;
+    private $projectManager;
+    /**
+     * @var Project
+     */
+    private $project;
 
     /**
-     * @var InteractiveProcessBuilder
+     * @param ProjectManager $projectManager
+     * @param Project $project
      */
-    private $interactiveProcessBuilder;
-
-    /**
-     * @var Doctor
-     */
-    private $doctor;
-
-    /**
-     * @param InteractiveProcessBuilder $interactiveProcessBuilder
-     * @param UserInteraction $userInteraction
-     * @param Doctor $doctor
-     */
-    public function __construct(InteractiveProcessBuilder $interactiveProcessBuilder, UserInteraction $userInteraction, Doctor $doctor)
+    public function __construct(ProjectManager $projectManager, Project $project)
     {
         parent::__construct();
 
-        $this->userInteraction = $userInteraction;
-        $this->interactiveProcessBuilder = $interactiveProcessBuilder;
-        $this->doctor = $doctor;
+        $this->projectManager = $projectManager;
+        $this->project = $project;
     }
 
     /**
@@ -70,28 +64,7 @@ class StartCommand extends Command
             return 1;
         }
 
-        try {
-            $this->doctor->examine(new NullOutput(), true);
-        } catch (CommandFailedException $e) {
-            $answer = $this->userInteraction->ask(new Question('It looks like there\'s something wrong with your installation. Would you like to run the `doctor` command ? [Yn]', 'y'));
-
-            if ('y' == strtolower($answer)) {
-                $this->doctor->examine($output, false);
-            }
-        }
-
-        $this->userInteraction->writeTitle('Starting application containers');
-
-        $this->interactiveProcessBuilder
-            ->forCommand('docker-compose up -d')
-            ->disableOutput()
-            ->withoutTimeout()
-            ->ifTakesMoreThan(5000, function (InteractiveProcessManager $processManager) {
-                $processManager->enableOutput(true);
-            })
-            ->getManager()
-            ->run();
-        ;
+        $this->projectManager->start($this->project);
 
         return $this->getApplication()->run(
             new ArrayInput(['command' => 'ps']),

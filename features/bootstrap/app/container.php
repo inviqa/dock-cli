@@ -4,6 +4,10 @@ use Fake\ConfiguredContainerIds;
 use Fake\ContainerDetails;
 use Fake\Logs;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Test\Compose\PredictableProject;
+use Test\Doctor\NullDoctor;
+use Test\Plugins\ExtraHostname\InMemoryResolutionWriter;
+use Test\Project\PredictableManager;
 
 $container = require __DIR__ . '/../../../app/container.php';
 
@@ -24,6 +28,22 @@ $container['application_tester'] = function ($c) {
 
 $container['logs'] = function ($c) {
     return new Logs($c['console.user_interaction']);
+};
+
+$container['compose.project'] = function () {
+    return new PredictableProject(getcwd());
+};
+
+$container['doctor'] = function () {
+    return new NullDoctor();
+};
+
+$container['project.manager.docker_compose'] = function() {
+    return new PredictableManager();
+};
+
+$container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
+    return new InMemoryResolutionWriter();
 };
 
 return $container;

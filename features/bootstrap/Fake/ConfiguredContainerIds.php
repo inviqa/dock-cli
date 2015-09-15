@@ -2,6 +2,8 @@
 
 namespace Fake;
 
+use Dock\Containers\ContainerNotFound;
+
 class ConfiguredContainerIds implements \Dock\Containers\ConfiguredContainerIds
 {
     private $ids = [];
@@ -17,5 +19,17 @@ class ConfiguredContainerIds implements \Dock\Containers\ConfiguredContainerIds
     public function findAll()
     {
         return $this->ids;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByName($name)
+    {
+        if (count($this->ids) == 0) {
+            throw new ContainerNotFound();
+        }
+
+        return current($this->ids);
     }
 }

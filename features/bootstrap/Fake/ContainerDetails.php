@@ -8,9 +8,9 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
 {
     private $states = [];
 
-    public function setState($id, $state, $dns)
+    public function setState($id, $state, $dns, $ipAddress = null)
     {
-        $this->states[$id] = ['state'=> $state, 'hosts' => [$dns]];
+        $this->states[$id] = ['state'=> $state, 'hosts' => [$dns], 'ip' => $ipAddress];
     }
 
     /**
@@ -27,7 +27,10 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
             "CONTAINER_$containerId",
             'IMG',
             $this->states[$containerId]['state'],
-            $this->states[$containerId]['hosts']
+            $this->states[$containerId]['hosts'],
+            [],
+            'COMPONENT_'.$containerId,
+            $this->states[$containerId]['ip']
         );
     }
 }

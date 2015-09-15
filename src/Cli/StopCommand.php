@@ -3,8 +3,10 @@
 namespace Dock\Cli;
 
 use Dock\Compose\ComposeExecutableFinder;
+use Dock\Compose\Project;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
+use Dock\Project\ProjectManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,32 +16,25 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class StopCommand extends Command
 {
     /**
-     * @var UserInteraction
+     * @var ProjectManager
      */
-    private $userInteraction;
+    private $projectManager;
 
     /**
-     * @var ComposeExecutableFinder
+     * @var Project
      */
-    private $composeExecutableFinder;
+    private $project;
 
     /**
-     * @var ProcessRunner
+     * @param ProjectManager $projectManager
+     * @param Project $project
      */
-    private $processRunner;
-
-    /**
-     * @param ComposeExecutableFinder $composeExecutableFinder
-     * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
-     */
-    public function __construct(ComposeExecutableFinder $composeExecutableFinder, UserInteraction $userInteraction, ProcessRunner $processRunner)
+    public function __construct(ProjectManager $projectManager, Project $project)
     {
         parent::__construct();
 
-        $this->userInteraction = $userInteraction;
-        $this->composeExecutableFinder = $composeExecutableFinder;
-        $this->processRunner = $processRunner;
+        $this->projectManager = $projectManager;
+        $this->project = $project;
     }
 
     /**
@@ -58,8 +53,6 @@ class StopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->userInteraction->writeTitle('Stopping application containers');
-
-        $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), ['stop']);
+        $this->projectManager->stop($this->project);
     }
 }
