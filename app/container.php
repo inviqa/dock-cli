@@ -7,6 +7,7 @@ use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\IO\LocalProject;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
+use Dock\Cli\ResetCommand;
 use Dock\Cli\RestartCommand;
 use Dock\Cli\RunCommand;
 use Dock\Cli\SelfUpdateCommand;
@@ -141,6 +142,9 @@ $container['command.start'] = function ($c) {
 $container['command.stop'] = function ($c) {
     return new StopCommand($c['project.manager'], $c['compose.project']);
 };
+$container['command.reset'] = function ($c) {
+    return new ResetCommand($c['project.manager'], $c['compose.project']);
+};
 $container['command.ps'] = function ($c) {
     return new PsCommand(new ConfiguredContainers(
         $c['containers.configured_container_ids'],
@@ -197,6 +201,7 @@ $container['application'] = function ($c) {
         $c['command.run'],
         $c['command.start'],
         $c['command.stop'],
+        $c['command.reset'],
         $c['command.ps'],
         $c['command.logs'],
     ]);

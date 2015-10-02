@@ -67,4 +67,12 @@ class CheckDockerConfigurationBeforeStarting implements ProjectManager
     {
         return $this->projectManager->stop($project);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset(Project $project, array $containers = [])
+    {
+        $this->projectManager->reset($project, $containers);
+    }
 }

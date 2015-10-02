@@ -75,4 +75,12 @@ class UpdatesManualDnsNamesOfContainers implements ProjectManager
     {
         $this->projectManager->stop($project);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset(Project $project, array $containers = [])
+    {
+        $this->projectManager->reset($project, $containers);
+    }
 }

@@ -77,4 +77,20 @@ class DockerComposeProjectManager implements ProjectManager
 
         $this->processRunner->followsUpWith($this->composeExecutableFinder->find(), ['stop']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reset(Project $project, array $containers = [])
+    {
+        $composePath = $this->composeExecutableFinder->find();
+
+        $this->processRunner->run(implode(' && ', array_map(function($action) use ($composePath, $containers) {
+            return implode(' ', [
+                $composePath,
+                $action,
+                implode(' ', $containers)
+            ]);
+        }, ['kill', 'rm -f', 'up -d'])));
+    }
 }
