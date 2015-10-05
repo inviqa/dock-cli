@@ -44,6 +44,7 @@ The following commands are available:
 - [`ps` command](docs/cmd-ps.md) list all the project containers if any.
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 - [`run` command](docs/cmd-run.md) run a command in a container with the application context.
+- [`reset` command](docs/cmd-reset.md) kill, remove and start again a container.
 
 ## Plugins
 
