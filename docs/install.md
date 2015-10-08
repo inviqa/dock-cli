@@ -2,7 +2,7 @@
 
 Download the last PHAR release:
 ```
-wget http://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
+wget https://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
 chmod +x ./dock-cli
 sudo mv dock-cli /usr/bin/dock-cli
 ```
