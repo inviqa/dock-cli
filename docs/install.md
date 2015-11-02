@@ -2,9 +2,9 @@
 
 Download the last PHAR release:
 ```
-wget https://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar -O dock-cli
+curl https://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar > dock-cli
 chmod +x ./dock-cli
-sudo mv dock-cli /usr/bin/dock-cli
+sudo mv dock-cli /usr/local/bin/dock-cli
 ```
 
 ## Install Docker on your system
