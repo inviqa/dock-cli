@@ -62,6 +62,9 @@ class DockerMachineCli implements Machine
      */
     public function getIp()
     {
-        return $this->processRunner->run('docker-machine ip '.$this->name)->getOutput();
+        $ip = $this->processRunner->run('docker-machine ip '.$this->name)->getOutput();
+        $ip = trim($ip);
+
+        return $ip;
     }
 }

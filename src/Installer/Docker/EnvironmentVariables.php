@@ -60,7 +60,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
             return;
         }
 
-        $this->userInteraction->writeTitle('Setting up dinghy environment variables');
+        $this->userInteraction->writeTitle('Setting up machine environment variables');
 
         $environmentVariables = $this->getEnvironmentVariables();
 
@@ -86,7 +86,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      */
     public function dependsOn()
     {
-        return ['dinghy'];
+        return ['dockerMachine'];
     }
 
     /**

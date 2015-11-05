@@ -1,7 +1,7 @@
 <?php
 
 use Dock\Dinghy\Boot2DockerCli;
-use Dock\Dinghy\SshClient;
+use Dock\Docker\Machine\SshClient;
 use Dock\Doctor;
 use Dock\Installer\DNS;
 use Dock\Installer\Docker;
@@ -19,7 +19,7 @@ $container['system.shell_creator'] = function() {
 };
 
 $container['installer.dns.dnsdock'] = function($c) {
-    return new DNS\Mac\DnsDock(new SshClient($c['cli.dinghy']), $c['console.user_interaction'], $c['process.interactive_runner']);
+    return new DNS\Mac\DnsDock(new SshClient($c['cli.dinghy']), $c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
 };
 $container['installer.dns.docker_routing'] = function($c) {
     return new DNS\Mac\DockerRouting($c['machine'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']);
@@ -34,7 +34,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\Homebrew($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
-        new Docker\Dinghy(new Boot2DockerCli($c['process.interactive_runner'], $c['io.phar_file_extractor']), $c['cli.dinghy'], $c['console.user_interaction'], $c['process.interactive_runner']),
+        new System\Mac\DockerMachine($c['console.user_interaction'], $c['process.interactive_runner']),
         $c['installer.dns.dnsdock'],
         $c['installer.dns.docker_routing'],
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),

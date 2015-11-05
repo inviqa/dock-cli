@@ -1,8 +1,7 @@
 <?php
 
-namespace Dock\Dinghy;
+namespace Dock\Docker\Machine;
 
-use Dock\Docker\Machine\Machine;
 use Ssh\Authentication\Password;
 use Ssh\Configuration;
 use Ssh\Exec;
