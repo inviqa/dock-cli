@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Dock\Compose;
+namespace spec\Dock\Docker\Compose;
 
 use Dock\Docker\Compose\Project;
 use PhpSpec\ObjectBehavior;
@@ -50,7 +50,7 @@ class ConfigSpec extends ObjectBehavior
     {
         $project->getCurrentRelativePath()->willReturn('');
         $project->getComposeConfigPath()->willReturn('spec/fixtures/docker-compose-nodefault.yml');
-        $this->shouldThrow('Dock\\Compose\\NotWithinServiceException')->during('getCurrentService');
+        $this->shouldThrow('Dock\\Docker\\Compose\\NotWithinServiceException')->during('getCurrentService');
     }
 
     function it_gets_a_list_of_services()
