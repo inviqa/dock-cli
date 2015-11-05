@@ -2,6 +2,7 @@
 
 namespace Dock\Dinghy;
 
+use Dock\Docker\Machine\Machine;
 use Ssh\Authentication\Password;
 use Ssh\Configuration;
 use Ssh\Exec;
@@ -23,16 +24,16 @@ class SshClient
     private $exec;
 
     /**
-     * @var DinghyCli
+     * @var Machine
      */
-    private $dinghy;
+    private $machine;
 
     /**
-     * @param DinghyCli $dinghy
+     * @param Machine $machine
      */
-    public function __construct(DinghyCli $dinghy)
+    public function __construct(Machine $machine)
     {
-        $this->dinghy = $dinghy;
+        $this->machine = $machine;
     }
 
     /**
@@ -73,7 +74,7 @@ class SshClient
         if (null == $this->session) {
             $this->session = new Session(
                 new Configuration(
-                    $this->dinghy->getIp()
+                    $this->machine->getIp()
                 ),
                 new Password(self::DEFAULT_USERNAME, self::DEFAULT_PASSWORD)
             );

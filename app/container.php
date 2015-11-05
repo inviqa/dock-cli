@@ -22,6 +22,7 @@ use Dock\Docker\Dns\DnsDockResolver;
 use Dock\Docker\Compose\ConfiguredContainerIds;
 use Dock\Docker\Compose\ContainerInspector;
 use Dock\Docker\Compose\Logs;
+use Dock\Docker\Machine\DockerMachineCli;
 use Dock\Doctor\Doctor;
 use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
@@ -130,7 +131,7 @@ $container['project.manager'] = function ($c) {
 };
 
 $container['command.restart'] = function ($c) {
-    return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
+    return new RestartCommand(new DockerMachineCli($c['process.interactive_runner']));
 };
 
 $container['interactive.process_builder'] = function($c) {

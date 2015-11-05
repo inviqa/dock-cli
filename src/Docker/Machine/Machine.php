@@ -7,4 +7,5 @@ interface Machine
     public function isRunning();
     public function start();
     public function stop();
+    public function getIp();
 }
