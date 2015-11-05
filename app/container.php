@@ -41,19 +41,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
 
-$osDetector = new OperatingSystemDetector();
-if ($osDetector->isMac()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
-} elseif ($osDetector->isDebian()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
-} elseif ($osDetector->isRedHat()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
-} else {
-    throw new \Exception($osDetector->isLinux()
-        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
-        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
-}
-
 $container['command.selfupdate'] = function () {
     return new SelfUpdateCommand();
 };
@@ -99,15 +86,6 @@ $container['installer.docker'] = function ($c) {
     return new DockerInstaller($c['installer.task_provider']);
 };
 
-$container['project.manager.docker_compose'] = function ($c) {
-    return new DockerComposeProjectManager(
-        $c['interactive.process_builder'],
-        $c['console.user_interaction'],
-        $c['process.interactive_runner'],
-        $c['compose.executable_finder']
-    );
-};
-
 $container['plugins.extra_hostname.composer_hostname_resolver'] = function ($c) {
     return new HostnameFromComposerResolver();
 };
@@ -117,7 +95,15 @@ $container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
 };
 
 $container['project.manager'] = function ($c) {
-    $projectManager = $c['project.manager.docker_compose'];
+    return new DockerComposeProjectManager(
+        $c['interactive.process_builder'],
+        $c['console.user_interaction'],
+        $c['process.interactive_runner'],
+        $c['compose.executable_finder']
+    );
+};
+
+$container->extend('project.manager', function ($projectManager, $c) {
     $projectManager = new CheckDockerConfigurationBeforeStarting($projectManager, $c['doctor'], $c['console.user_interaction']);
     $projectManager = new UpdatesManualDnsNamesOfContainers(
         $projectManager,
@@ -127,7 +113,7 @@ $container['project.manager'] = function ($c) {
     );
 
     return $projectManager;
-};
+});
 
 $container['machine'] = function($c) {
     return new DockerMachineCli($c['process.interactive_runner']);
@@ -208,5 +194,18 @@ $container['application'] = function ($c) {
 
     return $application;
 };
+
+$osDetector = new OperatingSystemDetector();
+if ($osDetector->isMac()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
+} elseif ($osDetector->isDebian()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+} elseif ($osDetector->isRedHat()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
+} else {
+    throw new \Exception($osDetector->isLinux()
+        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
+        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
+}
 
 return $container;

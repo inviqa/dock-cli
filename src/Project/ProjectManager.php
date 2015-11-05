@@ -9,6 +9,8 @@ interface ProjectManager
     /**
      * Start the project.
      *
+     * @throws ProjectException
+     *
      * @param Project $project
      */
     public function start(Project $project);

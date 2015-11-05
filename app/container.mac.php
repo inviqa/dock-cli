@@ -6,6 +6,7 @@ use Dock\Installer\DNS;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
 use Dock\IO\PharFileExtractor;
+use Dock\Project\Decorator\ProjectShouldBeInHomeDirectory;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Dock\System\Mac\ShellCreator;
 
@@ -46,3 +47,7 @@ $container['doctor.tasks'] = function($c) {
         new Doctor\DnsDock($c['process.silent_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
     ];
 };
+
+$container->extend('project.manager', function ($projectManager, $c) {
+    return new ProjectShouldBeInHomeDirectory($projectManager, $c['console.user_interaction']);
+});
