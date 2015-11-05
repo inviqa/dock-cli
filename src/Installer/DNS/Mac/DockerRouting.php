@@ -90,7 +90,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     {
         $filePath = $this->fileExtractor->extract(__DIR__.'/fixtures/com.docker.route.plist');
 
-        // Replace the Dinghy IP
+        // Replace the machine IP
         file_put_contents($filePath, str_replace('__MACHINE_IP__', $machineIp, file_get_contents($filePath)));
 
         // Replace the network interface used

@@ -16,7 +16,6 @@ use Dock\Cli\StopCommand;
 use Dock\Docker\Compose\ComposeExecutableFinder;
 use Dock\Docker\Compose\Config;
 use Dock\Containers\ConfiguredContainers;
-use Dock\Dinghy\DinghyCli;
 use Dock\Docker\ContainerDetails;
 use Dock\Docker\Dns\DnsDockResolver;
 use Dock\Docker\Compose\ConfiguredContainerIds;
@@ -185,10 +184,6 @@ $container['command.run'] = function ($c) {
 
 $container['event_dispatcher'] = function () {
     return new EventDispatcher();
-};
-
-$container['cli.dinghy'] = function ($c) {
-    return new DinghyCli($c['process.interactive_runner']);
 };
 
 $container['logs'] = function ($c) {

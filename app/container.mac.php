@@ -1,6 +1,5 @@
 <?php
 
-use Dock\Dinghy\Boot2DockerCli;
 use Dock\Docker\Machine\SshClient;
 use Dock\Doctor;
 use Dock\Installer\DNS;
@@ -10,9 +9,6 @@ use Dock\Installer\TaskProvider;
 use Dock\IO\PharFileExtractor;
 use Dock\System\Environ\EnvironManipulatorFactory;
 use Dock\System\Mac\ShellCreator;
-use Ssh\Authentication\Password;
-use Ssh\Configuration;
-use Ssh\Session;
 
 $container['system.shell_creator'] = function() {
     return new ShellCreator();
