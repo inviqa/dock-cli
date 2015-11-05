@@ -2,7 +2,7 @@
 
 namespace Dock\Installer\Docker;
 
-use Dock\Dinghy\DinghyCli;
+use Dock\Docker\Machine\Machine;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
@@ -26,28 +26,27 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      * @var EnvironManipulatorFactory
      */
     private $environManipulatorFactory;
-
     /**
-     * @var DinghyCli
+     * @var Machine
      */
-    private $dinghy;
+    private $machine;
 
     /**
      * @param EnvironManipulatorFactory $environManipulatorFactory
      * @param UserInteraction           $userInteraction
      * @param ProcessRunner             $processRunner
-     * @param DinghyCli                 $dinghy
+     * @param Machine                   $machine
      */
     public function __construct(
         EnvironManipulatorFactory $environManipulatorFactory,
         UserInteraction $userInteraction,
         ProcessRunner $processRunner,
-        DinghyCli $dinghy
+        Machine $machine
     ) {
         $this->environManipulatorFactory = $environManipulatorFactory;
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
-        $this->dinghy = $dinghy;
+        $this->machine = $machine;
     }
 
     /**
@@ -107,7 +106,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
         $environmentVariables = [
             new EnvironmentVariable('DOCKER_HOST', sprintf(
                 'tcp://%s:2376',
-                $this->dinghy->getIp()
+                $this->machine->getIp()
             )),
             new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.docker/machine/machines/dinghy'),
             new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),

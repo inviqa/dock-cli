@@ -130,8 +130,12 @@ $container['project.manager'] = function ($c) {
     return $projectManager;
 };
 
+$container['machine'] = function($c) {
+    return new DockerMachineCli($c['process.interactive_runner']);
+};
+
 $container['command.restart'] = function ($c) {
-    return new RestartCommand(new DockerMachineCli($c['process.interactive_runner']));
+    return new RestartCommand($c['machine']);
 };
 
 $container['interactive.process_builder'] = function($c) {

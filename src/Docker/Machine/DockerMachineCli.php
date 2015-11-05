@@ -20,7 +20,7 @@ class DockerMachineCli implements Machine
 
     /**
      * @param ProcessRunner $processRunner
-     * @param string $name
+     * @param string        $name
      */
     public function __construct(ProcessRunner $processRunner, $name = self::MACHINE_NAME)
     {
