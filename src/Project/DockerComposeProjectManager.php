@@ -2,8 +2,8 @@
 
 namespace Dock\Project;
 
-use Dock\Compose\ComposeExecutableFinder;
-use Dock\Compose\Project;
+use Dock\Docker\Compose\ComposeExecutableFinder;
+use Dock\Docker\Compose\Project;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\Process\InteractiveProcessManager;
 use Dock\IO\ProcessRunner;
@@ -33,13 +33,12 @@ class DockerComposeProjectManager implements ProjectManager
 
     /**
      * @param InteractiveProcessBuilder $interactiveProcessBuilder
-     * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
-     * @param ComposeExecutableFinder $composeExecutableFinder
+     * @param UserInteraction           $userInteraction
+     * @param ProcessRunner             $processRunner
+     * @param ComposeExecutableFinder   $composeExecutableFinder
      */
     public function __construct(InteractiveProcessBuilder $interactiveProcessBuilder, UserInteraction $userInteraction, ProcessRunner $processRunner, ComposeExecutableFinder $composeExecutableFinder)
     {
-
         $this->interactiveProcessBuilder = $interactiveProcessBuilder;
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
@@ -65,7 +64,6 @@ class DockerComposeProjectManager implements ProjectManager
             })
             ->getManager()
             ->run();
-        ;
     }
 
     /**
@@ -85,11 +83,11 @@ class DockerComposeProjectManager implements ProjectManager
     {
         $composePath = $this->composeExecutableFinder->find();
 
-        $this->processRunner->run(implode(' && ', array_map(function($action) use ($composePath, $containers) {
+        $this->processRunner->run(implode(' && ', array_map(function ($action) use ($composePath, $containers) {
             return implode(' ', [
                 $composePath,
                 $action,
-                implode(' ', $containers)
+                implode(' ', $containers),
             ]);
         }, ['kill', 'rm -f', 'up -d'])));
     }

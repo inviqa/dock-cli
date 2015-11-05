@@ -5,7 +5,6 @@ namespace Dock\Dinghy;
 use Dock\IO\PharFileExtractor;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 class Boot2DockerCli
 {
@@ -20,7 +19,7 @@ class Boot2DockerCli
     private $fileExtractor;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner     $processRunner
      * @param PharFileExtractor $fileExtractor
      */
     public function __construct(ProcessRunner $processRunner, PharFileExtractor $fileExtractor)

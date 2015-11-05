@@ -24,9 +24,9 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     private $sshClient;
 
     /**
-     * @param SshClient $sshClient
+     * @param SshClient       $sshClient
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      */
     public function __construct(SshClient $sshClient, UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
@@ -97,11 +97,12 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         }
 
         if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5'.PHP_EOL .
+            $bootScript = 'sleep 5'.PHP_EOL.
                 'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
 
             $this->sshClient->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
             $needDinghyRestart = true;
+
             return $needDinghyRestart;
         }
 

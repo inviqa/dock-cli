@@ -11,7 +11,9 @@ interface ConfiguredContainerIds
 
     /**
      * @param string $name
+     *
      * @throws ContainerNotFound
+     *
      * @return string
      */
     public function findByName($name);

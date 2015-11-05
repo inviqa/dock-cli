@@ -3,7 +3,6 @@
 namespace Dock\System\Environ;
 
 use Dock\IO\ProcessRunner;
-use Symfony\Component\Process\Process;
 
 class BashEnvironManipulator implements EnvironManipulator
 {

@@ -30,9 +30,9 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     private $fileExtractor;
 
     /**
-     * @param DinghyCli $dinghy
-     * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param DinghyCli         $dinghy
+     * @param UserInteraction   $userInteraction
+     * @param ProcessRunner     $processRunner
      * @param PharFileExtractor $fileExtractor
      */
     public function __construct(DinghyCli $dinghy, UserInteraction $userInteraction, ProcessRunner $processRunner, PharFileExtractor $fileExtractor)
@@ -74,6 +74,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
 
     /**
      * @param string $dinghyIp
+     *
      * @throws ProcessFailedException
      */
     private function configureRouting($dinghyIp)

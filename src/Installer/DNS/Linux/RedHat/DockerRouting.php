@@ -20,7 +20,7 @@ class DockerRouting extends InstallerTask
 
     /**
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
@@ -41,15 +41,15 @@ class DockerRouting extends InstallerTask
      */
     public function run()
     {
-        if (! $this->isUsingDnsDockDnsServer()) {
+        if (!$this->isUsingDnsDockDnsServer()) {
             $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
 
-            $this->processRunner->run("sudo sed -i -e '1inameserver " . DnsDock::IP . "\\' /etc/resolv.conf");
+            $this->processRunner->run("sudo sed -i -e '1inameserver ".DnsDock::IP."\\' /etc/resolv.conf");
         }
     }
 
     private function isUsingDnsDockDnsServer()
     {
-        return $this->processRunner->run('grep "' . DnsDock::IP . '" /etc/resolv.conf', false)->isSuccessful();
+        return $this->processRunner->run('grep "'.DnsDock::IP.'" /etc/resolv.conf', false)->isSuccessful();
     }
 }

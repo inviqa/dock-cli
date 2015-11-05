@@ -34,9 +34,9 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
 
     /**
      * @param EnvironManipulatorFactory $environManipulatorFactory
-     * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
-     * @param DinghyCli $dinghy
+     * @param UserInteraction           $userInteraction
+     * @param ProcessRunner             $processRunner
+     * @param DinghyCli                 $dinghy
      */
     public function __construct(
         EnvironManipulatorFactory $environManipulatorFactory,
@@ -109,7 +109,7 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
                 'tcp://%s:2376',
                 $this->dinghy->getIp()
             )),
-            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome . '/.docker/machine/machines/dinghy'),
+            new EnvironmentVariable('DOCKER_CERT_PATH', $userHome.'/.docker/machine/machines/dinghy'),
             new EnvironmentVariable('DOCKER_TLS_VERIFY', '1'),
             new EnvironmentVariable('DOCKER_MACHINE_NAME', 'dinghy'),
         ];

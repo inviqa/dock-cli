@@ -19,7 +19,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
     private $containerAddressResolver;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner            $processRunner
      * @param ContainerAddressResolver $containerAddressResolver
      */
     public function __construct(ProcessRunner $processRunner, ContainerAddressResolver $containerAddressResolver)
@@ -30,6 +30,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
 
     /**
      * @param string $containerId
+     *
      * @return Container
      */
     public function findById($containerId)

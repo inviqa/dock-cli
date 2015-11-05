@@ -31,10 +31,10 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
     private $dinghy;
 
     /**
-     * @param Boot2DockerCli $boot2docker
-     * @param DinghyCli $dinghy
+     * @param Boot2DockerCli  $boot2docker
+     * @param DinghyCli       $dinghy
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      */
     public function __construct(
         Boot2DockerCli $boot2docker,
@@ -61,7 +61,6 @@ class Dinghy extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * Update the default DNS resolver namespace of Dinghy.
-     *
      */
     private function changeDinghyDnsResolverNamespace()
     {

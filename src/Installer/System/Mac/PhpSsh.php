@@ -20,7 +20,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
     private $userInteraction;
 
     /**
-     * @param UserInteraction $userInteraction
+     * @param UserInteraction        $userInteraction
      * @param \Dock\IO\ProcessRunner $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
@@ -89,7 +89,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
      */
     private function hasHomebrewPackage($package)
     {
-        return $this->processRunner->run('brew install --dry-run ' . $package, false)->isSuccessful();
+        return $this->processRunner->run('brew install --dry-run '.$package, false)->isSuccessful();
     }
 
     /**
@@ -114,7 +114,7 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
             $this->processRunner->run('brew tap homebrew/homebrew-php');
         }
 
-        $this->processRunner->run('brew install ' . $package);
+        $this->processRunner->run('brew install '.$package);
     }
 
     /**

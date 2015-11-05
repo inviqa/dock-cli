@@ -18,7 +18,7 @@ abstract class SoftwareInstallTask extends InstallerTask implements NamedChainPr
     protected $userInteraction;
 
     /**
-     * @param UserInteraction $userInteraction
+     * @param UserInteraction        $userInteraction
      * @param \Dock\IO\ProcessRunner $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)

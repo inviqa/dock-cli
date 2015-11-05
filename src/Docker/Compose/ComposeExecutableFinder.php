@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Compose;
+namespace Dock\Docker\Compose;
 
 use Symfony\Component\Process\ExecutableFinder;
 

@@ -2,9 +2,6 @@
 
 namespace Dock\Containers;
 
-use Dock\Containers\ContainerDetails;
-use Dock\Containers\ConfiguredContainerIds;
-
 class ConfiguredContainers
 {
     /**
@@ -19,7 +16,7 @@ class ConfiguredContainers
 
     /**
      * @param ConfiguredContainerIds $configuredContainerIds
-     * @param ContainerDetails $containerDetails
+     * @param ContainerDetails       $containerDetails
      */
     public function __construct(ConfiguredContainerIds $configuredContainerIds, ContainerDetails $containerDetails)
     {
@@ -45,6 +42,7 @@ class ConfiguredContainers
 
     /**
      * @param string $containerId
+     *
      * @return Container
      */
     private function findContainerById($containerId)

@@ -8,7 +8,7 @@ interface ProcessRunner
 {
     /**
      * @param string $command
-     * @param bool $mustSucceed
+     * @param bool   $mustSucceed
      *
      * @return Process
      */
@@ -16,7 +16,7 @@ interface ProcessRunner
 
     /**
      * @param string $command
-     * @param array $arguments
+     * @param array  $arguments
      */
     public function followsUpWith($command, array $arguments = []);
 }

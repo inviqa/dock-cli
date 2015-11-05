@@ -51,7 +51,7 @@ class UserInteractionPipe implements Pipe
 
     /**
      * @param string $prefix
-     * @param array $lines
+     * @param array  $lines
      */
     private function pipeLinesWithPrefix($prefix, array $lines)
     {

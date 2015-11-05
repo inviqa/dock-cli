@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\DockerCompose;
+namespace Dock\Docker\Compose;
 
 use Dock\IO\ProcessRunner;
 

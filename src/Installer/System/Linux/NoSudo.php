@@ -20,7 +20,7 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
@@ -46,7 +46,7 @@ class NoSudo extends InstallerTask implements DependentChainProcessInterface
 
     public function run()
     {
-        if (! $this->isCurrentUserInDockerGroup()) {
+        if (!$this->isCurrentUserInDockerGroup()) {
             $this->userInteraction->writeTitle('Making docker work without sudo');
             $this->processRunner->run('sudo usermod -a -G docker $USER');
         }

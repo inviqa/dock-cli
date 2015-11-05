@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Compose;
+namespace Dock\Docker\Compose;
 
 use Symfony\Component\Yaml\Parser;
 
@@ -20,7 +20,7 @@ class Config
     }
 
     /**
-     * List docker-compose services
+     * List docker-compose services.
      *
      * @return array
      */
@@ -30,7 +30,7 @@ class Config
     }
 
     /**
-     * Return docker-compose service based on current directory
+     * Return docker-compose service based on current directory.
      *
      * @return string Service
      */
@@ -56,9 +56,9 @@ class Config
      */
     private function getServiceBuildPaths()
     {
-        return array_map(function($item) {
+        return array_map(function ($item) {
             return $this->directoryPathToArray($item['build']);
-        }, array_filter($this->getConfig(), function($item) {
+        }, array_filter($this->getConfig(), function ($item) {
             return array_key_exists('build', $item);
         }));
     }
@@ -68,7 +68,7 @@ class Config
      */
     private function directoryPathToArray($path)
     {
-        return array_values(array_filter(explode('/', $path), function($item) {
+        return array_values(array_filter(explode('/', $path), function ($item) {
             return !in_array($item, ['', '.']);
         }));
     }
@@ -76,6 +76,7 @@ class Config
     private function getConfig()
     {
         $configPath = $this->project->getComposeConfigPath();
-        return (new Parser)->parse(file_get_contents($configPath));
+
+        return (new Parser())->parse(file_get_contents($configPath));
     }
 }

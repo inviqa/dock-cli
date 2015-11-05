@@ -2,8 +2,8 @@
 
 namespace Dock\Plugins\ExtraHostname\ProjectManager;
 
-use Dock\Compose\Project;
-use Dock\DockerCompose\ContainerInspector;
+use Dock\Docker\Compose\Project;
+use Dock\Docker\Compose\ContainerInspector;
 use Dock\Plugins\ExtraHostname\HostnameResolutionWriter;
 use Dock\Plugins\ExtraHostname\HostnameResolver;
 use Dock\Project\ProjectManager;
@@ -31,10 +31,10 @@ class UpdatesManualDnsNamesOfContainers implements ProjectManager
     private $inspector;
 
     /**
-     * @param ProjectManager $projectManager
-     * @param HostnameResolver $hostnameResolver
+     * @param ProjectManager           $projectManager
+     * @param HostnameResolver         $hostnameResolver
      * @param HostnameResolutionWriter $hostnameResolutionWriter
-     * @param ContainerInspector $inspector
+     * @param ContainerInspector       $inspector
      */
     public function __construct(ProjectManager $projectManager, HostnameResolver $hostnameResolver, HostnameResolutionWriter $hostnameResolutionWriter, ContainerInspector $inspector)
     {
@@ -65,7 +65,6 @@ class UpdatesManualDnsNamesOfContainers implements ProjectManager
         }
 
         $this->projectManager->start($project);
-
     }
 
     /**

@@ -1,8 +1,7 @@
 <?php
 
-namespace Dock\DockerCompose;
+namespace Dock\Docker\Compose;
 
-use Dock\Compose\ComposeExecutableFinder;
 use Dock\IO\ProcessRunner;
 
 class Logs implements \Dock\Containers\Logs
@@ -18,7 +17,7 @@ class Logs implements \Dock\Containers\Logs
 
     /**
      * @param ComposeExecutableFinder $composeExecutableFinder
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner           $processRunner
      */
     public function __construct(ComposeExecutableFinder $composeExecutableFinder, ProcessRunner $processRunner)
     {

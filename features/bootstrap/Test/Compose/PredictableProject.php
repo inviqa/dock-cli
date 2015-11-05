@@ -1,7 +1,7 @@
 <?php
 namespace Test\Compose;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 
 class PredictableProject implements Project
 {

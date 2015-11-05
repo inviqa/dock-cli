@@ -2,16 +2,11 @@
 
 namespace Dock\Cli;
 
-use Dock\Compose\ComposeExecutableFinder;
-use Dock\Compose\Project;
-use Dock\IO\ProcessRunner;
-use Dock\IO\UserInteraction;
+use Dock\Docker\Compose\Project;
 use Dock\Project\ProjectManager;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class StopCommand extends Command
 {
@@ -27,7 +22,7 @@ class StopCommand extends Command
 
     /**
      * @param ProjectManager $projectManager
-     * @param Project $project
+     * @param Project        $project
      */
     public function __construct(ProjectManager $projectManager, Project $project)
     {

@@ -2,7 +2,7 @@
 
 namespace Dock\Project\Decorator;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 use Dock\Doctor\CommandFailedException;
 use Dock\Doctor\Doctor;
 use Dock\IO\UserInteraction;
@@ -28,8 +28,8 @@ class CheckDockerConfigurationBeforeStarting implements ProjectManager
     private $userInteraction;
 
     /**
-     * @param ProjectManager $projectManager
-     * @param Doctor $doctor
+     * @param ProjectManager  $projectManager
+     * @param Doctor          $doctor
      * @param UserInteraction $userInteraction
      */
     public function __construct(ProjectManager $projectManager, Doctor $doctor, UserInteraction $userInteraction)

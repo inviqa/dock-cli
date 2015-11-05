@@ -2,7 +2,7 @@
 
 namespace spec\Dock\Compose;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

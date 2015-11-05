@@ -37,6 +37,7 @@ class SshClient
 
     /**
      * @param string $command
+     *
      * @return string
      */
     public function run($command)
@@ -74,7 +75,7 @@ class SshClient
                 new Configuration(
                     $this->dinghy->getIp()
                 ),
-                new Password(SshClient::DEFAULT_USERNAME, SshClient::DEFAULT_PASSWORD)
+                new Password(self::DEFAULT_USERNAME, self::DEFAULT_PASSWORD)
             );
         }
 
