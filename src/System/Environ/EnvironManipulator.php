@@ -5,18 +5,18 @@ namespace Dock\System\Environ;
 interface EnvironManipulator
 {
     /**
-     * Save an environment variable.
+     * Save the environment variable declaration.
      *
-     * @param EnvironmentVariable $environmentVariable
+     * @param string $declaration
      */
-    public function save(EnvironmentVariable $environmentVariable);
+    public function save($declaration);
 
     /**
-     * Check if an environment variable is saved.
+     * Check if the given variable declaration is set.
      *
-     * @param EnvironmentVariable $environmentVariable
+     * @param string $declaration
      *
      * @return bool
      */
-    public function has(EnvironmentVariable $environmentVariable);
+    public function has($declaration);
 }
