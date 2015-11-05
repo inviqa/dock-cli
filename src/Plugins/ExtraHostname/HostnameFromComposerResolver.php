@@ -2,7 +2,7 @@
 
 namespace Dock\Plugins\ExtraHostname;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class HostnameFromComposerResolver implements HostnameResolver

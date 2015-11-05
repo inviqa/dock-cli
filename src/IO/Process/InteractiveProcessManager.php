@@ -4,7 +4,6 @@ namespace Dock\IO\Process;
 
 use Dock\IO\Process\Pipe\NullPipe;
 use Dock\IO\Process\Pipe\UserInteractionPipe;
-use Dock\IO\Process\WaitStrategy\TimeoutWait;
 use Dock\IO\UserInteraction;
 
 class InteractiveProcessManager
@@ -39,7 +38,6 @@ class InteractiveProcessManager
 
     /**
      * Disable the process output.
-     *
      */
     public function disableOutput()
     {
@@ -63,7 +61,6 @@ class InteractiveProcessManager
 
     /**
      * Run the given process.
-     *
      */
     public function run()
     {

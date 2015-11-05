@@ -22,8 +22,8 @@ class InteractiveProcess
     private $process;
 
     /**
-     * @param Process $process
-     * @param Pipe $pipe
+     * @param Process      $process
+     * @param Pipe         $pipe
      * @param WaitStrategy $waitStrategy
      */
     public function __construct(Process $process, Pipe $pipe, WaitStrategy $waitStrategy)
@@ -51,7 +51,6 @@ class InteractiveProcess
 
     /**
      * Run the process.
-     *
      */
     public function run()
     {

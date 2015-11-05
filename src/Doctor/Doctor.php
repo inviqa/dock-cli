@@ -8,7 +8,7 @@ interface Doctor
 {
     /**
      * @param OutputInterface $output
-     * @param bool $dryRun
+     * @param bool            $dryRun
      */
     public function examine(OutputInterface $output, $dryRun);
 }

@@ -2,7 +2,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Dock\Containers\Container;
+use Dock\Docker\Containers\Container;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ApplicationTesterContext implements Context, SnippetAcceptingContext

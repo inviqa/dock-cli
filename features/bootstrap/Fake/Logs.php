@@ -4,7 +4,7 @@ namespace Fake;
 
 use Dock\IO\UserInteraction;
 
-class Logs implements \Dock\Containers\Logs
+class Logs implements \Dock\Docker\Containers\Logs
 {
     private $userInteraction;
     private $runningContainerIds = [];

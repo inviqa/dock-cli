@@ -2,11 +2,11 @@
 
 namespace Dock\Docker;
 
-use Dock\Containers\Container;
+use Dock\Docker\Containers\Container;
 use Dock\Docker\Dns\ContainerAddressResolver;
 use Dock\IO\ProcessRunner;
 
-class ContainerDetails implements \Dock\Containers\ContainerDetails
+class ContainerDetails implements Containers\ContainerDetails
 {
     /**
      * @var ProcessRunner
@@ -19,7 +19,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
     private $containerAddressResolver;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner            $processRunner
      * @param ContainerAddressResolver $containerAddressResolver
      */
     public function __construct(ProcessRunner $processRunner, ContainerAddressResolver $containerAddressResolver)
@@ -30,6 +30,7 @@ class ContainerDetails implements \Dock\Containers\ContainerDetails
 
     /**
      * @param string $containerId
+     *
      * @return Container
      */
     public function findById($containerId)

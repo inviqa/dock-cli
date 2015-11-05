@@ -4,8 +4,6 @@ namespace Dock\IO\Process;
 
 use Dock\IO\Process\Pipe\NullPipe;
 use Dock\IO\Process\Pipe\Pipe;
-use Dock\IO\Process\Pipe\UserInteractionPipe;
-use Dock\IO\Process\WaitStrategy\BasicWait;
 use Dock\IO\Process\WaitStrategy\TimeoutWait;
 use Dock\IO\Process\WaitStrategy\WaitStrategy;
 use Dock\IO\UserInteraction;
@@ -15,7 +13,6 @@ class InteractiveProcessBuilder
 {
     /**
      * Default process timeout, in seconds.
-     *
      */
     const DEFAULT_TIMEOUT = 60;
 
@@ -99,7 +96,7 @@ class InteractiveProcessBuilder
     /**
      * Makes the process to call the given callback after the given time.
      *
-     * @param int $milliSeconds
+     * @param int      $milliSeconds
      * @param callable $callback
      *
      * @return InteractiveProcessBuilder

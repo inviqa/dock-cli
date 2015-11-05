@@ -29,7 +29,8 @@ class DockerCompose extends SoftwareInstallTask
      */
     protected function getInstallCommand()
     {
-        $file = 'https://github.com/docker/compose/releases/download/' . self::VERSION . '/docker-compose-' . php_uname('s') . '-' . php_uname('m');
+        $file = 'https://github.com/docker/compose/releases/download/'.self::VERSION.'/docker-compose-'.php_uname('s').'-'.php_uname('m');
+
         return "curl -L $file > /tmp/docker-compose && chmod +x /tmp/docker-compose && sudo mv /tmp/docker-compose /usr/local/bin/docker-compose";
     }
 }

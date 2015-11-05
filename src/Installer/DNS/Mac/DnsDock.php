@@ -2,7 +2,8 @@
 
 namespace Dock\Installer\DNS\Mac;
 
-use Dock\Dinghy\SshClient;
+use Dock\Docker\Machine\SshClient;
+use Dock\Docker\Machine\Machine;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
@@ -22,17 +23,23 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      * @var SshClient
      */
     private $sshClient;
+    /**
+     * @var Machine
+     */
+    private $machine;
 
     /**
-     * @param SshClient $sshClient
+     * @param SshClient       $sshClient
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
+     * @param Machine         $machine
      */
-    public function __construct(SshClient $sshClient, UserInteraction $userInteraction, ProcessRunner $processRunner)
+    public function __construct(SshClient $sshClient, UserInteraction $userInteraction, ProcessRunner $processRunner, Machine $machine)
     {
         $this->sshClient = $sshClient;
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
+        $this->machine = $machine;
     }
 
     /**
@@ -42,11 +49,11 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     {
         $this->userInteraction->writeTitle('Configure DNS resolution for Docker containers');
 
-        $needDinghyRestart = $this->configureVirtualMachine();
+        $needMachineRestart = $this->configureVirtualMachine();
         $this->configureHostMachineResolution();
 
-        if ($needDinghyRestart) {
-            $this->restartDinghy();
+        if ($needMachineRestart) {
+            $this->restartMachine();
         }
     }
 
@@ -71,7 +78,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     public function dependsOn()
     {
-        return ['dinghy'];
+        return ['machine'];
     }
 
     /**
@@ -87,25 +94,24 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     private function configureVirtualMachine()
     {
-        $needDinghyRestart = false;
+        $needMachineRestart = false;
 
         if (!$this->hasDockerExtraArgs()) {
             $this->sshClient->run(
                 'echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee -a /var/lib/boot2docker/profile'
             );
-            $needDinghyRestart = true;
+            $needMachineRestart = true;
         }
 
         if (!$this->dnsDockerIsInStartupConfiguration()) {
-            $bootScript = 'sleep 5'.PHP_EOL .
+            $bootScript = 'sleep 5'.PHP_EOL.
                 'docker start dnsdock || docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock'.PHP_EOL;
 
             $this->sshClient->run('echo "'.$bootScript.'" | sudo tee -a /var/lib/boot2docker/bootlocal.sh');
-            $needDinghyRestart = true;
-            return $needDinghyRestart;
+            $needMachineRestart = true;
         }
 
-        return $needDinghyRestart;
+        return $needMachineRestart;
     }
 
     private function configureHostMachineResolution()
@@ -114,9 +120,12 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         $this->processRunner->run('echo "nameserver 172.17.42.1" | sudo tee /etc/resolver/docker');
     }
 
-    private function restartDinghy()
+    private function restartMachine()
     {
-        $this->userInteraction->writeTitle('Restarting Dinghy');
-        $this->processRunner->run('dinghy restart');
+        if ($this->machine->isRunning()) {
+            $this->machine->stop();
+        }
+
+        $this->machine->start();
     }
 }

@@ -81,6 +81,7 @@ class HostsFileResolutionWriter implements HostnameResolutionWriter
     /**
      * @param string $hostname
      * @param string $address
+     *
      * @return string
      */
     private function getHostsFileResolutionLine($hostname, $address)

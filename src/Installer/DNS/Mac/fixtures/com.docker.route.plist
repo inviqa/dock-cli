@@ -8,7 +8,7 @@
   <array>
     <string>bash</string>
     <string>-c</string>
-    <string>/usr/sbin/scutil -w State:/Network/Interface/__DINGHY_INTERFACE__/IPv4 -t 0; sudo /sbin/route -n add -net 172.17.0.0 -netmask 255.255.0.0 -gateway __DINGHY_IP__</string>
+    <string>/usr/sbin/scutil -w State:/Network/Interface/__MACHINE_INTERFACE__/IPv4 -t 0; sudo /sbin/route -n add -net 172.17.0.0 -netmask 255.255.0.0 -gateway __MACHINE_IP__</string>
   </array>
   <key>KeepAlive</key>
   <false/>

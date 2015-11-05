@@ -2,12 +2,14 @@
 
 namespace Dock\Project;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 
 interface ProjectManager
 {
     /**
      * Start the project.
+     *
+     * @throws ProjectException
      *
      * @param Project $project
      */
@@ -26,7 +28,7 @@ interface ProjectManager
      * If the list of containers is empty, it'll reset all the project's containers.
      *
      * @param Project $project
-     * @param array $containers
+     * @param array   $containers
      */
     public function reset(Project $project, array $containers = []);
 }

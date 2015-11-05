@@ -2,7 +2,7 @@
 
 namespace Test\Project;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 use Dock\Project\ProjectManager;
 
 class PredictableManager implements ProjectManager

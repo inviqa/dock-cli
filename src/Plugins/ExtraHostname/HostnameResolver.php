@@ -2,7 +2,7 @@
 
 namespace Dock\Plugins\ExtraHostname;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 
 interface HostnameResolver
 {

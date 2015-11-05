@@ -19,6 +19,7 @@ class DnsDockResolver implements ContainerAddressResolver
 
     /**
      * @param string $imageName
+     *
      * @return string
      */
     private function stripTagNameFromImageName($imageName)

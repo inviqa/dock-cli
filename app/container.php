@@ -1,27 +1,27 @@
 <?php
 
-use Dock\Cli\DoctorCommand;
-use Dock\Cli\InstallCommand;
+use Dock\Cli\Docker\DoctorCommand;
+use Dock\Cli\Docker\InstallCommand;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\IO\LocalProject;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\ResetCommand;
-use Dock\Cli\RestartCommand;
+use Dock\Cli\Docker\RestartCommand;
 use Dock\Cli\RunCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
-use Dock\Compose\ComposeExecutableFinder;
-use Dock\Compose\Config;
-use Dock\Containers\ConfiguredContainers;
-use Dock\Dinghy\DinghyCli;
+use Dock\Docker\Compose\ComposeExecutableFinder;
+use Dock\Docker\Compose\Config;
+use Dock\Docker\Containers\ConfiguredContainers;
 use Dock\Docker\ContainerDetails;
 use Dock\Docker\Dns\DnsDockResolver;
-use Dock\DockerCompose\ConfiguredContainerIds;
-use Dock\DockerCompose\ContainerInspector;
-use Dock\DockerCompose\Logs;
+use Dock\Docker\Compose\ConfiguredContainerIds;
+use Dock\Docker\Compose\ContainerInspector;
+use Dock\Docker\Compose\Logs;
+use Dock\Docker\Machine\DockerMachineCli;
 use Dock\Doctor\Doctor;
 use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
@@ -40,19 +40,6 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new Container();
-
-$osDetector = new OperatingSystemDetector();
-if ($osDetector->isMac()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
-} elseif ($osDetector->isDebian()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
-} elseif ($osDetector->isRedHat()) {
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
-} else {
-    throw new \Exception($osDetector->isLinux()
-        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
-        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
-}
 
 $container['command.selfupdate'] = function () {
     return new SelfUpdateCommand();
@@ -99,6 +86,14 @@ $container['installer.docker'] = function ($c) {
     return new DockerInstaller($c['installer.task_provider']);
 };
 
+$container['plugins.extra_hostname.composer_hostname_resolver'] = function ($c) {
+    return new HostnameFromComposerResolver();
+};
+
+$container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
+    return new HostsFileResolutionWriter($c['process.silent_runner']);
+};
+
 $container['project.manager.docker_compose'] = function ($c) {
     return new DockerComposeProjectManager(
         $c['interactive.process_builder'],
@@ -106,14 +101,6 @@ $container['project.manager.docker_compose'] = function ($c) {
         $c['process.interactive_runner'],
         $c['compose.executable_finder']
     );
-};
-
-$container['plugins.extra_hostname.composer_hostname_resolver'] = function ($c) {
-    return new HostnameFromComposerResolver();
-};
-
-$container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
-    return new HostsFileResolutionWriter($c['process.silent_runner']);
 };
 
 $container['project.manager'] = function ($c) {
@@ -129,8 +116,12 @@ $container['project.manager'] = function ($c) {
     return $projectManager;
 };
 
+$container['machine'] = function($c) {
+    return new DockerMachineCli($c['process.interactive_runner']);
+};
+
 $container['command.restart'] = function ($c) {
-    return new RestartCommand(new DinghyCli($c['process.interactive_runner']));
+    return new RestartCommand($c['machine']);
 };
 
 $container['interactive.process_builder'] = function($c) {
@@ -182,10 +173,6 @@ $container['event_dispatcher'] = function () {
     return new EventDispatcher();
 };
 
-$container['cli.dinghy'] = function ($c) {
-    return new DinghyCli($c['process.interactive_runner']);
-};
-
 $container['logs'] = function ($c) {
     return new Logs($c['compose.executable_finder'], $c['process.silent_runner']);
 };
@@ -208,5 +195,18 @@ $container['application'] = function ($c) {
 
     return $application;
 };
+
+$osDetector = new OperatingSystemDetector();
+if ($osDetector->isMac()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.mac.php';
+} elseif ($osDetector->isDebian()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.debian.php';
+} elseif ($osDetector->isRedHat()) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'container.redhat.php';
+} else {
+    throw new \Exception($osDetector->isLinux()
+        ? "Installer does not support linux distribution: " . $osDetector->getLinuxDistribution()
+        : "Installer does not support operating system: " . $osDetector->getOperatingSystem());
+}
 
 return $container;

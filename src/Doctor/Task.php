@@ -16,18 +16,18 @@ abstract class Task
 
     /**
      * @param OutputInterface $output
-     * @param bool $dryRun
+     * @param bool            $dryRun
      */
     abstract public function run(OutputInterface $output, $dryRun);
 
     /**
      * @param OutputInterface $output
-     * @param string $command Command to check whether a problem exists
-     * @param string $workingMessage Output when the command passes
-     * @param string $problem Problem description
-     * @param string $suggestedSolution Suggested solution
-     * @param Installable $installable Task to fix the problem
-     * @param bool $dryRun Try to fix the problem?
+     * @param string          $command           Command to check whether a problem exists
+     * @param string          $workingMessage    Output when the command passes
+     * @param string          $problem           Problem description
+     * @param string          $suggestedSolution Suggested solution
+     * @param Installable     $installable       Task to fix the problem
+     * @param bool            $dryRun            Try to fix the problem?
      */
     protected function handle(OutputInterface $output, $command, $working, $problem, $suggestedSolution, Installable $installable, $dryRun)
     {
@@ -47,6 +47,7 @@ abstract class Task
 
     /**
      * @param string $command
+     *
      * @return bool Did the command succeed?
      */
     protected function testCommand($command)

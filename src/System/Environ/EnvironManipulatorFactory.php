@@ -2,28 +2,25 @@
 
 namespace Dock\System\Environ;
 
-use Dock\IO\ProcessRunner;
-
 class EnvironManipulatorFactory
 {
     /**
      * Get environ manipulator based on the current system.
      *
-     * @param ProcessRunner $processRunner
-     *
      * @return EnvironManipulator
      */
-    public function getSystemManipulator(ProcessRunner $processRunner)
+    public function getSystemManipulator()
     {
         $shell = getenv('SHELL');
         $userHome = getenv('HOME');
 
+        $environFile = $userHome.'/.bash_profile';
         if (strpos($shell, 'zsh') !== false) {
-            return new BashEnvironManipulator($processRunner, $userHome.'/.zshenv');
+            $environFile = $userHome.'/.zshenv';
         } elseif (strpos($shell, 'fish') !== false) {
-            return new FishEnvironManipulator();
+            $environFile = $userHome.'/.config/fish/config.fish';
         }
 
-        return new BashEnvironManipulator($processRunner, $userHome.'/.bash_profile');
+        return new FileEnvironManipulator($environFile);
     }
 }

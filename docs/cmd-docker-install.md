@@ -15,11 +15,11 @@ It installs, if not already installed, the following software:
 - Homebrew Cask
 - VirtualBox
 - Vargant
-- Dinghy (using boot2docker, but uses NFS sharing instead of vboxsf)
+- Docker-Machine
 - Docker Compose
 - PHP SSH2 extension
 
-Then, it configures your routing to have a direct access to Docker containers running on Dinghy. That means that you
+Then, it configures your routing to have a direct access to Docker containers running on the VM. That means that you
 **won't** need to have port mappings to your host, just use the container(s) IP(s), which allows you to have many containers
 exposing the same port.
 

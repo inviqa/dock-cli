@@ -2,9 +2,9 @@
 
 namespace Fake;
 
-use Dock\Containers\ContainerNotFound;
+use Dock\Docker\Containers\ContainerNotFound;
 
-class ConfiguredContainerIds implements \Dock\Containers\ConfiguredContainerIds
+class ConfiguredContainerIds implements \Dock\Docker\Containers\ConfiguredContainerIds
 {
     private $ids = [];
 

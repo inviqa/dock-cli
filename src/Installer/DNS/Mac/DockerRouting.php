@@ -2,7 +2,7 @@
 
 namespace Dock\Installer\DNS\Mac;
 
-use Dock\Dinghy\DinghyCli;
+use Dock\Docker\Machine\Machine;
 use Dock\Installer\InstallerTask;
 use Dock\IO\PharFileExtractor;
 use Dock\IO\ProcessRunner;
@@ -21,23 +21,23 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     private $userInteraction;
     /**
-     * @var DinghyCli
-     */
-    private $dinghy;
-    /**
      * @var PharFileExtractor
      */
     private $fileExtractor;
+    /**
+     * @var Machine
+     */
+    private $machine;
 
     /**
-     * @param DinghyCli $dinghy
-     * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param Machine           $machine
+     * @param UserInteraction   $userInteraction
+     * @param ProcessRunner     $processRunner
      * @param PharFileExtractor $fileExtractor
      */
-    public function __construct(DinghyCli $dinghy, UserInteraction $userInteraction, ProcessRunner $processRunner, PharFileExtractor $fileExtractor)
+    public function __construct(Machine $machine, UserInteraction $userInteraction, ProcessRunner $processRunner, PharFileExtractor $fileExtractor)
     {
-        $this->dinghy = $dinghy;
+        $this->machine = $machine;
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
         $this->fileExtractor = $fileExtractor;
@@ -50,10 +50,10 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     {
         $this->userInteraction->writeTitle('Configure routing for direct Docker containers access');
 
-        $dinghyIp = $this->dinghy->getIp();
+        $machineIp = $this->machine->getIp();
 
-        $this->configureRouting($dinghyIp);
-        $this->addPermanentRouting($dinghyIp);
+        $this->configureRouting($machineIp);
+        $this->addPermanentRouting($machineIp);
     }
 
     /**
@@ -61,7 +61,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     public function dependsOn()
     {
-        return ['dinghy'];
+        return ['machine'];
     }
 
     /**
@@ -73,43 +73,44 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
     }
 
     /**
-     * @param string $dinghyIp
+     * @param string $machineIp
+     *
      * @throws ProcessFailedException
      */
-    private function configureRouting($dinghyIp)
+    private function configureRouting($machineIp)
     {
         $this->processRunner->run('sudo route -n delete 172.17.0.0/16', false);
-        $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $dinghyIp));
+        $this->processRunner->run(sprintf('sudo route -n add 172.17.0.0/16 %s', $machineIp));
     }
 
     /**
-     * @param string $dinghyIp
+     * @param string $machineIp
      */
-    private function addPermanentRouting($dinghyIp)
+    private function addPermanentRouting($machineIp)
     {
         $filePath = $this->fileExtractor->extract(__DIR__.'/fixtures/com.docker.route.plist');
 
-        // Replace the Dinghy IP
-        file_put_contents($filePath, str_replace('__DINGHY_IP__', $dinghyIp, file_get_contents($filePath)));
+        // Replace the machine IP
+        file_put_contents($filePath, str_replace('__MACHINE_IP__', $machineIp, file_get_contents($filePath)));
 
         // Replace the network interface used
-        $dinghyInterface = $this->resolveDinghyNetworkInterface($dinghyIp);
-        file_put_contents($filePath, str_replace('__DINGHY_INTERFACE__', $dinghyInterface, file_get_contents($filePath)));
+        $machineInterface = $this->resolveNetworkInterface($machineIp);
+        file_put_contents($filePath, str_replace('__MACHINE_INTERFACE__', $machineInterface, file_get_contents($filePath)));
 
         $this->processRunner->run(sprintf('sudo cp %s /Library/LaunchDaemons/com.docker.route.plist', $filePath));
         $this->processRunner->run('sudo launchctl load /Library/LaunchDaemons/com.docker.route.plist');
     }
 
     /**
-     * Resolve the network interface name for Dinghy IP.
+     * Resolve the network interface name for the given IP.
      *
-     * @param string $dinghyIp
+     * @param string $machineIp
      *
      * @return string
      */
-    private function resolveDinghyNetworkInterface($dinghyIp)
+    private function resolveNetworkInterface($machineIp)
     {
-        $process = $this->processRunner->run('ifconfig `route get '.$dinghyIp.' | grep "interface: " | sed "s/[^:]*: \(.*\)/\1/"` | head -n 1 | sed "s/\([^:]*\): .*/\1/"');
+        $process = $this->processRunner->run('ifconfig `route get '.$machineIp.' | grep "interface: " | sed "s/[^:]*: \(.*\)/\1/"` | head -n 1 | sed "s/\([^:]*\): .*/\1/"');
         $interface = $process->getOutput();
 
         return trim($interface);

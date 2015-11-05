@@ -2,9 +2,9 @@
 
 namespace Fake;
 
-use Dock\Containers\Container;
+use Dock\Docker\Containers\Container;
 
-class ContainerDetails implements \Dock\Containers\ContainerDetails
+class ContainerDetails implements \Dock\Docker\Containers\ContainerDetails
 {
     private $states = [];
 

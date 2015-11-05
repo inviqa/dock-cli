@@ -6,7 +6,6 @@ use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
-use Symfony\Component\Process\Process;
 
 class DnsDock extends InstallerTask implements DependentChainProcessInterface
 {
@@ -23,7 +22,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
 
     /**
      * @param UserInteraction $userInteraction
-     * @param ProcessRunner $processRunner
+     * @param ProcessRunner   $processRunner
      */
     public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
     {
@@ -49,10 +48,10 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
 
     public function run()
     {
-        if (! $this->hasDockerOptions()) {
+        if (!$this->hasDockerOptions()) {
             $this->userInteraction->writeTitle('Configuring DNS resolution for Docker containers');
 
-            $this->processRunner->run('echo \'DOCKER_OPTS="--bip=' . self::IP . '/24 --dns ' . self::IP . '"\' | sudo tee -a /etc/default/docker');
+            $this->processRunner->run('echo \'DOCKER_OPTS="--bip='.self::IP.'/24 --dns '.self::IP.'"\' | sudo tee -a /etc/default/docker');
             $this->processRunner->run('sudo service docker restart');
         }
 

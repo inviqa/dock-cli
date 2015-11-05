@@ -2,7 +2,7 @@
 
 namespace Dock\Cli\IO;
 
-use Dock\Compose\Project;
+use Dock\Docker\Compose\Project;
 
 class LocalProject implements Project
 {
@@ -11,7 +11,7 @@ class LocalProject implements Project
         $baseDir = getcwd();
 
         do {
-            if (is_file($baseDir . self::CONFIG_FILE)) {
+            if (is_file($baseDir.self::CONFIG_FILE)) {
                 return $baseDir;
             }
             $baseDir = dirname($baseDir);
@@ -22,7 +22,7 @@ class LocalProject implements Project
 
     public function getComposeConfigPath()
     {
-        return $this->getProjectBasePath() . self::CONFIG_FILE;
+        return $this->getProjectBasePath().self::CONFIG_FILE;
     }
 
     public function getCurrentRelativePath()

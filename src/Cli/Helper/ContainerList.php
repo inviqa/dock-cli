@@ -2,7 +2,7 @@
 
 namespace Dock\Cli\Helper;
 
-use Dock\Containers\Container;
+use Dock\Docker\Containers\Container;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;

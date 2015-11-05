@@ -2,8 +2,8 @@
 
 namespace Dock\Cli;
 
-use Dock\Compose\Config;
-use Dock\Compose\NotWithinServiceException;
+use Dock\Docker\Compose\Config;
+use Dock\Docker\Compose\NotWithinServiceException;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,7 +26,7 @@ class RunCommand extends Command
 
     /**
      * @param ProcessRunner $processRunner
-     * @param Config $config
+     * @param Config        $config
      */
     public function __construct(ProcessRunner $processRunner, Config $config)
     {

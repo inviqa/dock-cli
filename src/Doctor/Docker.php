@@ -29,30 +29,30 @@ class Docker extends Task
     {
         $this->handle(
             $output,
-            "docker -v",
-            "Docker is installed",
-            "It seems docker is not installed.",
-            "Install docker with `dock-cli docker:install`",
+            'docker -v',
+            'Docker is installed',
+            'It seems docker is not installed.',
+            'Install docker with `dock-cli docker:install`',
             $this->dockerInstaller,
             $dryRun
         );
 
         $this->handle(
             $output,
-            "docker info",
-            "Docker daemon is running",
-            "It seems docker daemon is not running.",
-            "Start it with `sudo service docker start`",
+            'docker info',
+            'Docker daemon is running',
+            'It seems docker daemon is not running.',
+            'Start it with `sudo service docker start`',
             $this->dockerInstaller,
             $dryRun
         );
 
         $this->handle(
             $output,
-            "ping -c1 172.17.42.1",
-            "Can ping docker virtual interface",
+            'ping -c1 172.17.42.1',
+            'Can ping docker virtual interface',
             "Can't ping docker virtual interface.",
-            "Install and start docker by running: `dock-cli docker:install`",
+            'Install and start docker by running: `dock-cli docker:install`',
             $this->dockerInstaller,
             $dryRun
         );
