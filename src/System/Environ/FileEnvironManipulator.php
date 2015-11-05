@@ -2,7 +2,7 @@
 
 namespace Dock\System\Environ;
 
-class FileEnvironManipulator  implements EnvironManipulator
+class FileEnvironManipulator implements EnvironManipulator
 {
     /**
      * @var string
