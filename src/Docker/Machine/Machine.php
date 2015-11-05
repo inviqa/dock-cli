@@ -8,4 +8,7 @@ interface Machine
     public function start();
     public function stop();
     public function getIp();
+
+    public function isCreated();
+    public function create();
 }

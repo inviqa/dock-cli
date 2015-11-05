@@ -35,6 +35,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\BrewCask($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\PhpSsh($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\DockerMachine($c['console.user_interaction'], $c['process.interactive_runner']),
+        new System\Mac\Machine($c['console.user_interaction'], $c['machine']),
         $c['installer.dns.dnsdock'],
         $c['installer.dns.docker_routing'],
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),

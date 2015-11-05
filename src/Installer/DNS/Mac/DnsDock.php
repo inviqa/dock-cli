@@ -78,7 +78,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     public function dependsOn()
     {
-        return ['dockerMachine'];
+        return ['machine'];
     }
 
     /**

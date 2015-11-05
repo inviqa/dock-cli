@@ -61,7 +61,7 @@ class DockerRouting extends InstallerTask implements DependentChainProcessInterf
      */
     public function dependsOn()
     {
-        return ['dockerMachine'];
+        return ['machine'];
     }
 
     /**

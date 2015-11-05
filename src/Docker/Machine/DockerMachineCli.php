@@ -67,4 +67,17 @@ class DockerMachineCli implements Machine
 
         return $ip;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCreated()
+    {
+        return $this->processRunner->run('docker-machine status '.$this->name, false)->isSuccessful();
+    }
+
+    public function create()
+    {
+        $this->processRunner->run('docker-machine create --driver virtualbox '.$this->name);
+    }
 }
