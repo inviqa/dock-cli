@@ -94,7 +94,7 @@ $container['plugins.extra_hostname.hostname_resolution_writer'] = function($c) {
     return new HostsFileResolutionWriter($c['process.silent_runner']);
 };
 
-$container['project.manager'] = function ($c) {
+$container['project.manager.docker_compose'] = function ($c) {
     return new DockerComposeProjectManager(
         $c['interactive.process_builder'],
         $c['console.user_interaction'],
@@ -103,7 +103,8 @@ $container['project.manager'] = function ($c) {
     );
 };
 
-$container->extend('project.manager', function ($projectManager, $c) {
+$container['project.manager'] = function ($c) {
+    $projectManager = $c['project.manager.docker_compose'];
     $projectManager = new CheckDockerConfigurationBeforeStarting($projectManager, $c['doctor'], $c['console.user_interaction']);
     $projectManager = new UpdatesManualDnsNamesOfContainers(
         $projectManager,
@@ -113,7 +114,7 @@ $container->extend('project.manager', function ($projectManager, $c) {
     );
 
     return $projectManager;
-});
+};
 
 $container['machine'] = function($c) {
     return new DockerMachineCli($c['process.interactive_runner']);
