@@ -15,7 +15,7 @@ use Dock\Cli\StartCommand;
 use Dock\Cli\StopCommand;
 use Dock\Docker\Compose\ComposeExecutableFinder;
 use Dock\Docker\Compose\Config;
-use Dock\Containers\ConfiguredContainers;
+use Dock\Docker\Containers\ConfiguredContainers;
 use Dock\Docker\ContainerDetails;
 use Dock\Docker\Dns\DnsDockResolver;
 use Dock\Docker\Compose\ConfiguredContainerIds;

@@ -2,7 +2,7 @@
 
 namespace Dock\Cli;
 
-use Dock\Containers\Logs;
+use Dock\Docker\Containers\Logs;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

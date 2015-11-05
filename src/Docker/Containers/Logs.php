@@ -1,9 +1,12 @@
 <?php
 
-namespace Dock\Containers;
+namespace Dock\Docker\Containers;
 
 interface Logs
 {
+    /**
+     * Display loads.
+     */
     public function displayAll();
 
     /**

@@ -3,7 +3,7 @@
 namespace Dock\Cli;
 
 use Dock\Cli\Helper\ContainerList;
-use Dock\Containers\ConfiguredContainers;
+use Dock\Docker\Containers\ConfiguredContainers;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

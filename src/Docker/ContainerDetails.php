@@ -2,11 +2,11 @@
 
 namespace Dock\Docker;
 
-use Dock\Containers\Container;
+use Dock\Docker\Containers\Container;
 use Dock\Docker\Dns\ContainerAddressResolver;
 use Dock\IO\ProcessRunner;
 
-class ContainerDetails implements \Dock\Containers\ContainerDetails
+class ContainerDetails implements Containers\ContainerDetails
 {
     /**
      * @var ProcessRunner

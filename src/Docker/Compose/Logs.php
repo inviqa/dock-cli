@@ -4,7 +4,7 @@ namespace Dock\Docker\Compose;
 
 use Dock\IO\ProcessRunner;
 
-class Logs implements \Dock\Containers\Logs
+class Logs implements \Dock\Docker\Containers\Logs
 {
     /**
      * @var ComposeExecutableFinder

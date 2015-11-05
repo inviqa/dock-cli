@@ -2,8 +2,8 @@
 
 namespace Dock\Docker\Compose;
 
-use Dock\Containers\ConfiguredContainerIds;
-use Dock\Containers\ContainerDetails;
+use Dock\Docker\Containers\ConfiguredContainerIds;
+use Dock\Docker\Containers\ContainerDetails;
 
 class ContainerInspector
 {
@@ -29,7 +29,7 @@ class ContainerInspector
     /**
      * @param string $name
      *
-     * @return \Dock\Containers\Container
+     * @return \Dock\Docker\Containers\Container
      */
     public function findOneByName($name)
     {

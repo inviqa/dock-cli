@@ -4,7 +4,7 @@ namespace Dock\Docker\Compose;
 
 use Dock\IO\ProcessRunner;
 
-class ConfiguredContainerIds implements \Dock\Containers\ConfiguredContainerIds
+class ConfiguredContainerIds implements \Dock\Docker\Containers\ConfiguredContainerIds
 {
     /**
      * @var ProcessRunner

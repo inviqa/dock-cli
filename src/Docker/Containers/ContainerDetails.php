@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Containers;
+namespace Dock\Docker\Containers;
 
 interface ContainerDetails
 {
