@@ -1,8 +1,9 @@
 <?php
 
-namespace Dock\Cli;
+namespace Dock\Cli\Docker;
 
 use Dock\Dinghy\DinghyCli;
+use Dock\Docker\Machine\Machine;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,18 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RestartCommand extends Command
 {
     /**
-     * @var DinghyCli
+     * @var Machine
      */
-    private $dinghy;
+    private $machine;
 
     /**
-     * @param DinghyCli $dinghy
+     * @param Machine $machine
      */
-    public function __construct(DinghyCli $dinghy)
+    public function __construct(Machine $machine)
     {
         parent::__construct();
 
-        $this->dinghy = $dinghy;
+        $this->machine = $machine;
     }
 
     /**
@@ -33,7 +34,6 @@ class RestartCommand extends Command
         $this
             ->setName('docker:restart')
             ->setDescription('Restart Docker')
-            ->addOption('memory', 'm', InputOption::VALUE_REQUIRED, 'Memory (in MB) allocated to the Dinghy VM')
         ;
     }
 
@@ -42,10 +42,10 @@ class RestartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->dinghy->isRunning()) {
-            $this->dinghy->stop();
+        if ($this->machine->isRunning()) {
+            $this->machine->stop();
         }
 
-        $this->dinghy->start($input->getOption('memory'));
+        $this->machine->start();
     }
 }

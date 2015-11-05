@@ -2,10 +2,11 @@
 
 namespace Dock\Dinghy;
 
+use Dock\Docker\Machine\Machine;
 use Dock\IO\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class DinghyCli
+class DinghyCli implements Machine
 {
     /**
      * @var ProcessRunner

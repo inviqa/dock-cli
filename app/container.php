@@ -1,14 +1,14 @@
 <?php
 
-use Dock\Cli\DoctorCommand;
-use Dock\Cli\InstallCommand;
+use Dock\Cli\Docker\DoctorCommand;
+use Dock\Cli\Docker\InstallCommand;
 use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\IO\LocalProject;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
 use Dock\Cli\ResetCommand;
-use Dock\Cli\RestartCommand;
+use Dock\Cli\Docker\RestartCommand;
 use Dock\Cli\RunCommand;
 use Dock\Cli\SelfUpdateCommand;
 use Dock\Cli\StartCommand;

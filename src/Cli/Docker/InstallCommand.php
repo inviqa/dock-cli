@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Cli;
+namespace Dock\Cli\Docker;
 
 use Dock\Installer\DockerInstaller;
 use Dock\System\ShellCreator;

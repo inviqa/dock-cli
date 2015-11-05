@@ -1,6 +1,6 @@
 <?php
 
-namespace Dock\Cli;
+namespace Dock\Cli\Docker;
 
 use Dock\Doctor\Doctor;
 use Symfony\Component\Console\Command\Command;
