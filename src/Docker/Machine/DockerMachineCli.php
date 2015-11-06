@@ -3,6 +3,7 @@
 namespace Dock\Docker\Machine;
 
 use Dock\IO\ProcessRunner;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class DockerMachineCli implements Machine
 {
@@ -46,7 +47,11 @@ class DockerMachineCli implements Machine
      */
     public function start()
     {
-        $this->processRunner->run('docker-machine start '.$this->name);
+        try {
+            $this->processRunner->run('docker-machine start '.$this->name);
+        } catch (ProcessFailedException $e) {
+            throw new MachineException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -54,7 +59,11 @@ class DockerMachineCli implements Machine
      */
     public function stop()
     {
-        $this->processRunner->run('docker-machine stop '.$this->name);
+        try {
+            $this->processRunner->run('docker-machine stop '.$this->name);
+        } catch (ProcessFailedException $e) {
+            throw new MachineException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -62,8 +71,16 @@ class DockerMachineCli implements Machine
      */
     public function getIp()
     {
-        $ip = $this->processRunner->run('docker-machine ip '.$this->name)->getOutput();
+        try {
+            $ip = $this->processRunner->run('docker-machine ip '.$this->name)->getOutput();
+        } catch (ProcessFailedException $e) {
+            throw new MachineException($e->getMessage(), $e->getCode(), $e);
+        }
+
         $ip = trim($ip);
+        if (strpos($ip, 'not running') !== false) {
+            throw new MachineException($ip);
+        }
 
         return $ip;
     }
@@ -81,7 +98,11 @@ class DockerMachineCli implements Machine
      */
     public function create()
     {
-        $this->processRunner->run('docker-machine create --driver virtualbox '.$this->name);
+        try {
+            $this->processRunner->run('docker-machine create --driver virtualbox '.$this->name);
+        } catch (ProcessFailedException $e) {
+            throw new MachineException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**

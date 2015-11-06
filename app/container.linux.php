@@ -2,7 +2,6 @@
 
 use Dock\Doctor;
 use Dock\Installer\DNS;
-use Dock\Installer\Docker;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
 use Dock\System\Linux\ShellCreator;
@@ -12,7 +11,7 @@ $container['system.shell_creator'] = function() {
 };
 
 $container['installer.dns.dnsdock'] = function($c) {
-    return new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']);
+    return new DNS\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']);
 };
 
 $container['installer.task_provider'] = function ($c) {
@@ -23,11 +22,4 @@ $container['installer.task_provider'] = function ($c) {
         $c['installer.dns.dnsdock'],
         $c['installer.dns.docker_routing'],
     ]);
-};
-
-$container['doctor.tasks'] = function($c) {
-    return [
-        new Doctor\Docker($c['process.silent_runner'], $c['installer.docker']),
-        new Doctor\DnsDock($c['process.silent_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
-    ];
 };

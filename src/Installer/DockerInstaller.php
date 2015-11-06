@@ -10,7 +10,7 @@ class DockerInstaller implements Installable
     private $taskProvider;
 
     /**
-     * @param TaskProviderFactory $taskProvider
+     * @param TaskProvider $taskProvider
      */
     public function __construct(TaskProvider $taskProvider)
     {

@@ -22,7 +22,7 @@ use Dock\Docker\Compose\ConfiguredContainerIds;
 use Dock\Docker\Compose\ContainerInspector;
 use Dock\Docker\Compose\Logs;
 use Dock\Docker\Machine\DockerMachineCli;
-use Dock\Doctor\Doctor;
+use Dock\Doctor;
 use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
 use Dock\IO\Process\InteractiveProcessBuilder;
@@ -175,6 +175,13 @@ $container['event_dispatcher'] = function () {
 
 $container['logs'] = function ($c) {
     return new Logs($c['compose.executable_finder'], $c['process.silent_runner']);
+};
+
+$container['doctor.tasks'] = function($c) {
+    return [
+        new Doctor\Docker($c['process.silent_runner'], new Doctor\Action\StartMachineOrInstall($c['machine'], $c['installer.docker']), $c['installer.docker']),
+        new Doctor\DnsDock($c['process.silent_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
+    ];
 };
 
 $container['application'] = function ($c) {
