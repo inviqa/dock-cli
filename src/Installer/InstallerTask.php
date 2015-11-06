@@ -15,5 +15,8 @@ abstract class InstallerTask implements ChainProcessInterface, Installable
         $this->run();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     abstract public function run();
 }

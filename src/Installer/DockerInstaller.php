@@ -2,6 +2,9 @@
 
 namespace Dock\Installer;
 
+use SRIO\ChainOfResponsibility\ChainRunner;
+use SRIO\ChainOfResponsibility\DecoratorFactoryInterface;
+
 class DockerInstaller implements Installable
 {
     /**
@@ -10,11 +13,18 @@ class DockerInstaller implements Installable
     private $taskProvider;
 
     /**
-     * @param TaskProvider $taskProvider
+     * @var DecoratorFactoryInterface
      */
-    public function __construct(TaskProvider $taskProvider)
+    private $processDecoratorFactory;
+
+    /**
+     * @param TaskProvider              $taskProvider
+     * @param DecoratorFactoryInterface $processDecoratorFactory
+     */
+    public function __construct(TaskProvider $taskProvider, DecoratorFactoryInterface $processDecoratorFactory)
     {
         $this->taskProvider = $taskProvider;
+        $this->processDecoratorFactory = $processDecoratorFactory;
     }
 
     /**
@@ -22,6 +32,9 @@ class DockerInstaller implements Installable
      */
     public function run()
     {
-        $this->taskProvider->getChainBuilder()->getRunner()->run();
+        $processes = $this->taskProvider->getChainBuilder()->getOrderedProcesses();
+
+        $runner = new ChainRunner($processes, $this->processDecoratorFactory);
+        $runner->run();
     }
 }
