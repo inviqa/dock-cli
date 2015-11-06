@@ -5,11 +5,6 @@ use Dock\Installer\DNS;
 use Dock\Installer\Docker;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
-use Dock\System\Linux\ShellCreator;
-
-$container['system.shell_creator'] = function() {
-    return new ShellCreator();
-};
 
 $container['installer.dns.dnsdock'] = function($c) {
     return new Dns\Linux\DnsDock($c['console.user_interaction'], $c['process.interactive_runner']);

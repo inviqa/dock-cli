@@ -8,11 +8,6 @@ use Dock\Installer\TaskProvider;
 use Dock\IO\PharFileExtractor;
 use Dock\Project\Decorator\ProjectShouldBeInHomeDirectory;
 use Dock\System\Environ\EnvironManipulatorFactory;
-use Dock\System\Mac\ShellCreator;
-
-$container['system.shell_creator'] = function() {
-    return new ShellCreator();
-};
 
 $container['installer.dns.dnsdock'] = function($c) {
     return new DNS\Mac\DnsDock(new SshClient($c['machine']), $c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
