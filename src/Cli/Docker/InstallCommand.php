@@ -16,20 +16,13 @@ class InstallCommand extends Command
     private $dockerInstaller;
 
     /**
-     * @var ShellCreator
-     */
-    private $shellCreator;
-
-    /**
      * @param DockerInstaller $dockerInstaller
-     * @param ShellCreator    $shellCreator
      */
-    public function __construct(DockerInstaller $dockerInstaller, ShellCreator $shellCreator)
+    public function __construct(DockerInstaller $dockerInstaller)
     {
         parent::__construct();
 
         $this->dockerInstaller = $dockerInstaller;
-        $this->shellCreator = $shellCreator;
     }
 
     /**
@@ -49,6 +42,12 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->dockerInstaller->run();
-        $this->shellCreator->createNewShell();
+
+        $output->writeln([
+            '',
+            '    The installation looks to be successful.',
+            '    You may need to <info>RESTART YOUR SHELL</info> to refresh the environment variables.',
+            ''
+        ]);
     }
 }

@@ -46,7 +46,7 @@ $container['command.selfupdate'] = function () {
 };
 
 $container['command.install'] = function ($c) {
-    return new InstallCommand($c['installer.docker'], $c['system.shell_creator']);
+    return new InstallCommand($c['installer.docker']);
 };
 
 $container['doctor'] = function ($c) {
