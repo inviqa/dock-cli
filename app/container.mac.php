@@ -1,7 +1,6 @@
 <?php
 
 use Dock\Docker\Machine\SshClient;
-use Dock\Doctor;
 use Dock\Installer\DNS;
 use Dock\Installer\System;
 use Dock\Installer\TaskProvider;
@@ -39,13 +38,6 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\DockerCompose($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\EnvironmentVariables($c['console.user_interaction'], new EnvironManipulatorFactory(), $c['machine']),
     ]);
-};
-
-$container['doctor.tasks'] = function($c) {
-    return [
-        new Doctor\Docker($c['process.silent_runner'], $c['installer.docker']),
-        new Doctor\DnsDock($c['process.silent_runner'], $c['installer.dns.dnsdock'], $c['installer.dns.docker_routing']),
-    ];
 };
 
 $container->extend('project.manager', function ($projectManager, $c) {

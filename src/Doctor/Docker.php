@@ -2,6 +2,7 @@
 
 namespace Dock\Doctor;
 
+use Dock\Doctor\Action\StartMachineOrInstall;
 use Dock\IO\ProcessRunner;
 use Dock\Installer\DockerInstaller;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,12 +15,20 @@ class Docker extends Task
     private $dockerInstaller;
 
     /**
-     * @param ProcessRunner $processRunner
+     * @var StartMachineOrInstall
      */
-    public function __construct(ProcessRunner $processRunner, DockerInstaller $dockerInstaller)
+    private $startMachineOrInstall;
+
+    /**
+     * @param ProcessRunner         $processRunner
+     * @param StartMachineOrInstall $startMachineOrInstall
+     * @param DockerInstaller       $dockerInstaller
+     */
+    public function __construct(ProcessRunner $processRunner, StartMachineOrInstall $startMachineOrInstall, DockerInstaller $dockerInstaller)
     {
         $this->processRunner = $processRunner;
         $this->dockerInstaller = $dockerInstaller;
+        $this->startMachineOrInstall = $startMachineOrInstall;
     }
 
     /**
@@ -42,8 +51,8 @@ class Docker extends Task
             'docker info',
             'Docker daemon is running',
             'It seems docker daemon is not running.',
-            'Start it with `sudo service docker start`',
-            $this->dockerInstaller,
+            'Start restarting the Docker service or the VM',
+            $this->startMachineOrInstall,
             $dryRun
         );
 

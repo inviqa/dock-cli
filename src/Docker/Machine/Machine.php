@@ -13,16 +13,22 @@ interface Machine
 
     /**
      * Start the Docker machine.
+     *
+     * @throws MachineException
      */
     public function start();
 
     /**
      * Stops the Docker machine.
+     *
+     * @throws MachineException
      */
     public function stop();
 
     /**
      * Get docker machine IP.
+     *
+     * @throws MachineException
      *
      * @return string
      */
@@ -37,6 +43,8 @@ interface Machine
 
     /**
      * Creates the docker machine.
+     *
+     * @throws MachineException
      */
     public function create();
 }
