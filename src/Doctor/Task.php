@@ -28,19 +28,24 @@ abstract class Task
      * @param string          $suggestedSolution Suggested solution
      * @param Installable     $installable       Task to fix the problem
      * @param bool            $dryRun            Try to fix the problem?
+     *
+     * @throws CommandFailedException
      */
-    protected function handle(OutputInterface $output, $command, $working, $problem, $suggestedSolution, Installable $installable, $dryRun)
+    protected function handle(OutputInterface $output, $command, $workingMessage, $problem, $suggestedSolution, Installable $installable, $dryRun)
     {
         if ($this->testCommand($command)) {
-            $output->writeLn("- <info>$working</info>");
+            $output->writeLn(sprintf('<info>%s</info>', $workingMessage));
         } else {
             if ($dryRun) {
-                $output->writeLn("- <error>$problem</error>");
-                throw new CommandFailedException("Command $command failed. $problem\n$suggestedSolution");
+                $output->writeLn(sprintf('- <error>%s</error>', $problem));
+                throw new CommandFailedException(sprintf(
+                    'Command %s failed. %s'.PHP_EOL.'%s',
+                    $command, $problem, $suggestedSolution
+                ));
             } else {
-                $output->writeLn("- <error>$problem, attempting to fix that!</error>");
+                $output->writeLn(sprintf('- <error>%s, attempting to fix that!</error>', $problem));
                 $installable->run();
-                $this->handle($output, $command, $working, $problem, $suggestedSolution, $installable, true);
+                $this->handle($output, $command, $workingMessage, $problem, $suggestedSolution, $installable, true);
             }
         }
     }
