@@ -80,7 +80,7 @@ class ConsoleUserInteraction implements UserInteraction
      *
      * @return OutputInterface
      */
-    private function getOutput()
+    public function getOutput()
     {
         if (null === $this->output) {
             throw new \RuntimeException('No user interaction context available.');

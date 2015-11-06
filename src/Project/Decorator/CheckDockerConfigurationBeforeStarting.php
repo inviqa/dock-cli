@@ -2,6 +2,7 @@
 
 namespace Dock\Project\Decorator;
 
+use Dock\Cli\IO\ConsoleUserInteraction;
 use Dock\Docker\Compose\Project;
 use Dock\Doctor\CommandFailedException;
 use Dock\Doctor\Doctor;
@@ -47,13 +48,17 @@ class CheckDockerConfigurationBeforeStarting implements ProjectManager
         try {
             $this->doctor->examine(new NullOutput(), true);
         } catch (CommandFailedException $e) {
+            if (!$this->userInteraction instanceof ConsoleUserInteraction) {
+                throw $e;
+            }
+
             $answer = $this->userInteraction->ask(new Question(
                 'It looks like there\'s something wrong with your installation. Would you like to run the `doctor` command ? [Yn]',
                 'y'
             ));
 
             if ('y' == strtolower($answer)) {
-                $this->doctor->examine($this->userInteraction, false);
+                $this->doctor->examine($this->userInteraction->getOutput(), false);
             }
         }
 
