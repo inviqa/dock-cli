@@ -37,6 +37,8 @@ class StartMachineOrInstall implements Installable
         try {
             $this->machine->start();
         } catch (MachineException $e) {
+            // Ignore the problem as if the machine is not running, we
+            // will run the installer.
         }
 
         if (!$this->machine->isRunning()) {

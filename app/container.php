@@ -25,6 +25,7 @@ use Dock\Docker\Machine\DockerMachineCli;
 use Dock\Doctor;
 use Dock\Doctor\TaskBasedDoctor;
 use Dock\Installer\DockerInstaller;
+use Dock\Installer\System\Catcher\ErrorCatcherDecoratorFactory;
 use Dock\IO\Process\InteractiveProcessBuilder;
 use Dock\IO\SilentProcessRunner;
 use Dock\Plugins\ExtraHostname\HostnameFromComposerResolver;
@@ -34,6 +35,7 @@ use Dock\Project\Decorator\CheckDockerConfigurationBeforeStarting;
 use Dock\Project\DockerComposeProjectManager;
 use Dock\System\OperatingSystemDetector;
 use Pimple\Container;
+use SRIO\ChainOfResponsibility\DecoratorFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -82,9 +84,17 @@ $container['compose.executable_finder'] = function () {
     return new ComposeExecutableFinder();
 };
 
-$container['installer.docker'] = function ($c) {
-    return new DockerInstaller($c['installer.task_provider']);
+$container['installer.docker.process_decorator_factory'] = function($c) {
+    $processDecoratorFactory = new DecoratorFactory();
+    $processDecoratorFactory = new ErrorCatcherDecoratorFactory($processDecoratorFactory, $c['console.user_interaction']);
+
+    return $processDecoratorFactory;
 };
+
+$container['installer.docker'] = function ($c) {
+    return new DockerInstaller($c['installer.task_provider'], $c['installer.docker.process_decorator_factory']);
+};
+
 
 $container['plugins.extra_hostname.composer_hostname_resolver'] = function ($c) {
     return new HostnameFromComposerResolver();
