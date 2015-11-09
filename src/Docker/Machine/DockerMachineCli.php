@@ -39,7 +39,7 @@ class DockerMachineCli implements Machine
             return false;
         }
 
-        return $process->getOutput() == 'Running';
+        return strpos($process->getOutput(), 'Running') === 0;
     }
 
     /**
