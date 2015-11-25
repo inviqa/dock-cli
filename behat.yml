@@ -1,7 +1,7 @@
 default:
   suites:
     application:
-      contexts: [ ApplicationTesterContext ]
+      contexts: [ ApplicationTesterContext, FileManipulatorContext ]
   gherkin:
     filters: { tags: ~@wip }
 
