@@ -42,22 +42,8 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
      */
     public function run()
     {
-        if ($this->isEnvironmentConfigured()) {
-            $this->userInteraction->write('Environment variables are already configured');
-
-            return;
-        }
-
         $this->userInteraction->writeTitle('Setting up machine environment variables');
         $this->saveEnvironmentVariables();
-    }
-
-    /**
-     * @return bool
-     */
-    private function isEnvironmentConfigured()
-    {
-        return getenv('DOCKER_HOST') !== false;
     }
 
     /**
@@ -82,6 +68,10 @@ class EnvironmentVariables extends InstallerTask implements DependentChainProces
     protected function saveEnvironmentVariables()
     {
         $environManipulator = $this->environManipulatorFactory->getSystemManipulator();
-        $environManipulator->save($this->dockerMachineCli->getEnvironmentDeclaration());
+        $environmentDeclaration = $this->dockerMachineCli->getEnvironmentDeclaration();
+
+        if (!$environManipulator->has($environmentDeclaration)) {
+            $environManipulator->save($environmentDeclaration);
+        }
     }
 }

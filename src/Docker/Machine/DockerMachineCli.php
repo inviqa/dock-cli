@@ -110,6 +110,6 @@ class DockerMachineCli implements Machine
      */
     public function getEnvironmentDeclaration()
     {
-        return $this->processRunner->run('docker-machine env '.$this->name)->getOutput();
+        return sprintf('eval "$(docker-machine env %s)"', $this->name).PHP_EOL;
     }
 }
