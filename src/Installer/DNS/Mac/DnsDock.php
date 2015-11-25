@@ -4,9 +4,11 @@ namespace Dock\Installer\DNS\Mac;
 
 use Dock\Docker\Machine\SshClient;
 use Dock\Docker\Machine\Machine;
+use Dock\Docker\Machine\SshFileManipulator;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
+use Dock\System\Bash\BashFileManipulator;
 use SRIO\ChainOfResponsibility\DependentChainProcessInterface;
 
 class DnsDock extends InstallerTask implements DependentChainProcessInterface
@@ -96,10 +98,16 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     {
         $needMachineRestart = false;
 
-        if (!$this->hasDockerExtraArgs()) {
-            $this->sshClient->run(
-                'echo EXTRA_ARGS=\"-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1\" | sudo tee -a /var/lib/boot2docker/profile'
-            );
+        $daemonArguments = '-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1';
+        $bashFileManipulator = new BashFileManipulator(
+            new SshFileManipulator($this->sshClient, '/var/lib/boot2docker/profile')
+        );
+
+        $extraArguments = $bashFileManipulator->getValue('EXTRA_ARGS');
+
+        if (strpos($extraArguments, $daemonArguments) === false) {
+            $bashFileManipulator->replaceValue('EXTRA_ARGS', $extraArguments.' '.$daemonArguments);
+
             $needMachineRestart = true;
         }
 

@@ -66,6 +66,14 @@ class SshClient
     }
 
     /**
+     * @return \Ssh\Sftp
+     */
+    public function getSftp()
+    {
+        return $this->getSession()->getSftp();
+    }
+
+    /**
      * @return Session
      */
     private function getSession()
