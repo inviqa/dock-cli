@@ -7,7 +7,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class DockerMachineCli implements Machine
 {
-    const MACHINE_NAME = 'dinghy';
+    const DEFAULT_MACHINE_NAME = 'dinghy';
 
     /**
      * @var ProcessRunner
@@ -23,7 +23,7 @@ class DockerMachineCli implements Machine
      * @param ProcessRunner $processRunner
      * @param string        $name
      */
-    public function __construct(ProcessRunner $processRunner, $name = self::MACHINE_NAME)
+    public function __construct(ProcessRunner $processRunner, $name)
     {
         $this->processRunner = $processRunner;
         $this->name = $name;

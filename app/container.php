@@ -127,7 +127,7 @@ $container['project.manager'] = function ($c) {
 };
 
 $container['machine'] = function($c) {
-    return new DockerMachineCli($c['process.interactive_runner']);
+    return new DockerMachineCli($c['process.interactive_runner'], getenv('DOCKER_MACHINE_NAME') ?: DockerMachineCli::DEFAULT_MACHINE_NAME);
 };
 
 $container['command.restart'] = function ($c) {
