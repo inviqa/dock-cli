@@ -45,6 +45,7 @@ The following commands are available:
 - [`logs` command](docs/cmd-logs.md) follows the logs of all or a given container.
 - [`run` command](docs/cmd-run.md) run a command in a container with the application context.
 - [`reset` command](docs/cmd-reset.md) kill, remove and start again a container.
+- [`build` command](docs/cmd-build.md) starts the Docker environment for the project.
 
 ## Plugins
 
