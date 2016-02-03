@@ -3,9 +3,8 @@
 This command builds and resets a set of containers. It will run `docker-compose build [containers]` and then 
 run the reset command against those containers.
 
-That's extremely useful when the configuration of the running process needs to be updated for
-instance, as building the container will not restart it and it won't load the new configuration if the process to not support runtime
-update.
+It is extremely useful for when the configuration of the running process needs to be updated for
+instance, as building the container will not restart it and it won't load the new configuration.
 
 ## Usage
 
