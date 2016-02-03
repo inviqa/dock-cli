@@ -9,7 +9,7 @@ use Dock\IO\Process\InteractiveProcessManager;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
 
-class DockerComposeProjectManager implements ProjectManager
+class DockerComposeProjectManager implements ProjectManager, ProjectBuildManager
 {
     /**
      * @var InteractiveProcessBuilder
@@ -90,5 +90,21 @@ class DockerComposeProjectManager implements ProjectManager
                 implode(' ', $containers),
             ]);
         }, ['kill', 'rm -f', 'up -d'])));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(Project $project, array $containers = [])
+    {
+        $composePath = $this->composeExecutableFinder->find();
+
+        $this->processRunner->run(implode(' ', [
+            $composePath,
+            'build',
+            implode(' ', $containers),
+        ]));
+
+        $this->reset($project, $containers);
     }
 }
