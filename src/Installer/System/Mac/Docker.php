@@ -12,7 +12,7 @@ class Docker extends SoftwareInstallTask implements DependentChainProcessInterfa
      */
     public function getName()
     {
-        return 'dockerMachine';
+        return 'docker';
     }
 
     /**
