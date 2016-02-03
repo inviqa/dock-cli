@@ -99,13 +99,11 @@ class DockerComposeProjectManager implements ProjectManager, ProjectBuildManager
     {
         $composePath = $this->composeExecutableFinder->find();
 
-        $this->processRunner->run(implode(' && ', array_map(function ($action) use ($composePath, $containers) {
-            return implode(' ', [
-                $composePath,
-                $action,
-                implode(' ', $containers),
-            ]);
-        }, ['build'])));
+        $this->processRunner->run(implode(' ', [
+            $composePath,
+            'build',
+            implode(' ', $containers),
+        ]));
 
         $this->reset($project, $containers);
     }
