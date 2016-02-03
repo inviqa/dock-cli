@@ -7,6 +7,7 @@ use Dock\Cli\IO\InteractiveProcessRunner;
 use Dock\Cli\IO\LocalProject;
 use Dock\Cli\LogsCommand;
 use Dock\Cli\PsCommand;
+use Dock\Cli\BuildCommand;
 use Dock\Cli\ResetCommand;
 use Dock\Cli\Docker\RestartCommand;
 use Dock\Cli\RunCommand;
@@ -143,6 +144,9 @@ $container['command.start'] = function ($c) {
 $container['command.stop'] = function ($c) {
     return new StopCommand($c['project.manager'], $c['compose.project']);
 };
+$container['command.build'] = function ($c) {
+    return new BuildCommand($c['project.manager.docker_compose'], $c['compose.project']);
+};
 $container['command.reset'] = function ($c) {
     return new ResetCommand($c['project.manager'], $c['compose.project']);
 };
@@ -205,6 +209,7 @@ $container['application'] = function ($c) {
         $c['command.run'],
         $c['command.start'],
         $c['command.stop'],
+        $c['command.build'],
         $c['command.reset'],
         $c['command.ps'],
         $c['command.logs'],
