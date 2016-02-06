@@ -55,7 +55,7 @@ class DockerRouting extends InstallerTask
     private function getDockerIp()
     {
         $output = $this->processRunner->run("ip addr show docker0 | grep 'inet ' | awk -F\\  '{print $2}' | awk '{print $1}'");
-        $network = explode('/', trim($output));
+        $network = explode('/', trim($output->getOutput()));
 
         return $network[0];
     }
