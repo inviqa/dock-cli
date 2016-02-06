@@ -2,7 +2,6 @@
 
 namespace Dock\Installer\DNS\Linux\RedHat;
 
-use Dock\Installer\DNS\Linux\DnsDock;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
