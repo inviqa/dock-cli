@@ -45,7 +45,7 @@ class InstallCommand extends Command
         $output->writeln([
             '',
             '    The installation looks to be successful.',
-            '    You may need to <info>RESTART YOUR SHELL</info> to refresh the environment variables.',
+            '    You may need to <comment>RESTART YOUR SHELL</comment> to refresh the environment variables.',
             '',
         ]);
     }
