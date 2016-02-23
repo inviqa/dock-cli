@@ -16,7 +16,7 @@ class EnvironManipulatorFactory
 
         $environFile = $userHome.'/.bash_profile';
         if (strpos($shell, 'zsh') !== false) {
-            $environFile = $userHome.'/.zshenv';
+            $environFile = $userHome.'/.zshrc';
         } elseif (strpos($shell, 'fish') !== false) {
             $environFile = $userHome.'/.config/fish/config.fish';
         }
