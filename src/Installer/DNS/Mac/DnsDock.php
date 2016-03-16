@@ -80,7 +80,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
      */
     public function dependsOn()
     {
-        return ['machine', 'dnsdock'];
+        return ['machine', 'dnsdock_image'];
     }
 
     /**

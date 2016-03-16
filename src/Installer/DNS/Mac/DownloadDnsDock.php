@@ -52,6 +52,6 @@ class DownloadDnsDock extends InstallerTask implements DependentChainProcessInte
      */
     public function getName()
     {
-        return 'dnsdock';
+        return 'dnsdock_image';
     }
 }
