@@ -2,6 +2,7 @@
 
 namespace Dock\Installer\DNS\Mac;
 
+use Dock\Docker\Machine\DockerMachineCli;
 use Dock\Installer\InstallerTask;
 use Dock\IO\ProcessRunner;
 use Dock\IO\UserInteraction;
@@ -20,13 +21,20 @@ class DownloadDnsDock extends InstallerTask implements DependentChainProcessInte
     private $processRunner;
 
     /**
+     * @var DockerMachineCli
+     */
+    private $machine;
+
+    /**
      * @param UserInteraction $userInteraction
      * @param ProcessRunner $processRunner
+     * @param DockerMachineCli $machine
      */
-    public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner)
+    public function __construct(UserInteraction $userInteraction, ProcessRunner $processRunner, DockerMachineCli $machine)
     {
         $this->userInteraction = $userInteraction;
         $this->processRunner = $processRunner;
+        $this->machine = $machine;
     }
 
     /**
@@ -35,7 +43,15 @@ class DownloadDnsDock extends InstallerTask implements DependentChainProcessInte
     public function run()
     {
         $this->userInteraction->writeTitle("Pulling image tonistiigi/dnsdock");
-        $this->userInteraction->write("This could take a while when run for the first time");
+        $this->userInteraction->write("Check docker machine is running");
+        if (!$this->machine->isRunning()) {
+            $this->userInteraction->write("Starting machine");
+            $this->machine->start();
+        }
+        $this->userInteraction->write("Setting environment variables");
+        $this->processRunner->run($this->machine->getEnvironmentDeclaration());
+
+        $this->userInteraction->write("Pulling image tonistiigi/dnsdock, this could take a while when run for the first time");
         $this->processRunner->run('docker pull tonistiigi/dnsdock');
     }
 

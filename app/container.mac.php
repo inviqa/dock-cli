@@ -12,7 +12,7 @@ $container['installer.dns.dnsdock'] = function($c) {
     return new DNS\Mac\DnsDock(new SshClient($c['machine']), $c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
 };
 $container['installer.dns.download_dnsdock'] = function($c) {
-    return new DNS\Mac\DownloadDnsDock($c['console.user_interaction'], $c['process.interactive_runner']);
+    return new DNS\Mac\DownloadDnsDock($c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
 };
 $container['installer.dns.docker_routing'] = function($c) {
     return new DNS\Mac\DockerRouting($c['machine'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']);
