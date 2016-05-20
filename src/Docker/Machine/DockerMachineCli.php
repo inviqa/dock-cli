@@ -90,7 +90,12 @@ class DockerMachineCli implements Machine
      */
     public function isCreated()
     {
-        return $this->processRunner->run('docker-machine status '.$this->name, false)->isSuccessful();
+        $process = $this->processRunner->run('docker-machine status '.$this->name, false);
+        if(!$process->isSuccessful() || strpos($process->getOutput(), 'Error') === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
