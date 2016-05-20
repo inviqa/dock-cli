@@ -11,6 +11,9 @@ use Dock\System\Environ\EnvironManipulatorFactory;
 $container['installer.dns.dnsdock'] = function($c) {
     return new DNS\Mac\DnsDock(new SshClient($c['machine']), $c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
 };
+$container['installer.dns.download_dnsdock'] = function($c) {
+    return new DNS\Mac\DownloadDnsDock($c['console.user_interaction'], $c['process.interactive_runner'], $c['machine']);
+};
 $container['installer.dns.docker_routing'] = function($c) {
     return new DNS\Mac\DockerRouting($c['machine'], $c['console.user_interaction'], $c['process.interactive_runner'], $c['io.phar_file_extractor']);
 };
@@ -27,6 +30,7 @@ $container['installer.task_provider'] = function ($c) {
         new System\Mac\DockerMachine($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\Docker($c['console.user_interaction'], $c['process.interactive_runner']),
         new System\Mac\Machine($c['console.user_interaction'], $c['machine']),
+        $c['installer.dns.download_dnsdock'],
         $c['installer.dns.dnsdock'],
         $c['installer.dns.docker_routing'],
         new System\Mac\Vagrant($c['console.user_interaction'], $c['process.interactive_runner']),
