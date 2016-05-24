@@ -22,7 +22,7 @@ class BuildCommand extends Command
     private $project;
 
     /**
-     * @param ProjectBuildManager $projectManager
+     * @param ProjectBuildManager $projectBuildManager
      * @param Project $project
      */
     public function __construct(ProjectBuildManager $projectBuildManager, Project $project)

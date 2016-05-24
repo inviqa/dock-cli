@@ -30,8 +30,6 @@ class FileEnvironManipulator implements EnvironManipulator
      */
     public function has($declaration)
     {
-        $contents = file_get_contents($this->file);
-
-        return strpos($contents, $declaration) !== false;
+        return is_file($this->file) && false !== strpos(file_get_contents($this->file), $declaration);
     }
 }
