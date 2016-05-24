@@ -10,6 +10,7 @@ class DnsDockResolver implements ContainerAddressResolver
     public function getDnsByContainerNameAndImage($containerName, $imageName)
     {
         $imageName = $this->stripTagNameFromImageName($imageName);
+        $imageName = $this->stripSlashFromImageName($imageName);
 
         return [
             $imageName.'.docker',
@@ -29,5 +30,10 @@ class DnsDockResolver implements ContainerAddressResolver
         }
 
         return $imageName;
+    }
+    
+    private function stripSlashFromImageName($imageName)
+    {
+        return str_replace('/', '_', $imageName);
     }
 }
