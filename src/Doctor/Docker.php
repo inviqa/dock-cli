@@ -58,12 +58,20 @@ class Docker extends Task
 
         $this->handle(
             $output,
-            'ping -c1 172.17.42.1',
+            'ping -c1 '.$this->getDockerIp(),
             'Can ping docker virtual interface',
             "Can't ping docker virtual interface.",
             'Install and start docker by running: `dock-cli docker:install`',
             $this->dockerInstaller,
             $dryRun
         );
+    }
+
+    private function getDockerIp()
+    {
+        $process = $this->processRunner->run("ip addr show docker0 | grep 'inet ' | awk -F\\  '{print $2}' | awk '{print $1}'");
+        $network = explode('/', trim($process->getOutput()));
+
+        return $network[0];
     }
 }
