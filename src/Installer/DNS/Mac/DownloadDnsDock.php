@@ -42,7 +42,7 @@ class DownloadDnsDock extends InstallerTask implements DependentChainProcessInte
      */
     public function run()
     {
-        $this->userInteraction->writeTitle("Pulling image tonistiigi/dnsdock");
+        $this->userInteraction->writeTitle("Pulling image aacebedo/dnsdock");
         $this->userInteraction->write("Check docker machine is running");
         if (!$this->machine->isRunning()) {
             $this->userInteraction->write("Starting machine");
@@ -51,8 +51,8 @@ class DownloadDnsDock extends InstallerTask implements DependentChainProcessInte
         $this->userInteraction->write("Setting environment variables");
         $this->processRunner->run($this->machine->getEnvironmentDeclaration());
 
-        $this->userInteraction->write("Pulling image tonistiigi/dnsdock, this could take a while when run for the first time");
-        $this->processRunner->run('docker pull tonistiigi/dnsdock');
+        $this->userInteraction->write("Pulling image aacebedo/dnsdock, this could take a while when run for the first time");
+        $this->processRunner->run('docker pull aacebedo/dnsdock:latest-amd64');
     }
 
     /**
