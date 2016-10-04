@@ -55,7 +55,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
             $this->processRunner->run('sudo service docker restart');
         }
 
-        $this->processRunner->run('sudo docker start dnsdock || sudo docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp tonistiigi/dnsdock');
+        $this->processRunner->run('sudo docker start dnsdock || sudo docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 172.17.42.1:53:53/udp aacebedo/dnsdock:latest-amd64');
     }
 
     private function hasDockerOptions()
