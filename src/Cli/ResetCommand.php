@@ -41,7 +41,7 @@ class ResetCommand extends Command
         $this
             ->setName('reset')
             ->setDescription('Reset the containers of the project')
-            ->addArgument('container', InputArgument::IS_ARRAY, 'Component names')
+            ->addArgument('container', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Component names')
         ;
     }
 
