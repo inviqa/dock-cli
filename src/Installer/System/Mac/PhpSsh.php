@@ -74,7 +74,9 @@ class PhpSsh extends InstallerTask implements DependentChainProcessInterface
      */
     private function guessSsh2PhpPackage()
     {
-        if (PHP_VERSION_ID > 50600) {
+        if (PHP_VERSION_ID > 70000) {
+            $package = 'php70-ssh2';
+        } elseif (PHP_VERSION_ID > 50600) {
             $package = 'php56-ssh2';
         } elseif (PHP_VERSION_ID > 50500) {
             $package = 'php55-ssh2';
