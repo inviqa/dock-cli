@@ -38,9 +38,4 @@ class DnsDockResolverSpec extends ObjectBehavior
         $this->getDnsByContainerNameAndImage('container', 'someone/folder/image:latest')
             ->shouldContain('container.image.docker');
     }
-
-    function it_replaces_dashes_with_underscores_in_image_name()
-    {
-        $this->getDnsByContainerNameAndImage('container', 'someone/image-foo:latest')->shouldContain('container.image_foo.docker');
-    }
 }
