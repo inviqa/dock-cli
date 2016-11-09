@@ -35,7 +35,7 @@ class DnsDockResolver implements ContainerAddressResolver
     
     private function stripSlashFromImageName($imageName)
     {
-        if (false !== ($position = strpos($imageName, '/'))) {
+        if (false !== ($position = strrpos($imageName, '/'))) {
             $imageName = substr($imageName, $position+1 );
         }
 
@@ -44,6 +44,6 @@ class DnsDockResolver implements ContainerAddressResolver
 
     private function sanitiseImageName($imageName)
     {
-        return preg_replace('#/#', '_', $imageName);
+        return str_replace(['/', '-'], '_', $imageName);
     }
 }
