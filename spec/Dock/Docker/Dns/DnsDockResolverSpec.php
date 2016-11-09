@@ -32,4 +32,10 @@ class DnsDockResolverSpec extends ObjectBehavior
     {
         $this->getDnsByContainerNameAndImage('container', 'someone/image:latest')->shouldContain('container.image.docker');
     }
+
+    function it_removes_more_than_one_slash_in_image_name()
+    {
+        $this->getDnsByContainerNameAndImage('container', 'someone/folder/image:latest')
+            ->shouldContain('container.folder_image.docker');
+    }
 }
