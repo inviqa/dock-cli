@@ -11,6 +11,7 @@ class DnsDockResolver implements ContainerAddressResolver
     {
         $imageName = $this->stripTagNameFromImageName($imageName);
         $imageName = $this->stripSlashFromImageName($imageName);
+        $imageName = $this->sanitiseImageName($imageName);
 
         return [
             $imageName.'.docker',
@@ -34,10 +35,15 @@ class DnsDockResolver implements ContainerAddressResolver
     
     private function stripSlashFromImageName($imageName)
     {
-        if (false !== ($position = strpos($imageName, '/'))) {
+        if (false !== ($position = strrpos($imageName, '/'))) {
             $imageName = substr($imageName, $position+1 );
         }
 
         return $imageName;
+    }
+
+    private function sanitiseImageName($imageName)
+    {
+        return str_replace(['/', '-'], '_', $imageName);
     }
 }
