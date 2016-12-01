@@ -35,5 +35,5 @@ On Linux, it installs, if not already installed, the following software:
 
 Then it performs some more tasks:
 - adds your current `$USER` to the `docker` group to be able to run docker without sudo
-- starts the tonistiigi/dnsdock container, binds it to `172.17.42.1`
+- starts the aacebedo/dnsdock container, binds it to `172.17.42.1`
 - adds `172.17.42.1` as a DNS server
