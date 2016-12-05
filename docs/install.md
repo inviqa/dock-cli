@@ -1,5 +1,7 @@
 # Installation
 
+If PHP (>= 5.6) is not installed on your environment, install it now; PHP is a requirement for Dock CLI.
+
 Download the last PHAR release:
 ```
 curl https://inviqa.github.io/dock-cli/downloads/dock-cli-latest.phar > dock-cli
