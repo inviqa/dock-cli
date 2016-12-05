@@ -1,6 +1,6 @@
 # Installation
 
-If PHP is not installed on your environment, install it now; PHP is a requirement for Dock CLI.
+If PHP (>= 5.6) is not installed on your environment, install it now; PHP is a requirement for Dock CLI.
 
 Download the last PHAR release:
 ```
