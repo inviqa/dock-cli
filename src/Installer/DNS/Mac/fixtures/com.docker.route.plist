@@ -8,7 +8,7 @@
   <array>
     <string>bash</string>
     <string>-c</string>
-    <string>/usr/sbin/scutil -w State:/Network/Interface/__MACHINE_INTERFACE__/IPv4 -t 0; for i in $(seq 18 30); do sudo /sbin/route -n add -net "172.$i.0.0" -netmask 255.255.0.0 -gateway __MACHINE_IP__ ; done</string>
+    <string>/usr/sbin/scutil -w State:/Network/Interface/__MACHINE_INTERFACE__/IPv4 -t 0; for i in $(seq 17 30); do sudo /sbin/route -n add -net "172.$i.0.0" -netmask 255.255.0.0 -gateway __MACHINE_IP__ ; done</string>
   </array>
   <key>KeepAlive</key>
   <false/>
