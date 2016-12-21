@@ -46,7 +46,7 @@ class SshClient
             $this->exec = $this->getSession()->getExec();
         }
 
-        return $this->exec->run($command);
+        return $this->exec->run($command, null, null);
     }
 
     /**
