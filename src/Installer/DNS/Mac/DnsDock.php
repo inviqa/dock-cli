@@ -98,7 +98,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
     {
         $needMachineRestart = false;
 
-        $daemonArguments = '-H unix:///var/run/docker.sock --bip=172.17.42.1/16 --dns=172.17.42.1';
+        $daemonArguments = '-H unix:///var/run/docker.sock --bip=172.17.42.1/16';
         $bashFileManipulator = new BashFileManipulator(
             new SshFileManipulator($this->sshClient, '/var/lib/boot2docker/profile')
         );
