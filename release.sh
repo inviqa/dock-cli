@@ -15,14 +15,14 @@ TAG=$1
 #
 # Tag & build master branch
 #
-git checkout origin/master
+git checkout master
 git tag ${TAG}
 vendor/kherge/box/bin/box build
 
 #
 # Copy executable file into GH pages
 #
-git checkout origin/gh-pages
+git checkout gh-pages
 
 cp $PHAR_NAME.phar downloads/$PHAR_NAME-${TAG}.phar
 git add downloads/$PHAR_NAME-${TAG}.phar
@@ -51,7 +51,7 @@ git commit -m "Bump version ${TAG}"
 #
 # Go back to master
 #
-git checkout origin/master
+git checkout master
 
 echo "New version created. Now you should run:"
 echo "git push origin gh-pages"
