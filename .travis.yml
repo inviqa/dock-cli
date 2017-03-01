@@ -8,20 +8,17 @@ cache:
 
 matrix:
   include:
-    - php: 5.4
-      env: DEPENDENCIES='low'
     - php: 5.5
     - php: 5.6
-    - php: hhvm
     - php: 7.0
+    - php: 7.1
   fast_finish: true
 
 before_install:
   - composer selfupdate
 
 install:
-  - if [ "$DEPENDENCIES" != "low" ]; then composer update --ignore-platform-reqs; fi;
-  - if [ "$DEPENDENCIES" == "low" ]; then composer update --ignore-platform-reqs --prefer-lowest; fi;
+  - composer install --ignore-platform-reqs
 
 script:
   - vendor/bin/phpspec run
