@@ -3,7 +3,7 @@
   "require": {
     "symfony/console": "~2.7",
     "symfony/process": "~2.7",
-    "sroze/chain-of-responsibility": "~1.2.0",
+    "sroze/chain-of-responsibility": "~1.2.1",
     "herzult/php-ssh": "~1.1",
     "herrera-io/phar-update": "~2.0",
     "pimple/pimple": "^3.0",
