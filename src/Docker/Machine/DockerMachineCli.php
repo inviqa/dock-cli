@@ -7,7 +7,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class DockerMachineCli implements Machine
 {
-    const DEFAULT_MACHINE_NAME = 'dinghy';
+    const DEFAULT_MACHINE_NAME = 'inviqa-dock-cli';
 
     /**
      * @var ProcessRunner
