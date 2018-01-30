@@ -51,7 +51,7 @@ class DnsDock extends InstallerTask implements DependentChainProcessInterface
         if (!$this->hasDockerOptions()) {
             $this->userInteraction->writeTitle('Configuring DNS resolution for Docker containers');
 
-            $this->processRunner->run('echo \'DOCKER_OPTS="--bip='.self::IP.'/24 --dns '.self::IP.'"\' | sudo tee -a /etc/default/docker');
+            $this->processRunner->run('echo \'DOCKER_OPTS="--bip='.self::IP.'/24"\' | sudo tee -a /etc/default/docker');
             $this->processRunner->run('sudo service docker restart');
         }
 
